@@ -7,6 +7,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@500;600;700&family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#f2f2f3">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
@@ -189,6 +191,123 @@ textarea.input{min-height:84px;resize:vertical}
 .form-grid .full{grid-column:1/-1}
 .ferr{color:var(--red);font-size:13.5px;min-height:18px;margin:6px 0}
 @media(max-width:440px){.form-grid{grid-template-columns:1fr}}
+
+
+body{--bcs-card:var(--color-card);--bcs-card2:var(--color-surface);--bcs-line:var(--color-divider);--bcs-text:var(--color-text);--bcs-muted:var(--color-neutral-700);--bcs-acc:var(--color-accent);--bcs-r:6px;--bcs-display:var(--font-heading)}
+/*@@BCSCSS-START@@*/
+/* ── Building Critical Status (shared) — host maps --bcs-* tokens ── */
+.bcs{display:flex;flex-direction:column;gap:14px;color:var(--bcs-text)}
+.bcs [hidden]{display:none!important}
+.bcs-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.bcs-kpi{background:var(--bcs-card);border:1px solid var(--bcs-line);border-radius:var(--bcs-r);padding:11px 13px;border-top:3px solid var(--kc);display:flex;flex-direction:column;gap:2px;transition:transform .15s,box-shadow .15s}
+.bcs-kpi:hover{transform:translateY(-3px);box-shadow:0 10px 20px -8px rgba(0,0,0,.35)}
+.bcs-kpi span{font-size:11px;letter-spacing:.8px;text-transform:uppercase;color:var(--bcs-muted);font-weight:600}
+.bcs-kpi b{font-family:var(--bcs-display);font-size:26px;line-height:1.05;color:var(--kc);font-variant-numeric:tabular-nums}
+.bcs-kpi small{font-size:11.5px;color:var(--bcs-muted)}
+.bcs-bar{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.bcs-chips{display:flex;gap:6px;overflow-x:auto;flex:1 1 320px;min-width:0;padding:2px 0 4px;scrollbar-width:thin}
+.bcs-chip{flex-shrink:0;display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:20px;border:1px solid var(--bcs-line);background:var(--bcs-card);color:var(--bcs-text);font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit;transition:transform .15s,border-color .15s}
+.bcs-chip i{width:9px;height:9px;border-radius:50%;background:var(--fc)}
+.bcs-chip small{background:var(--fc);color:#fff;border-radius:9px;padding:0 6px;font-size:10.5px}
+.bcs-chip:hover{transform:translateY(-2px);border-color:var(--fc)}
+.bcs-chip.on{border-color:var(--bcs-acc);background:color-mix(in srgb,var(--bcs-acc) 14%,var(--bcs-card))}
+.bcs-tools{display:flex;gap:6px;flex-wrap:wrap}
+.bcs-btn{display:inline-flex;align-items:center;gap:5px;padding:5px 11px;border-radius:6px;border:1px solid var(--bcs-line);background:transparent;color:var(--bcs-text);font-size:12.5px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap}
+.bcs-btn:hover{background:var(--bcs-card2)}
+.bcs-btn.on{background:var(--bcs-acc);border-color:var(--bcs-acc);color:#fff}
+.bcs-pri{background:var(--bcs-acc);border-color:var(--bcs-acc);color:#fff}
+.bcs-ok{border-color:#22C55E;color:#22C55E;padding:2px 8px;font-size:11.5px}
+.bcs-danger{border-color:#EF4444;color:#EF4444}
+.bcs-layout{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap}
+.bcs-bwrap{flex:0 0 470px;max-width:100%;background:var(--bcs-card);border:1px solid var(--bcs-line);border-radius:var(--bcs-r);padding:12px;position:relative;min-width:0}
+.bcs-bhead{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px;flex-wrap:wrap}
+.bcs-cap{font-size:11px;font-weight:700;color:var(--bcs-muted);letter-spacing:.8px;text-transform:uppercase}
+.bcs-modes{display:flex;align-items:center;gap:4px;flex-wrap:wrap}
+.bcs-dots{font-size:10.5px;color:var(--bcs-muted);margin-right:4px}
+.bcs-dots i{font-style:normal;margin-left:4px}
+.bcs-mb{padding:2px 8px;border-radius:5px;border:1px solid var(--bcs-line);background:transparent;color:var(--bcs-muted);font-size:11px;font-weight:700;cursor:pointer;font-family:inherit}
+.bcs-mb.on{background:#F97316;border-color:#F97316;color:#fff}
+.bcs-3d{position:relative;width:100%;border-radius:8px;overflow:hidden;cursor:grab;background:radial-gradient(ellipse at 50% 30%,#1b2a3a 0%,#0d1117 75%)}
+.bcs-b3{height:clamp(440px,70vh,720px)}
+.bcs-ctl{position:absolute;right:8px;top:8px;display:flex;flex-direction:column;gap:4px;z-index:3}
+.bcs-ctl button{width:30px;height:28px;border-radius:6px;border:1px solid #30363D;background:rgba(22,27,34,.85);color:#E6EDF3;cursor:pointer;font-size:13px}
+.bcs-ctl button:hover{border-color:#F97316}
+.bcs-help{position:absolute;left:8px;bottom:6px;right:8px;font-size:10.5px;color:#8B949E;pointer-events:none;z-index:2}
+.bcs-b2scroll{max-height:78vh;overflow-y:auto}
+.bcs-floor{cursor:pointer;transition:filter .15s}.bcs-floor:hover{filter:brightness(1.35)}
+.bcs-hint{flex:1;min-width:240px;display:flex;align-items:center;justify-content:center;min-height:260px;color:var(--bcs-muted);font-size:13px;text-align:center;border:1px dashed var(--bcs-line);border-radius:var(--bcs-r);padding:20px;line-height:1.7}
+.bcs-panel{flex:1;min-width:0;display:flex;flex-direction:column;gap:12px}
+.bcs-panel.slide{animation:bcsSlide .38s cubic-bezier(.2,.8,.2,1)}
+@keyframes bcsSlide{from{opacity:0;transform:translateX(24px)}to{opacity:1;transform:none}}
+.bcs-sum{background:var(--bcs-card);border:1px solid var(--bcs-line);border-radius:var(--bcs-r);padding:12px 14px}
+.bcs-sh{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.bcs-st{font-family:var(--bcs-display);font-size:17px;font-weight:800;color:#F97316;line-height:1.15}
+.bcs-pill{font-size:11px;padding:2px 10px;border-radius:12px;font-weight:700;color:var(--pc);background:color-mix(in srgb,var(--pc) 18%,transparent)}
+.bcs-muted{font-size:11.5px;color:var(--bcs-muted)}
+.bcs-rchips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:4px}
+.bcs-rchip{display:flex;align-items:center;gap:7px;padding:5px 12px;border-radius:20px;border:2px solid var(--rc);background:transparent;color:var(--bcs-text);font-size:12px;font-weight:700;cursor:pointer;font-family:inherit}
+.bcs-rchip.on{background:color-mix(in srgb,var(--rc) 20%,transparent)}
+.bcs-rchip i{width:11px;height:11px;border-radius:50%}
+.blink{animation:bcsBlink .9s ease-in-out infinite}
+@keyframes bcsBlink{0%,100%{box-shadow:0 0 0 0 color-mix(in srgb,var(--rc,#F97316) 0%,transparent)}50%{box-shadow:0 0 0 3px color-mix(in srgb,var(--rc,#F97316) 45%,transparent)}}
+.bcs-arow{padding:10px;background:var(--bcs-card2);border:1px solid var(--rc);border-left:3px solid var(--rc);border-radius:8px;margin-top:8px;cursor:pointer;transition:transform .15s}
+.bcs-arow:hover{transform:translateY(-2px)}
+.bcs-arow .h{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.bcs-arow .h b{font-size:13px}
+.bcs-arow .why{margin-left:auto;font-size:11.5px;font-weight:700}
+.bcs-okrow{padding:12px;text-align:center;color:#22C55E;font-size:12.5px}
+.bcs-wr{display:flex;align-items:center;gap:6px;margin-top:6px;padding:6px 8px;background:var(--bcs-card);border:1px solid var(--bcs-line);border-radius:6px;font-size:11.5px;flex-wrap:wrap}
+.bcs-wr .d{flex:1;min-width:120px;color:var(--bcs-muted)}
+.bcs-editbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:10px 14px;background:rgba(249,115,22,.1);border:1px solid rgba(249,115,22,.4);border-radius:var(--bcs-r);font-size:12px}
+.bcs-editbar b{color:#F97316}
+.bcs-canvas{background:#0D1117;border:1px solid var(--bcs-line);border-radius:var(--bcs-r);overflow:hidden;position:relative}
+.bcs-flabel{position:absolute;top:10px;left:14px;font-size:13px;font-weight:700;color:#8B949E;z-index:10;pointer-events:none}
+.bcs-fmodes{position:absolute;top:8px;right:10px;z-index:12;display:flex;gap:4px}
+.bcs-fmodes .bcs-mb{background:rgba(22,27,34,.85);border-color:#30363D;color:#C9D1D9}
+.bcs-fmodes .bcs-mb.on{background:#F97316;border-color:#F97316;color:#fff}
+.bcs-ftip{position:absolute;z-index:20;pointer-events:none;background:#161B22;color:#E6EDF3;border:1px solid #F97316;border-radius:8px;padding:8px 10px;font-size:11.5px;min-width:180px;box-shadow:0 8px 24px rgba(0,0,0,.6)}
+.bcs-pin{cursor:pointer}
+.bcs-pin:hover circle{filter:brightness(1.25)}
+#bcs-f2.editing .bcs-redit{cursor:move}
+.bcs-rh{cursor:nwse-resize}
+.bcs-legend{background:var(--bcs-card);border:1px solid var(--bcs-line);border-radius:var(--bcs-r);padding:12px 14px}
+.bcs-lgrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:8px}
+.bcs-lgrid>div{background:var(--bcs-card2);border-radius:8px;padding:9px 10px;border-left:3px solid var(--rc);display:flex;flex-direction:column;gap:3px;transition:transform .15s}
+.bcs-lgrid>div:hover{transform:translateY(-2px)}
+.bcs-lgrid b{font-size:11.5px;color:var(--rc);display:flex;align-items:center;gap:7px}
+.bcs-lgrid b i{width:13px;height:13px;border-radius:50%;border:3px solid var(--rc)}
+.bcs-lgrid span{font-size:11px;color:var(--bcs-muted)}
+.bcs-lnote{font-size:10.5px;color:var(--bcs-muted);margin-top:8px;text-align:right}
+.bcs-tip{position:fixed;z-index:400;pointer-events:none;background:#161B22;color:#E6EDF3;border:1px solid #F97316;border-radius:8px;padding:8px 10px;box-shadow:0 8px 24px rgba(0,0,0,.6);font-size:11.5px;min-width:170px;max-width:260px}
+.bcs-tip[hidden]{display:none}
+.bcs-tip .t{font-weight:800;color:#F97316;font-size:12.5px;margin-bottom:2px}
+.bcs-tip .s{color:#8B949E;margin-bottom:5px}
+.bcs-tip .r{display:flex;justify-content:space-between;gap:12px}
+.bcs-modal{position:fixed;inset:0;z-index:300;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;padding:16px}
+.bcs-modal[hidden]{display:none}
+.bcs-mbox{background:var(--bcs-card);color:var(--bcs-text);border:1px solid var(--bcs-line);border-radius:14px;padding:18px;width:720px;max-width:100%;max-height:90vh;overflow-y:auto;display:flex;flex-direction:column;gap:12px;animation:bcsSlide .25s ease}
+.bcs-mh{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;padding-bottom:10px;border-bottom:1px solid var(--bcs-line)}
+.bcs-rgrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.bcs-ring{border:1px solid var(--rc);border-left:4px solid var(--rc);border-radius:8px;padding:8px 10px;display:flex;flex-direction:column;gap:3px;background:var(--bcs-card2)}
+.bcs-ring b{font-size:12px;display:flex;align-items:center;gap:6px;color:var(--rc)}
+.bcs-ring b i{width:10px;height:10px;border-radius:50%}
+.bcs-ring span{font-size:11.5px;font-weight:600}
+.bcs-msec{display:flex;flex-direction:column;gap:4px}
+.bcs-li{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid var(--bcs-line);font-size:12.5px}
+.bcs-li:last-child{border-bottom:none}
+.bcs-mf{display:flex;gap:8px;justify-content:flex-end;align-items:center;flex-wrap:wrap;padding-top:6px}
+.bcs-gen{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;margin-bottom:10px;font-size:12px;color:var(--bcs-muted)}
+.bcs-gen label{display:flex;flex-direction:column;gap:3px}
+.bcs-gen label.ck{flex-direction:row;align-items:center;gap:5px;padding-bottom:6px}
+.bcs-in{background:var(--bcs-card2);border:1px solid var(--bcs-line);color:var(--bcs-text);border-radius:6px;padding:5px 8px;font:inherit;font-size:13px;width:90px}
+.bcs-stable{display:flex;flex-direction:column;gap:5px;max-height:46vh;overflow-y:auto}
+.bcs-srow{display:flex;gap:6px;align-items:center}
+@media(max-width:1100px){.bcs-bwrap{flex:1 1 100%}}
+@media(max-width:700px){.bcs-kpis,.bcs-lgrid,.bcs-rgrid{grid-template-columns:repeat(2,minmax(0,1fr))}.bcs-modal{align-items:flex-end;padding:0}.bcs-mbox{border-radius:14px 14px 0 0;max-height:92vh;padding-bottom:calc(18px + env(safe-area-inset-bottom))}}
+.bcs-mob .bcs-b3{height:56vh;min-height:320px}
+.bcs-mob .bcs-bwrap{padding:10px}
+.bcs-mob .bcs-tools{width:100%}
+/*@@BCSCSS-END@@*/
 
 .toast{position:fixed;left:50%;bottom:calc(90px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(20px);background:#1d1f20;color:#fff;padding:10px 18px;font-size:14.5px;border-radius:4px;opacity:0;pointer-events:none;transition:.25s;z-index:999;max-width:88%;text-align:center}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
@@ -666,6 +785,7 @@ const ICON={
  home:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 11l9-7 9 7v9a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1z"/></svg>',
  svc:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="7.5" height="7.5" rx="1"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="1"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="1"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="1"/></svg>',
  plus:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 5v14M5 12h14"/></svg>',
+ bldg:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 21V5l8-3 8 3v16"/><path d="M4 21h16M8 8h2M14 8h2M8 12h2M14 12h2M8 16h2M14 16h2"/></svg>',
  task:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 5h11M9 12h11M9 19h11"/><path d="M3.5 5l1.2 1.2L7 4M3.5 12l1.2 1.2L7 11M3.5 19l1.2 1.2L7 18"/></svg>',
  set:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.3 1.8l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.7 1.7 0 00-1.8-.3 1.7 1.7 0 00-1 1.5V21a2 2 0 11-4 0v-.1a1.7 1.7 0 00-1.1-1.5 1.7 1.7 0 00-1.8.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.7 1.7 0 00.3-1.8 1.7 1.7 0 00-1.5-1H3a2 2 0 110-4h.1a1.7 1.7 0 001.5-1.1 1.7 1.7 0 00-.3-1.8l-.1-.1a2 2 0 112.8-2.8l.1.1a1.7 1.7 0 001.8.3H9a1.7 1.7 0 001-1.5V3a2 2 0 114 0v.1a1.7 1.7 0 001 1.5 1.7 1.7 0 001.8-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.7 1.7 0 00-.3 1.8V9a1.7 1.7 0 001.5 1H21a2 2 0 110 4h-.1a1.7 1.7 0 00-1.5 1z"/></svg>'};
 
@@ -673,9 +793,9 @@ const ICON={
 function screenMain(){
   const B=P(),u=ST.user,ini=(u.name||'?').trim().charAt(0).toUpperCase();
   const myOpen=D.tickets.filter(t=>t.assignee===u.name&&t.status!=='Closed'&&t.status!=='Completed').length;
-  const tabs=[['home',ICON.home,tx('หน้าหลัก','Home')],['svc',ICON.svc,tx('บริการ','Services')],['new',ICON.plus,tx('แจ้งงาน','New WR')],['tasks',ICON.task,tx('งาน','Tasks')],['set',ICON.set,tx('ตั้งค่า','Settings')]];
+  const tabs=[['home',ICON.home,tx('หน้าหลัก','Home')],['bldg',ICON.bldg,tx('อาคาร','Building')],['new',ICON.plus,tx('แจ้งงาน','New WR')],['tasks',ICON.task,tx('งาน','Tasks')],['set',ICON.set,tx('ตั้งค่า','Settings')]];
   let body;
-  if(ST.tab==='home')body=viewHome();else if(ST.tab==='svc')body=ST.svc?viewModule(ST.svc):viewServices();else if(ST.tab==='tasks')body=viewTasks();else body=viewSettings();
+  if(ST.tab==='home')body=viewHome();else if(ST.tab==='svc')body=ST.svc?viewModule(ST.svc):viewServices();else if(ST.tab==='bldg')body=viewBuilding();else if(ST.tab==='tasks')body=viewTasks();else body=viewSettings();
   return '<header class="topbar"><button class="avatar" onclick="goTab(\'set\')" aria-label="'+tx('โปรไฟล์','Profile')+'">'+esc(ini)+'</button>'
    +'<div class="brand">IFM MANAGEMENT<small style="text-transform:none">PSD · eNGINNo · V1.0</small></div>'
    +'<button class="biz-chip" onclick="goTab(\'set\')">'+B.ic+' '+esc(tx(B.n,B.en))+'</button></header>'
@@ -698,12 +818,13 @@ function viewHome(){
   +'<div style="text-align:right"><div class="kick">IFM Index</div><div style="font-family:var(--font-heading);font-size:38px;font-weight:700;line-height:1;color:'+scol(idx)+'">'+idx+'</div></div></div>'
   +'<div><div class="row" style="justify-content:space-between;font-size:13.5px"><span><b class="pill" style="color:var(--hard)">Hard</b> Engineering · Facility</span><b>'+hard+'%</b></div>'+bar(hard,'var(--hard)')+'</div>'
   +'<div><div class="row" style="justify-content:space-between;font-size:13.5px"><span><b class="pill" style="color:var(--soft)">Soft</b> HK · Security · Pest · Garden · Linen</span><b>'+soft+'%</b></div>'+bar(soft,'var(--soft)')+'</div></div>'
+  +(()=>{const st=bcsFloorStatus(),fl=bcsFloors(),cf=fl.filter(f=>st[f.id]&&st[f.id].crit).length,wf=fl.filter(f=>st[f.id]&&st[f.id].bad&&!st[f.id].crit).length;return '<button class="blueprint tap pad" style="--bc:#F97316;text-align:left;display:flex;gap:12px;align-items:center;width:100%" onclick="goTab(\'bldg\')"><span class="svc-ic" style="--sc:#F97316;font-size:22px">🏢</span><span style="flex:1;min-width:0"><span class="kick" style="display:block">Building Critical Status</span><span style="font-family:var(--font-heading);font-size:18px;font-weight:600;display:block;line-height:1.2">'+fl.length+tx(' ชั้น · ',' floors · ')+'<b style="color:var(--red)">'+cf+tx(' วิกฤต',' critical')+'</b> · <b style="color:var(--orange)">'+wf+tx(' มีกิจกรรม',' activity')+'</b></span><span style="display:flex;gap:4px;margin-top:6px">'+fl.slice(0,24).map(f=>{const o=st[f.id];return '<i style="flex:1;height:6px;border-radius:2px;background:'+(o&&o.crit?'#DC2626':o&&o.bad?'#F97316':'#16A34A')+'"></i>'}).join('')+'</span></span><span style="font-size:20px;color:var(--color-accent-700)">›</span></button>'})()
   +'<div class="stat-grid">'+stat(tx('งานเปิดอยู่','Open WR'),openWR(),tx('ของฉัน ','Mine ')+mine.length,'var(--sky)',"ST.wrf='open';goTab('tasks')")
    +stat('SLA',pc(slaPct()),tx('เป้า ','Target ')+B.target.sla+'%',scol(slaPct()),"ST.wrf='breach';goTab('tasks')")
    +stat('PM',pc(pmA),tx('ตามแผน Hard Service','Hard service plan'),scol(pmA),"openSvc('eng')")
    +stat('Compliance',pc(compPct()),compRows().filter(c=>c.status==='Overdue').length+tx(' รายการเลยกำหนด',' overdue'),scol(compPct()),"openSvc('fac')")+'</div>'
   +(mine.length?'<div class="sec-t"><h2>'+tx('งานของฉัน','My jobs')+'</h2><button class="link" style="width:auto;padding:0" onclick="ST.wrf=\'mine\';goTab(\'tasks\')">'+tx('ดูทั้งหมด ›','See all ›')+'</button></div><div class="list">'+mine.slice(0,3).map(wrCard).join('')+'</div>':'')
-  +'<div class="sec-t"><h2>'+tx('สถานะแต่ละบริการ','Service health')+'</h2><small>'+tx('แตะเพื่อเปิด','Tap to open')+'</small></div>'
+  +'<div class="sec-t"><h2>'+tx('สถานะแต่ละบริการ','Service health')+'</h2><button class="link" style="width:auto;padding:0" onclick="goTab(\'svc\')">'+tx('บริการทั้งหมด ›','All services ›')+'</button></div>'
   +svcGroup('Hard',['eng','fac'],sc)+svcGroup('Soft',['hk','sec','pest','gdn','lin'],sc)
   +'<div class="sec-t"><h2>'+tx('ต้องดำเนินการ','Needs attention')+'</h2><small>'+alerts().length+tx(' รายการ',' items')+'</small></div>'
   +'<div class="list">'+(AL.length?AL.map(a=>'<button class="blueprint tap alert-row" style="--ac:'+({red:'var(--red)',yellow:'var(--yellow)',blue:'var(--sky)'}[a.lv])+';text-align:left" onclick="'+(SVC[a.v]?"openSvc('"+a.v+"')":"ST.wrf='breach';goTab('tasks')")+'"><span class="m">'+esc(a.m)+'</span><span class="s">'+(SVC[a.svc]?SVC[a.svc].ic+' '+SVC[a.svc].n+' · ':'')+esc(a.s)+'</span></button>').join(''):'<div class="note">'+tx('ไม่มีรายการค้าง','Nothing pending')+'</div>')+'</div>'
@@ -861,9 +982,486 @@ function submit2(){if(!FM)return;const{ent,id}=FM,S=SCH[ent];const r=id?{...D[en
 function del2(btn){if(!FM)return;if(ST.delArm!==FM.id){ST.delArm=FM.id;btn.textContent=tx('แตะอีกครั้งเพื่อลบ','Tap again to delete');return}
   const{ent,id}=FM;D[ent]=D[ent].filter(r=>r.id!==id);save();closeSheet();render();toast(tx('ลบ ','Deleted ')+id)}
 
+/*@@BCS-START@@*/
+/* ═══════════════════════════════════════════════════════════════════
+   BUILDING CRITICAL STATUS (BCS) — shared by IFM desktop + IFM mobile
+   Ported from iMATOMs v3.0 Building Critical Status:
+   3D building (3 styles + 2D) · per-floor plan (3D / 2D) · 4-Ring System
+   IFM 4-Ring is evaluated per AREA:
+     วง 1 WR   — open work requests (all services) · red = over SLA / P1
+     วง 2 HARD — assets Down / Warning · open building defects
+     วง 3 PPM  — PM overdue / due in 7 days · missed housekeeping tasks
+     วง 4 SOFT — cleanliness below target · pest activity · security incidents
+   Data: D.bldg.floors / D.bldg.rooms (inside the shared IFM data store),
+         floor-plan images in localStorage 'psd_ifm_plan_<biz>_<floor>'.
+   ═══════════════════════════════════════════════════════════════════ */
+const BR_COL=['#F97316','#06B6D4','#A855F7','#EC4899'];
+const BR_KEY=['r1','r2','r3','r4'];
+const BR_NAME=['WR','HARD','PPM','SOFT'];
+const BR_DESC=[['งานแจ้งซ่อม / แจ้งบริการค้าง','Open work requests'],['อุปกรณ์ Down/Warning · Defect ระดับ Medium+','Assets down / warning · defects Medium+'],['PM เกิน/ครบใน 7 วัน · งานแม่บ้าน Missed','PM overdue / due 7 days · missed HK'],['ความสะอาดตรวจล่าสุด < 85% · Pest ระดับ High · เหตุ รปภ. Medium+','Cleanliness < 85% · pest High · incidents Medium+']];
+const BR_GO=['helpdesk','eng','eng','hk'];
+const BCS={sel:null,ring:'r1',edit:false,kind:'desk',host:{},st:null,rd:null,rows:[]};
+const bT=(th,en)=>(BCS.host.lang&&BCS.host.lang()==='en')?en:th;
+function bLS(k,d){try{const v=localStorage.getItem('psd_ifm_'+k);return v==null?d:v}catch(e){return d}}
+function bLSset(k,v){try{localStorage.setItem('psd_ifm_'+k,v)}catch(e){}}
+const bIsBase=c=>/^B\d+$/i.test(String(c).trim());
+const bOK=n=>({bad:0,c:'#22C55E',k:0,n});
+
+/* ---------- floors ---------- */
+function bcsName(c){c=String(c);if(/^roof$/i.test(c))return'Roof Level';if(/^g$/i.test(c))return'Ground Floor (G)';if(bIsBase(c))return'ชั้น '+c.toUpperCase();if(/^\d+$/.test(c))return'ชั้น '+c;return c}
+function bcsMakeFloors(b,t,roof,prev){
+  b=Math.max(0,Math.min(10,b|0));t=Math.max(1,Math.min(80,t|0));
+  const codes=[];if(roof)codes.push('Roof');for(let n=t;n>=2;n--)codes.push(String(n));codes.push('G');for(let n=1;n<=b;n++)codes.push('B'+n);
+  const old={};(prev||[]).forEach(f=>old[String(f.code).toUpperCase()]=f.name);
+  return codes.map((c,i)=>({id:c.toUpperCase(),code:c,name:old[c.toUpperCase()]||bcsName(c),order:codes.length-i}))}
+function bcsTokens(s){return String(s||'').toUpperCase().split(/[-–,\/]/).map(x=>x.trim()).filter(Boolean)}
+function bcsAutoFloors(){let b=0,t=1,roof=false;
+  D.areas.forEach(a=>bcsTokens(a.floor).forEach(x=>{if(x==='ROOF')roof=true;else{const m=x.match(/^B(\d+)$/);if(m)b=Math.max(b,+m[1]);else if(/^\d+$/.test(x))t=Math.max(t,+x)}}));
+  return bcsMakeFloors(b,t,roof,[])}
+function bcsFloors(){if(!D.bldg)D.bldg={floors:[],rooms:{}};if(!D.bldg.rooms)D.bldg.rooms={};if(!D.bldg.floors||!D.bldg.floors.length)D.bldg.floors=bcsAutoFloors();return D.bldg.floors.slice().sort((a,b)=>b.order-a.order)}
+function bcsFloorById(id){return bcsFloors().find(f=>f.id===id)}
+function bcsAreaFloor(a){const fl=bcsFloors(),ids=new Set(fl.map(f=>f.id));
+  for(const x of bcsTokens(a.floor)){if(ids.has(x))return x;if((x==='1'||/^(GF|G\/F|GROUND|L1)$/.test(x))&&ids.has('G'))return'G'}
+  return ids.has('G')?'G':(fl[fl.length-1]||{}).id}
+
+/* ---------- 4-ring per area ---------- */
+function bcsOpenWR(t){return t.status!=='Closed'&&t.status!=='Completed'}
+function bcsAreaRS(a){
+  const n=a.name,T=P().target,in7=addD(todayS,7);
+  const ow=D.tickets.filter(t=>t.area===n&&bcsOpenWR(t));
+  const crW=ow.filter(t=>t.priority==='P1'||slaOf(t).s==='breach');
+  const as=D.assets.filter(x=>x.area===n);
+  const down=as.filter(x=>x.status==='Down'),warn=as.filter(x=>x.status==='Warning');
+  const df=D.defects.filter(d=>d.area===n&&d.status!=='Closed'&&d.severity!=='Low');
+  const items=new Set(as.map(x=>x.name).concat([n]));
+  const pmO=D.pm.filter(p=>items.has(p.item)&&p.status!=='Done'&&p.dueDate<todayS);
+  const pm7=D.pm.filter(p=>items.has(p.item)&&p.status!=='Done'&&p.dueDate>=todayS&&p.dueDate<=in7);
+  const hkM=D.hkTasks.filter(h=>h.area===n&&h.status==='Missed');
+  const ins=D.hkInsp.filter(x=>x.area===n&&x.date>=addD(todayS,-30));const hkA=ins.length?avg(ins.map(x=>x.score)):null;
+  const pst=D.pestSt.filter(s=>s.area===n&&s.activity==='High');
+  const inc=D.secInc.filter(s=>s.area===n&&s.status!=='Closed'&&s.severity!=='Low');
+  const hkLast=ins.slice().sort((x,y)=>y.date.localeCompare(x.date))[0];const hkLow=hkA!=null&&((hkLast&&+hkLast.score<85)||hkA<Math.min(T.hk,90)-5);
+  const j=a=>a.filter(Boolean).join(' · ');
+  const r1=ow.length?{bad:1,c:crW.length?'#EF4444':BR_COL[0],k:ow.length,n:crW.length?j([bT('เกิน SLA/P1 ','Over SLA/P1 ')+crW.length,bT('เปิด ','open ')+ow.length]):bT('WR เปิด ','Open WR ')+ow.length}:bOK(bT('ไม่มีงานค้าง','No open WR'));
+  const k2=down.length+warn.length+df.length;
+  const r2=k2?{bad:1,c:BR_COL[1],k:k2,n:j([down.length&&'Down '+down.length,warn.length&&'Warning '+warn.length,df.length&&'Defect '+df.length])}:bOK(bT('อุปกรณ์/อาคารปกติ','Assets & fabric OK'));
+  const k3=pmO.length+pm7.length+hkM.length;
+  const r3=k3?{bad:1,c:BR_COL[2],k:k3,n:j([pmO.length&&bT('PM เกินกำหนด ','PM overdue ')+pmO.length,pm7.length&&bT('PM ใน 7 วัน ','PM in 7d ')+pm7.length,hkM.length&&bT('แม่บ้าน Missed ','HK missed ')+hkM.length])}:bOK(bT('ตามแผน','On plan'));
+  const k4=(hkLow?1:0)+pst.length+inc.length;
+  const r4=k4?{bad:1,c:BR_COL[3],k:k4,n:j([hkLow&&bT('ความสะอาด ','Clean ')+hkA+'%',pst.length&&'Pest '+pst.length+bT(' จุด',' pts'),inc.length&&bT('เหตุ รปภ. ','Incident ')+inc.length])}:bOK(bT('ปกติ','Normal'));
+  const crit=crW.length>0||down.length>0||df.some(d=>d.severity==='Critical')||pst.some(s=>s.activity==='High');
+  return{r1,r2,r3,r4,crit,bad:!!(r1.bad||r2.bad||r3.bad||r4.bad),ow,as,down,warn,df,pmO,pm7,hkM,hkA,pst,inc}}
+function bcsFloorStatus(){const out={};bcsFloors().forEach(f=>out[f.id]={n:0,r1:0,r2:0,r3:0,r4:0,crit:0,bad:false,items:[]});
+  D.areas.forEach(a=>{const o=out[bcsAreaFloor(a)];if(!o)return;const rs=bcsAreaRS(a);o.n++;BR_KEY.forEach(k=>{if(rs[k].bad)o[k]++});if(rs.crit)o.crit++;o.items.push({a,rs})});
+  Object.values(out).forEach(o=>o.bad=(o.r1+o.r2+o.r3+o.r4)>0);BCS.st=out;return out}
+
+/* ---------- rooms (areas) on a floor ---------- */
+function bcsRooms(fid,svgH){const ar=D.areas.filter(a=>bcsAreaFloor(a)===fid),L=D.bldg.rooms||{},n=ar.length;if(!n)return[];
+  const cols=Math.ceil(Math.sqrt(n*1.7)),rows=Math.ceil(n/cols),gx=18,gy=18,pw=820,ph=(svgH||540)-90;
+  const w=(pw-(cols-1)*gx)/cols,h=Math.min(260,(ph-(rows-1)*gy)/rows),oy=Math.max(40,((svgH||540)-(rows*h+(rows-1)*gy))/2);
+  return ar.map((a,i)=>{const p=L[a.id];if(p)return{a,x:p.x,y:p.y,w:p.w,h:p.h};const c=i%cols,r=Math.floor(i/cols);return{a,x:40+c*(w+gx),y:oy+r*(h+gy),w,h}})}
+function bcsPlan(fid){try{return JSON.parse(localStorage.getItem('psd_ifm_plan_'+BIZK+'_'+fid)||'null')}catch(e){return null}}
+
+/* ---------- markup ---------- */
+BCS.html=function(kind){BCS.kind=kind;const m=kind==='mob';
+  return `<div class="bcs bcs-${kind}">
+  <div class="bcs-kpis" id="bcs-kpis"></div>
+  <div class="bcs-bar">
+    <div class="bcs-chips" id="bcs-chips" role="tablist"></div>
+    <div class="bcs-tools">
+      <button class="bcs-btn" onclick="bcsSetupOpen()">🏗 ${bT('ตั้งค่าอาคาร','Floors')}</button>
+      <button class="bcs-btn" id="bcs-edit-btn" onclick="bcsToggleEdit()">✏ ${bT('แก้ไขผังห้อง','Edit rooms')}</button>
+      <button class="bcs-btn" onclick="document.getElementById('bcs-plan-in').click()">🗺 Floor Plan ${bT('(รูป/PDF)','(img/PDF)')}</button>
+      <button class="bcs-btn bcs-danger" id="bcs-plan-clr" onclick="bcsPlanClear()" hidden>✕ ${bT('ลบผัง','Plan')}</button>
+      <input type="file" id="bcs-plan-in" accept=".pdf,image/*" hidden onchange="bcsPlanUpload(this)">
+    </div>
+  </div>
+  <div class="bcs-layout">
+    <div class="bcs-bwrap" id="bcs-bwrap">
+      <div class="bcs-bhead"><span class="bcs-cap">🏢 ${bT('อาคาร — แตะชั้นเพื่อดูผัง','Building — tap a floor')}</span>
+        <span class="bcs-modes"><span class="bcs-dots"><i style="color:#22C55E">●</i>${bT('ปกติ','OK')} <i style="color:#F97316">●</i>${bT('เตือน','Warn')} <i style="color:#EF4444">●</i>${bT('วิกฤต','Crit')}</span>
+        ${['3d','3d2','3d3','2d'].map((k,i)=>`<button class="bcs-mb" id="bcs-bm-${k}" onclick="bcsSetBMode('${k}')">${['3D-1','3D-2','3D-3','2D'][i]}</button>`).join('')}</span></div>
+      <div class="bcs-3d bcs-b3" id="bcs-b3" hidden>
+        <div class="bcs-ctl"><button onclick="b3Pan(3)" title="${bT('ชั้นบน','Up')}">▲</button><button onclick="b3Pan(-3)" title="${bT('ชั้นล่าง','Down')}">▼</button><button onclick="b3Zoom(.8)">＋</button><button onclick="b3Zoom(1.25)">－</button><button onclick="b3Reset()" title="Reset">⟳</button></div>
+        <div class="bcs-help">${m?bT('ลาก = หมุน · 2 นิ้ว = ซูม · แตะชั้น = เปิดผัง','Drag = rotate · pinch = zoom · tap floor = open'):bT('ลาก = หมุน · คลิกขวาลาก = เลื่อนขึ้น/ลง · ล้อเมาส์ = ซูม · คลิกชั้น = เปิดผัง','Drag = rotate · right-drag = pan · wheel = zoom · click floor = open')}</div></div>
+      <div class="bcs-b2scroll" id="bcs-b2s"><svg id="bcs-b2" style="width:100%;display:block"></svg></div>
+    </div>
+    <div class="bcs-hint" id="bcs-hint">${bT('ชี้หรือแตะชั้นเพื่อดูสถานะ<br>ชั้นสีส้ม/แดง = มีรายการใน 4 วง (WR / HARD / PPM / SOFT)<br>คลิกชั้นเพื่อเปิดผังพื้นที่','Hover or tap a floor to see its status<br>Orange/red floors have items in the 4 rings<br>Click a floor to open its plan')}</div>
+    <div class="bcs-panel" id="bcs-panel" hidden>
+      <div class="bcs-sum" id="bcs-sum"></div>
+      <div class="bcs-editbar" id="bcs-editbar" hidden><b>✏ ${bT('โหมดแก้ไขผังห้อง','Room edit mode')}</b><span>${bT('ลากกล่อง = ย้าย · ลากมุมส้ม = ย่อ/ขยาย','Drag box = move · drag orange corner = resize')}</span><button class="bcs-btn" onclick="bcsResetRooms()">${bT('จัดผังอัตโนมัติ','Auto layout')}</button><button class="bcs-btn bcs-pri" onclick="bcsToggleEdit()">${bT('เสร็จสิ้น','Done')}</button></div>
+      <div class="bcs-canvas">
+        <div class="bcs-flabel" id="bcs-flabel"></div>
+        <div class="bcs-fmodes"><button class="bcs-mb" id="bcs-fm-3d" onclick="bcsSetFMode('3d')">3D</button><button class="bcs-mb" id="bcs-fm-2d" onclick="bcsSetFMode('2d')">2D</button></div>
+        <div class="bcs-3d bcs-f3" id="bcs-f3" hidden><div class="bcs-ftip" id="bcs-ftip" hidden></div><div class="bcs-help">${bT('ลาก = หมุน · ซูมได้ · แตะหมุด = ดูพื้นที่','Drag = rotate · zoom · tap pin = area detail')}</div></div>
+        <svg id="bcs-f2" viewBox="0 0 900 540" style="width:100%;display:block;touch-action:${m?'pan-y':'auto'}"></svg>
+      </div>
+    </div>
+  </div>
+  <div class="bcs-legend"><div class="bcs-cap">🔵 IFM 4-Ring Status System — ${bT('กวาดสายตาดูสถานะทั้งอาคาร','see the whole building at a glance')}</div>
+    <div class="bcs-lgrid">${BR_NAME.map((nm,i)=>`<div style="--rc:${BR_COL[i]}"><b><i></i>${bT('วง ','Ring ')}${i+1} — ${nm}</b><span>${bT(BR_DESC[i][0],BR_DESC[i][1])}</span></div>`).join('')}</div>
+    <div class="bcs-lnote">${bT('กระพริบ = ต้องดำเนินการ · วงนอกสุด = SOFT → วงในสุด = WR · แตะหมุดเพื่อดูรายละเอียดพื้นที่','Blinking = action needed · outer ring = SOFT → inner = WR · tap a pin for area detail')}</div></div>
+</div>`};
+
+/* ---------- mount / refresh ---------- */
+BCS.mount=function(){
+  if(!document.getElementById('bcs-tip')){const t=document.createElement('div');t.id='bcs-tip';t.className='bcs-tip';t.hidden=true;document.body.appendChild(t)}
+  if(!document.getElementById('bcs-modal')){const m=document.createElement('div');m.id='bcs-modal';m.className='bcs-modal';m.hidden=true;m.addEventListener('click',e=>{if(e.target===m)bcsModalClose()});document.body.appendChild(m)}
+  const s=bLS('bcs_sel_'+BIZK,'');BCS.sel=s&&bcsFloorById(s)?s:null;BCS.edit=false;
+  bcsRefresh();
+};
+function bcsRefresh(){if(!document.getElementById('bcs-chips'))return;bcsFloorStatus();bcsKpis();bcsChips();bcsRenderBuilding();
+  const p=document.getElementById('bcs-panel'),h=document.getElementById('bcs-hint');
+  if(BCS.sel){if(p)p.hidden=false;if(h)h.hidden=true;bcsRenderPanel()}else{if(p)p.hidden=true;if(h)h.hidden=false}}
+function bcsKpis(){const el=document.getElementById('bcs-kpis');if(!el)return;const st=BCS.st,fl=bcsFloors();
+  const items=Object.values(st).flatMap(o=>o.items),bad=items.filter(x=>x.rs.bad).length,crit=items.filter(x=>x.rs.crit).length;
+  const ok=items.length?Math.round((items.length-bad)/items.length*100):100,cf=fl.filter(f=>st[f.id]&&st[f.id].crit).length,wf=fl.filter(f=>st[f.id]&&st[f.id].bad&&!st[f.id].crit).length;
+  const k=(l,v,s,c)=>`<div class="bcs-kpi" style="--kc:${c}"><span>${l}</span><b>${v}</b><small>${s}</small></div>`;
+  el.innerHTML=k(bT('พื้นที่ปกติ','Areas normal'),ok+'%',(items.length-bad)+'/'+items.length+bT(' พื้นที่',' areas'),ok>=90?'#22C55E':ok>=70?'#EAB308':'#EF4444')+k(bT('ชั้นวิกฤต','Critical floors'),cf,crit+bT(' พื้นที่วิกฤต',' critical areas'),'#EF4444')+k(bT('ชั้นที่มีกิจกรรม','Floors w/ activity'),wf,bT('จาก ','of ')+fl.length+bT(' ชั้น',' floors'),'#F97316')+k('Open WR',D.tickets.filter(bcsOpenWR).length,'SLA '+slaPct()+'%','#3B82F6')}
+function bcsColor(o){return!o?'#16A34A':o.crit?'#DC2626':o.bad?'#F97316':'#16A34A'}
+function bcsChips(){const el=document.getElementById('bcs-chips');if(!el)return;const st=BCS.st;
+  el.innerHTML=bcsFloors().map(f=>{const o=st[f.id];const nb=o?o.items.filter(x=>x.rs.bad).length:0;
+    return`<button class="bcs-chip ${BCS.sel===f.id?'on':''}" style="--fc:${bcsColor(o)}" onclick="bcsSelect('${f.id}')" onmouseenter="bcsTip(event,'${f.id}')" onmousemove="bcsTipMove(event)" onmouseleave="bcsTipHide()"><i></i>${esc(f.code)}${nb?`<small>${nb}</small>`:''}</button>`}).join('');
+  const on=el.querySelector('.on');if(on&&on.scrollIntoView)try{on.scrollIntoView({block:'nearest',inline:'center'})}catch(e){}}
+
+/* ---------- floor tooltip ---------- */
+function bcsTip(evt,fid){const f=bcsFloorById(fid),o=(BCS.st||{})[fid],tip=document.getElementById('bcs-tip');if(!f||!tip)return;
+  const row=(c,l,n)=>`<div class="r"><span style="color:${c}">● ${l}</span><b style="color:${n?c:'#22C55E'}">${n||'OK'}</b></div>`;
+  tip.innerHTML=`<div class="t">${esc(f.code)} — ${esc(f.name)}</div><div class="s">${o?o.n:0} ${bT('พื้นที่','areas')} · ${o&&o.crit?'<span style="color:#EF4444">⛔ '+bT('วิกฤต','critical')+'</span>':o&&o.bad?'<span style="color:#F97316">⚠ '+bT('มีกิจกรรม','activity')+'</span>':'<span style="color:#22C55E">✔ '+bT('ปกติ','normal')+'</span>'}</div>`+(o?BR_KEY.map((k,i)=>row(BR_COL[i],BR_NAME[i],o[k])).join(''):'');
+  tip.hidden=false;bcsTipMove(evt)}
+function bcsTipMove(evt){const t=document.getElementById('bcs-tip');if(!t)return;t.style.left=Math.min(evt.clientX+16,window.innerWidth-210)+'px';t.style.top=(evt.clientY+12)+'px'}
+function bcsTipHide(){const t=document.getElementById('bcs-tip');if(t)t.hidden=true}
+
+/* ---------- building (2D svg + 3D) ---------- */
+function bcsBMode(){return bLS('bldg_mode','3d')}
+function bcsSetBMode(m){bLSset('bldg_mode',m);bcsRenderBuilding()}
+function bcsModeBtns(){const m=bcsBMode();['3d','3d2','3d3','2d'].forEach(k=>{const b=document.getElementById('bcs-bm-'+k);if(b)b.classList.toggle('on',m===k)});
+  const f=bLS('fp_mode','3d');['3d','2d'].forEach(k=>{const b=document.getElementById('bcs-fm-'+k);if(b)b.classList.toggle('on',f===k)})}
+function bcsRenderBuilding(){
+  const fl=bcsFloors(),st=BCS.st||bcsFloorStatus(),s3=document.getElementById('bcs-b3'),s2=document.getElementById('bcs-b2s');bcsModeBtns();
+  if(/^3d/.test(bcsBMode())&&window.THREE&&B3.ok!==false){if(s2)s2.hidden=true;if(s3)s3.hidden=false;if(bldg3dRender(fl,st))return}
+  if(s2)s2.hidden=false;if(s3)s3.hidden=true;
+  const svg=document.getElementById('bcs-b2');if(!svg)return;
+  const W=360,H=34,G=3,TOP=46,X=28,SW=304,lastUp=fl.map(f=>!bIsBase(f.code)).lastIndexOf(true),hasBase=fl.some(f=>bIsBase(f.code));
+  const total=TOP+fl.length*(H+G)+(hasBase?22:0)+16;let y=TOP,s='';
+  s+=`<polygon points="${X-10},${TOP-4} ${W/2},10 ${W-X+10},${TOP-4}" fill="#1C2333" stroke="#30363D" stroke-width="2"/>`;
+  s+=`<text x="${W/2}" y="34" text-anchor="middle" fill="#8B949E" font-size="10" font-family="Rajdhani,'Barlow Condensed',sans-serif" font-weight="700" letter-spacing="1">${esc(String(D.site).toUpperCase().slice(0,34))}</text>`;
+  s+=`<rect x="${X-8}" y="${TOP-4}" width="${SW+16}" height="${total-TOP-8}" rx="4" fill="#0D1117" stroke="#30363D" stroke-width="2"/>`;
+  fl.forEach((f,i)=>{const o=st[f.id]||{r1:0,r2:0,r3:0,r4:0,crit:0,bad:false},sel=BCS.sel===f.id,col=bcsColor(o);
+    s+=`<g class="bcs-floor" onmouseenter="bcsTip(event,'${f.id}')" onmousemove="bcsTipMove(event)" onmouseleave="bcsTipHide()" onclick="bcsSelect('${f.id}')">`;
+    s+=`<rect x="${X}" y="${y}" width="${SW}" height="${H}" rx="5" fill="${col}" fill-opacity="${o.bad?.85:.55}" stroke="${sel?'#F97316':'rgba(255,255,255,.12)'}" stroke-width="${sel?3:1}">${o.bad?'<animate attributeName="fill-opacity" values=".9;.5;.9" dur="1.6s" repeatCount="indefinite"/>':''}</rect>`;
+    s+=`<text x="${X+10}" y="${y+H/2+1}" dominant-baseline="middle" fill="#fff" font-size="13" font-weight="800" font-family="sans-serif">${esc(f.code)}</text>`;
+    s+=`<text x="${X+56}" y="${y+H/2+1}" dominant-baseline="middle" fill="rgba(255,255,255,.9)" font-size="10.5" font-family="sans-serif">${esc(String(f.name).substring(0,18))}</text>`;
+    [o.r1,o.r2,o.r3,o.r4].forEach((n,k)=>{const cx=X+SW-84+k*22,cy=y+H/2;
+      s+=`<circle cx="${cx}" cy="${cy}" r="8" fill="${n?BR_COL[k]:'rgba(0,0,0,.35)'}" stroke="${n?'#fff':'rgba(255,255,255,.25)'}" stroke-width="1.5"/>`;
+      if(n)s+=`<text x="${cx}" y="${cy+.5}" text-anchor="middle" dominant-baseline="middle" fill="#fff" font-size="9" font-weight="800">${n}</text>`});
+    s+='</g>';y+=H+G;
+    if(i===lastUp&&hasBase){s+=`<rect x="${X-8}" y="${y}" width="${SW+16}" height="16" fill="#3F2D1A" stroke="#6B4F2A"/><text x="${W/2}" y="${y+8.5}" text-anchor="middle" dominant-baseline="middle" fill="#C9A66B" font-size="8.5" font-family="sans-serif" letter-spacing="2">GROUND LEVEL</text>`;y+=22}});
+  svg.setAttribute('viewBox',`0 0 ${W} ${total}`);svg.innerHTML=s}
+
+/* orbit / touch controller shared by both 3D scenes */
+function bcsOrbit(cv,S,o){
+  const pts=new Map();let pd=0;
+  cv.addEventListener('contextmenu',e=>e.preventDefault());
+  cv.addEventListener('pointerdown',e=>{pts.set(e.pointerId,{x:e.clientX,y:e.clientY});try{cv.setPointerCapture(e.pointerId)}catch(_){}
+    if(pts.size===2){const[a,b]=[...pts.values()];pd=Math.hypot(a.x-b.x,a.y-b.y);S.drag=null;return}
+    S.drag={x:e.clientX,y:e.clientY,moved:false,pan:!!o.pan&&(e.button===2||e.button===1||e.shiftKey)};cv.style.cursor='grabbing';o.leave&&o.leave()});
+  cv.addEventListener('pointermove',e=>{
+    if(pts.has(e.pointerId))pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+    if(pts.size===2){const[a,b]=[...pts.values()],d=Math.hypot(a.x-b.x,a.y-b.y);if(pd>0&&d>0)S.rad=Math.max(S.rmin,Math.min(S.rmax,S.rad*pd/d));pd=d;return}
+    if(S.drag){const dx=e.clientX-S.drag.x,dy=e.clientY-S.drag.y;if(Math.abs(dx)+Math.abs(dy)>4)S.drag.moved=true;
+      if(S.drag.moved){if(S.drag.pan&&o.panFn)o.panFn(dy*S.rad*0.0022);else{S.th-=dx*0.008;S.ph=Math.max(0.2,Math.min(1.5,S.ph-dy*0.006))}S.drag.x=e.clientX;S.drag.y=e.clientY}return}
+    if(e.pointerType==='mouse'){const id=o.pick(e);cv.style.cursor=id?'pointer':'grab';o.hover&&o.hover(e,id)}});
+  cv.addEventListener('pointerup',e=>{pts.delete(e.pointerId);if(pts.size<2)pd=0;const d=S.drag;S.drag=null;cv.style.cursor='grab';if(d&&!d.moved&&!d.pan){const id=o.pick(e);if(id)o.click(id)}});
+  cv.addEventListener('pointercancel',e=>{pts.delete(e.pointerId);pd=0;S.drag=null});
+  cv.addEventListener('pointerleave',()=>{o.leave&&o.leave()});
+  cv.addEventListener('wheel',e=>{e.preventDefault();S.rad=Math.max(S.rmin,Math.min(S.rmax,S.rad*(e.deltaY>0?1.1:0.9)))},{passive:false})}
+const F3C=h=>new THREE.Color(h).convertSRGBToLinear();
+const B3={ok:null,renderer:null,scene:null,cam:null,group:null,mats:[],pick:[],th:0.75,ph:1.0,rad:16,rmin:2.5,rmax:120,cy:0,n:-1,drag:null,el:null,rc:null};
+function b3Facade(f,o){
+  const cv=document.createElement('canvas');cv.width=512;cv.height=96;const c=cv.getContext('2d');
+  const base=o.crit?'#DC2626':o.bad?'#F97316':'#1FA971';
+  const g=c.createLinearGradient(0,0,0,96);g.addColorStop(0,'rgba(255,255,255,.35)');g.addColorStop(.5,base);g.addColorStop(1,base);
+  c.fillStyle=base;c.fillRect(0,0,512,96);c.fillStyle=g;c.fillRect(0,0,512,96);
+  c.strokeStyle='rgba(255,255,255,.55)';c.lineWidth=4;for(let x=0;x<=512;x+=64){c.beginPath();c.moveTo(x,0);c.lineTo(x,96);c.stroke()}
+  c.fillStyle='rgba(255,255,255,.85)';c.fillRect(0,0,512,7);c.fillRect(0,89,512,7);
+  c.fillStyle='rgba(0,0,0,.45)';if(c.roundRect){c.beginPath();c.roundRect(14,16,200,64,12);c.fill()}else c.fillRect(14,16,200,64);
+  c.fillStyle='#fff';c.font='bold 40px Arial';c.textBaseline='middle';c.fillText(String(f.code),26,40);
+  c.font='15px Arial';c.fillText(String(f.name).substring(0,16),26,67);
+  [o.r1,o.r2,o.r3,o.r4].forEach((n,k)=>{const cx=262+k*58;c.beginPath();c.arc(cx,48,22,0,6.283);c.fillStyle=n?BR_COL[k]:'rgba(0,0,0,.45)';c.fill();
+    c.lineWidth=4;c.strokeStyle=n?'#fff':'rgba(255,255,255,.35)';c.stroke();
+    if(n){c.fillStyle='#fff';c.font='bold 24px Arial';c.textAlign='center';c.fillText(String(n),cx,50);c.textAlign='left'}});
+  const t=new THREE.CanvasTexture(cv);t.encoding=THREE.sRGBEncoding;t.anisotropy=4;return t}
+function b3Dispose(){if(!B3.group)return;B3.group.traverse(o=>{if(o.geometry)o.geometry.dispose();if(o.material)(Array.isArray(o.material)?o.material:[o.material]).forEach(m=>{if(m.map)m.map.dispose();m.dispose()})});B3.scene.remove(B3.group);B3.group=null;B3.mats=[];B3.pick=[]}
+function b3Pick(e){if(!B3.renderer)return null;const r=B3.renderer.domElement.getBoundingClientRect();
+  B3.rc.setFromCamera({x:((e.clientX-r.left)/r.width)*2-1,y:-((e.clientY-r.top)/r.height)*2+1},B3.cam);const hit=B3.rc.intersectObjects(B3.pick,false)[0];return hit?hit.object.userData.fid:null}
+function b3Init(){
+  const el=document.getElementById('bcs-b3');if(!el)return false;
+  if(B3.renderer){if(B3.el!==el){el.insertBefore(B3.renderer.domElement,el.firstChild);B3.el=el;B3._w=0}return true}
+  try{
+    const r=new THREE.WebGLRenderer({antialias:true,alpha:true});r.outputEncoding=THREE.sRGBEncoding;r.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
+    B3.renderer=r;B3.el=el;B3.scene=new THREE.Scene();B3.cam=new THREE.PerspectiveCamera(35,1,0.1,400);B3.rc=new THREE.Raycaster();
+    B3.scene.add(new THREE.HemisphereLight(0xffffff,0x6b7a90,0.95));
+    const d=new THREE.DirectionalLight(0xffffff,0.85);d.position.set(9,16,7);B3.scene.add(d);
+    const d2=new THREE.DirectionalLight(0x9fd8ff,0.35);d2.position.set(-8,6,-9);B3.scene.add(d2);
+    el.insertBefore(r.domElement,el.firstChild);r.domElement.style.display='block';r.domElement.style.touchAction='none';
+    bcsOrbit(r.domElement,B3,{pan:true,panFn:b3Pan,pick:b3Pick,hover:(e,id)=>id?bcsTip(e,id):bcsTipHide(),click:id=>{bcsTipHide();bcsSelect(id)},leave:bcsTipHide});
+    B3.ok=true;
+    const loop=t=>{requestAnimationFrame(loop);
+      if(!B3.el||!document.body.contains(B3.el)||B3.el.offsetParent===null)return;
+      const w=B3.el.clientWidth||440,h=B3.el.clientHeight||440;
+      if(B3._w!==w||B3._h!==h){B3._w=w;B3._h=h;B3.renderer.setSize(w,h);B3.cam.aspect=w/h;B3.cam.updateProjectionMatrix()}
+      const s=0.5+0.5*Math.sin(t/230);B3.mats.forEach(m=>{m.m.emissiveIntensity=m.bad?(0.12+0.35*s):(m.sel?0.35:0.05)});
+      if(B3.tcy!=null)B3.cy+=(B3.tcy-B3.cy)*0.14;
+      const rp=B3.rad*Math.sin(B3.ph);B3.cam.position.set(rp*Math.sin(B3.th),B3.cy+B3.rad*Math.cos(B3.ph),rp*Math.cos(B3.th));B3.cam.lookAt(0,B3.cy,0);
+      B3.renderer.render(B3.scene,B3.cam)};
+    requestAnimationFrame(loop);return true;
+  }catch(err){console.warn('3D building unavailable, using 2D',err);B3.ok=false;return false}}
+function bcsBStyle(){const m=bcsBMode();return m==='3d3'?3:m==='3d2'?2:1}
+function b3Pan(d){B3.tcy=Math.max(B3.yb-1,Math.min(B3.top+1,(B3.tcy!=null?B3.tcy:B3.cy)+d))}
+function b3Zoom(f){B3.rad=Math.max(B3.rmin,Math.min(B3.rmax,B3.rad*f))}
+function b3Reset(){B3.tcy=B3.mid;B3.rad=B3.fit||16;B3.th=0.75;B3.ph=1.0;B3.lastSel=null}
+function bldg3dRender(fl,st){
+  if(!window.THREE||!b3Init())return false;b3Dispose();
+  const g=new THREE.Group();B3.group=g;
+  const asc=[...fl].reverse(),nBase=fl.filter(f=>bIsBase(f.code)).length,n=asc.length,yb=-nBase,FW=4,FH=0.9,sty=bcsBStyle();
+  const trim=new THREE.MeshStandardMaterial({color:0xE5E7EB,roughness:.6}),plain=new THREE.MeshStandardMaterial({color:0xD1D5DB,roughness:.7});
+  const white=new THREE.MeshStandardMaterial({color:0xF4F6F8,roughness:.55}),rail=new THREE.MeshStandardMaterial({color:0x9ED8F0,transparent:true,opacity:.45,roughness:.1}),blue=new THREE.MeshStandardMaterial({color:0x3B9AE1,roughness:.5});
+  const floorY={};
+  asc.forEach((f,k)=>{
+    const o=st[f.id]||{r1:0,r2:0,r3:0,r4:0,crit:0,bad:false},sel=BCS.sel===f.id,col=o.crit?0xDC2626:o.bad?0xF97316:0x1FA971,base=bIsBase(f.code);
+    const side=new THREE.MeshStandardMaterial({map:b3Facade(f,o),roughness:.3,metalness:.12,emissive:new THREE.Color(col),emissiveIntensity:.05,transparent:base,opacity:base?.88:1});
+    const y=yb+k+0.5;floorY[f.id]=y;let w=FW,ox=0;
+    if(sty===2&&k>n*0.72&&!base)w=FW-0.7;if(sty===3&&!base)ox=(k%2?-0.3:0.3);
+    const m=new THREE.Mesh(new THREE.BoxGeometry(w,FH,w),[side,side,plain,plain,side,side]);m.position.set(ox,y,0);m.userData.fid=f.id;if(sel)m.scale.set(1.07,1,1.07);
+    g.add(m);B3.pick.push(m);B3.mats.push({m:side,bad:o.bad,sel});
+    const slab=new THREE.Mesh(new THREE.BoxGeometry(w+(sty===2?0.5:0.28),0.1,w+(sty===2?0.5:0.28)),sty===3?white:trim);slab.position.set(ox,yb+k+0.05,0);g.add(slab);
+    if(sty===2&&!base)[[1,1],[1,-1],[-1,1],[-1,-1]].forEach(c=>{const p=new THREE.Mesh(new THREE.BoxGeometry(0.22,FH,0.22),white);p.position.set(ox+c[0]*(w/2),y,c[1]*(w/2));g.add(p)});
+    if(sty===3&&!base&&k%2===0){const b=new THREE.Mesh(new THREE.BoxGeometry(w*0.9,0.1,1.05),white);b.position.set(ox,yb+k+0.05,w/2+0.5);g.add(b);const r=new THREE.Mesh(new THREE.BoxGeometry(w*0.9,0.4,0.04),rail);r.position.set(ox,yb+k+0.3,w/2+1.0);g.add(r)}
+    if(sel){const ln=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(w*1.07+.02,FH+.02,w*1.07+.02)),new THREE.LineBasicMaterial({color:0xFFFFFF}));ln.position.set(ox,y,0);g.add(ln)}});
+  const top=yb+n;
+  if(sty===2){const core=new THREE.Mesh(new THREE.BoxGeometry(1.1,n+0.9,1.1),white);core.position.set(FW/2-0.2,yb+(n+0.9)/2,FW/2-0.2);g.add(core);
+    const strip=new THREE.Mesh(new THREE.BoxGeometry(0.12,n*0.92,0.6),new THREE.MeshStandardMaterial({color:0x2B7F8A,roughness:.2}));strip.position.set(FW/2-0.2,yb+n/2,FW/2+0.38);g.add(strip);
+    const rb=new THREE.Mesh(new THREE.BoxGeometry(FW-1.6,0.55,FW-1.6),white);rb.position.set(-0.3,top+0.3,-0.3);g.add(rb)}
+  else if(sty===3){const core=new THREE.Mesh(new THREE.BoxGeometry(1.5,n+1.6,1.5),blue);core.position.set(-FW/2+0.3,yb+(n+1.6)/2,-FW/2+0.3);g.add(core);
+    const rv=new THREE.Mesh(new THREE.BoxGeometry(FW-1.2,0.9,FW-1.2),white);rv.position.set(0.4,top+0.45,0.2);g.add(rv)}
+  else{const cap=new THREE.Mesh(new THREE.BoxGeometry(FW-0.5,0.22,FW-0.5),trim);cap.position.y=top+0.11;g.add(cap);
+    const mech=new THREE.Mesh(new THREE.BoxGeometry(0.9,0.5,0.9),plain);mech.position.set(0.8,top+0.47,0.8);g.add(mech);
+    const ant=new THREE.Mesh(new THREE.CylinderGeometry(0.04,0.04,1.7,8),trim);ant.position.set(0.8,top+1.5,0.8);g.add(ant)}
+  const ped=new THREE.Mesh(new THREE.BoxGeometry(9,0.3,9),new THREE.MeshStandardMaterial({color:F3C('#1E242E'),roughness:.9}));ped.position.y=yb-0.17;g.add(ped);
+  if(nBase){const gp=new THREE.Mesh(new THREE.BoxGeometry(9,0.06,9),new THREE.MeshStandardMaterial({color:F3C('#4A5361'),transparent:true,opacity:.65,depthWrite:false,roughness:.9}));gp.position.y=0;g.add(gp)}
+  B3.scene.add(g);B3.mid=yb+(n+1)/2-0.3;B3.yb=yb;B3.top=top;
+  const fit=Math.max(13,n*1.15+9);if(B3.n!==n||B3.sty!==sty){B3.rad=fit;B3.tcy=B3.mid;B3.cy=B3.mid;B3.n=n;B3.sty=sty}B3.fit=fit;
+  if(BCS.sel&&B3.lastSel!==BCS.sel&&floorY[BCS.sel]!=null){B3.tcy=floorY[BCS.sel];B3.rad=Math.min(B3.rad,Math.max(7,fit*0.55))}
+  B3.lastSel=BCS.sel;return true}
+
+/* ---------- select floor → panel ---------- */
+function bcsSelect(fid){if(!bcsFloorById(fid))return;BCS.sel=fid;bLSset('bcs_sel_'+BIZK,fid);bcsTipHide();
+  const p=document.getElementById('bcs-panel'),h=document.getElementById('bcs-hint');if(h)h.hidden=true;
+  if(p){p.hidden=false;p.classList.remove('slide');void p.offsetWidth;p.classList.add('slide')}
+  bcsChips();bcsRenderBuilding();bcsRenderPanel();
+  if((BCS.kind==='mob'||window.innerWidth<1100)&&p)setTimeout(()=>{try{p.scrollIntoView({behavior:'smooth',block:'start'})}catch(e){}},60)}
+function bcsHidePanel(){BCS.sel=null;bLSset('bcs_sel_'+BIZK,'');BCS.edit=false;bcsRefresh()}
+function bcsRenderPanel(){const fid=BCS.sel,f=bcsFloorById(fid);if(!f)return;bcsSummary(fid);bcsRenderFloor(fid);
+  const eb=document.getElementById('bcs-editbar');if(eb)eb.hidden=!BCS.edit;const b=document.getElementById('bcs-edit-btn');if(b)b.classList.toggle('on',BCS.edit)}
+function bcsPickRing(k){BCS.ring=k;bcsSummary(BCS.sel)}
+function bcsSummary(fid){const el=document.getElementById('bcs-sum'),f=bcsFloorById(fid);if(!el||!f)return;
+  const o=(BCS.st||bcsFloorStatus())[fid]||{n:0,r1:0,r2:0,r3:0,r4:0,items:[],bad:false,crit:0},ri=BR_KEY.indexOf(BCS.ring);
+  const chips=BR_KEY.map((k,i)=>`<button class="bcs-rchip ${o[k]?'blink':''} ${BCS.ring===k?'on':''}" style="--rc:${BR_COL[i]}" onclick="bcsPickRing('${k}')"><i style="background:${o[k]?BR_COL[i]:'#22C55E'}"></i>${BR_NAME[i]} <b style="color:${o[k]?BR_COL[i]:'#22C55E'}">${o[k]||'OK'}</b></button>`).join('');
+  const rows=o.items.filter(it=>it.rs[BCS.ring].bad);
+  const list=!rows.length?`<div class="bcs-okrow">✅ ${bT('วง ','Ring ')}${BR_NAME[ri]} ${bT('ปกติในชั้นนี้','is normal on this floor')}</div>`:rows.map(({a,rs})=>{
+    let wrx='';if(BCS.ring==='r1')wrx=rs.ow.slice(0,6).map(w=>bcsWrRow(w)).join('');
+    return`<div class="bcs-arow blink" style="--rc:${BR_COL[ri]}" onclick="bcsArea('${a.id}')"><div class="h"><span class="tag-id">${esc(a.id)}</span><b>${esc(a.name)}</b><span class="why" style="color:${rs[BCS.ring].c}">${esc(rs[BCS.ring].n)}</span></div>${wrx}</div>`}).join('');
+  el.innerHTML=`<div class="bcs-sh"><div class="bcs-st">${esc(f.code)} — ${esc(f.name)}</div><span class="bcs-pill" style="--pc:${bcsColor(o)}">${o.crit?bT('วิกฤต','Critical'):o.bad?bT('มีกิจกรรม','Activity'):bT('ปกติ','Normal')}</span><span class="bcs-muted">${o.n} ${bT('พื้นที่','areas')}</span><button class="bcs-btn" style="margin-left:auto" onclick="bcsHidePanel()">✕ ${bT('ปิดผัง','Close')}</button></div>
+  <div class="bcs-rchips">${chips}<button class="bcs-btn" style="margin-left:auto" onclick="bcsGo(${ri})">${bT('ไปหน้า ','Open ')}${BR_NAME[ri]} →</button></div>${list}`}
+function bcsWrRow(w){const i=FLOW.indexOf(w.status),nx=i>=0&&i<FLOW.length-1?FLOW[i+1]:null,sl=slaOf(w);
+  return`<div class="bcs-wr" onclick="event.stopPropagation()"><span class="tag-id">${esc(w.id)}</span>${SVC[w.service]?SVC[w.service].ic:''}<span class="d">${esc(String(w.desc||'').substring(0,60))}</span>${badge(w.priority)} ${sl.s==='breach'?badge('Breached'):badge(w.status)}${nx?`<button class="bcs-btn bcs-ok" onclick="bcsAdvance('${w.id}')">▶ ${w.status==='New'?bT('รับงาน','Accept'):nx}</button>`:''}</div>`}
+function bcsGo(i){bcsModalClose();BCS.host.go&&BCS.host.go(BR_GO[i])}
+function bcsAdvance(id){const t=D.tickets.find(x=>x.id===id);if(!t)return;const i=FLOW.indexOf(t.status);if(i<0||i>=FLOW.length-1)return;
+  const n=isoDT(new Date());if(t.status==='New'){t.respondedAt=n;t.assignee=(BCS.host.user&&BCS.host.user())||t.assignee||'Duty '+SVC[t.service].n}
+  t.status=FLOW[i+1];if(t.status==='Completed'&&!t.completedAt)t.completedAt=n;save();
+  BCS.host.toast&&BCS.host.toast(t.id+' → '+t.status);BCS.host.after&&BCS.host.after();bcsRefresh();
+  const m=document.getElementById('bcs-modal');if(m&&!m.hidden&&BCS.modalArea)bcsArea(BCS.modalArea)}
+
+/* ---------- floor plan: 2D svg + 3D ---------- */
+function bcsSetFMode(m){bLSset('fp_mode',m);bcsRenderFloor(BCS.sel)}
+function bcsRenderFloor(fid){if(!fid)return;const f=bcsFloorById(fid),plan=bcsPlan(fid),svgH=plan?plan.svgH:540,rooms=bcsRooms(fid,svgH);
+  rooms.forEach(r=>{r.rs=bcsAreaRS(r.a);const s=Math.max(.55,Math.min(1,Math.min(r.w,r.h)/110));r.sc=s;r.px=r.x+r.w/2;r.py=r.y+r.h/2+4*s});
+  const lbl=document.getElementById('bcs-flabel');if(lbl)lbl.textContent=f?f.code+' — '+f.name:'';
+  const clr=document.getElementById('bcs-plan-clr');if(clr)clr.hidden=!plan;
+  bcsModeBtns();
+  const svg=document.getElementById('bcs-f2'),el=document.getElementById('bcs-f3');
+  if(bLS('fp_mode','3d')==='3d'&&!BCS.edit&&window.THREE&&F3.ok!==false&&fp3dBuild(fid,svgH,plan,rooms)){if(svg)svg.style.display='none';if(el)el.hidden=false;return}
+  if(el)el.hidden=true;if(svg)svg.style.display='block';bcsFloor2D(fid,svgH,plan,rooms)}
+function bcsFloor2D(fid,svgH,plan,rooms){const svg=document.getElementById('bcs-f2');if(!svg)return;svg.setAttribute('viewBox',`0 0 900 ${svgH}`);svg.classList.toggle('editing',BCS.edit);
+  let s=`<rect width="900" height="${svgH}" fill="#0D1117"/>`;
+  if(plan)s+=`<image href="${plan.dataUrl}" x="0" y="0" width="900" height="${svgH}" preserveAspectRatio="none" opacity=".92"/>`;
+  if(!rooms.length)s+=`<text x="450" y="${svgH/2}" text-anchor="middle" fill="#6E7681" font-size="15" font-family="sans-serif">${bT('ยังไม่มีพื้นที่ในชั้นนี้ — กำหนด “ชั้น” ของพื้นที่ใน Area Master','No areas on this floor — set the area floor in Area Master')}</text>`;
+  const AC={Running:'#22C55E',Standby:'#3B82F6',Warning:'#EAB308',Down:'#EF4444'};
+  rooms.forEach(r=>{const bad=!BCS.edit&&r.rs.bad,crit=!BCS.edit&&r.rs.crit;
+    s+=`<g data-aid="${r.a.id}" ${BCS.edit?`class="bcs-redit" onpointerdown="bcsRoomDown(event,'${r.a.id}','move')"`:''}>`;
+    s+=`<rect x="${r.x}" y="${r.y}" width="${r.w}" height="${r.h}" rx="8" fill="${bad?(crit?'#EF4444':'#F97316'):'#21262D'}" fill-opacity="${bad?.14:(plan?.35:1)}" stroke="${BCS.edit?'#F97316':bad?(crit?'#EF4444':'#F97316'):(plan?'#F97316':'#30363D')}" stroke-width="${bad?3:1.5}" ${plan&&!bad?'stroke-dasharray="5 3"':''}>${bad?'<animate attributeName="stroke-opacity" values="1;.2;1" dur=".9s" repeatCount="indefinite"/><animate attributeName="fill-opacity" values=".26;.05;.26" dur=".9s" repeatCount="indefinite"/>':''}</rect>`;
+    const cut=Math.max(6,Math.floor(r.w/7.2));
+    s+=`<text x="${r.x+10}" y="${r.y+17}" fill="${bad||plan?'#FDBA74':'#C9D1D9'}" font-size="11.5" font-weight="700" font-family="sans-serif" style="pointer-events:none">${esc(String(r.a.name).substring(0,cut))}</text>`;
+    s+=`<text x="${r.x+10}" y="${r.y+31}" fill="#6E7681" font-size="9.5" font-family="sans-serif" style="pointer-events:none">${esc(r.a.type||'')} · ${fmtN(r.a.sqm)} m²</text>`;
+    if(BCS.edit){s+=`<rect class="bcs-rh" x="${r.x+r.w-14}" y="${r.y+r.h-14}" width="16" height="16" rx="3" fill="#F97316" onpointerdown="bcsRoomDown(event,'${r.a.id}','resize')"/></g>`;return}
+    // asset dots
+    r.rs.as.slice(0,Math.max(1,Math.floor((r.w-20)/16))).forEach((x,i)=>{s+=`<circle cx="${r.x+14+i*16}" cy="${r.y+r.h-12}" r="5.5" fill="${AC[x.status]||'#6B7280'}" stroke="#0D1117" stroke-width="1.5"><title>${esc(x.name)} — ${esc(x.status)}</title>${x.status==='Down'?'<animate attributeName="opacity" values="1;.3;1" dur=".8s" repeatCount="indefinite"/>':''}</circle>`});
+    // 4-ring pin (outer SOFT → inner WR)
+    const sc=r.sc,px=r.px,py=r.py;
+    s+=`<g class="bcs-pin" onclick="bcsArea('${r.a.id}')" onmouseenter="bcsPinTip(event,'${r.a.id}')" onmousemove="bcsTipMove(event)" onmouseleave="bcsTipHide()">`;
+    if(r.rs.crit)s+=`<circle cx="${px}" cy="${py}" r="${32*sc}" fill="none" stroke="#EF4444" stroke-width="1.5"><animate attributeName="r" values="${32*sc};${49*sc};${32*sc}" dur="1.4s" repeatCount="indefinite"/><animate attributeName="opacity" values=".8;0;.8" dur="1.4s" repeatCount="indefinite"/></circle>`;
+    [[32,'r4','0s'],[26,'r3','.15s'],[20,'r2','.3s'],[13,'r1','.45s']].forEach(([rr,k,dl])=>{const q=r.rs[k],c=q.bad?q.c:'#22C55E';
+      s+=`<circle cx="${px}" cy="${py}" r="${rr*sc}" fill="${c}" fill-opacity="${q.bad?.15:.08}" stroke="${c}" stroke-width="${2.8*sc}">${q.bad?`<animate attributeName="stroke-opacity" values="1;.15;1" dur=".75s" begin="${dl}" repeatCount="indefinite"/><animate attributeName="fill-opacity" values=".2;.05;.2" dur=".75s" begin="${dl}" repeatCount="indefinite"/>`:''}</circle>`});
+    const core=r.rs.crit?'#EF4444':r.rs.bad?'#F97316':'#22C55E';
+    s+=`<circle cx="${px}" cy="${py}" r="${11*sc}" fill="${core}"/><text x="${px}" y="${py+.5}" text-anchor="middle" dominant-baseline="middle" fill="#fff" font-size="${10*sc}" font-weight="800" font-family="sans-serif">${r.rs.ow.length||'✓'}</text></g></g>`});
+  svg.innerHTML=s}
+function bcsPinTip(evt,aid){const a=D.areas.find(x=>x.id===aid),tip=document.getElementById('bcs-tip');if(!a||!tip)return;const rs=bcsAreaRS(a);
+  tip.innerHTML=`<div class="t">${esc(a.name)}</div><div class="s">${esc(a.type||'')} · ${bT('ชั้น ','Floor ')}${esc(a.floor)}</div>`+BR_KEY.map((k,i)=>`<div class="r"><span style="color:${BR_COL[i]}">● ${BR_NAME[i]}</span><b style="color:${rs[k].bad?rs[k].c:'#22C55E'}">${esc(rs[k].n)}</b></div>`).join('')+`<div class="s" style="margin-top:4px">${bT('คลิกเพื่อดูรายละเอียด','Click for details')}</div>`;
+  tip.hidden=false;bcsTipMove(evt)}
+
+/* room edit (pointer events: mouse + touch) */
+function bcsToggleEdit(){if(!BCS.sel){const f=bcsFloors().find(x=>(BCS.st[x.id]||{}).n);if(f)bcsSelect(f.id);else return}BCS.edit=!BCS.edit;bcsRenderPanel()}
+function bcsSvgPt(evt){const svg=document.getElementById('bcs-f2'),r=svg.getBoundingClientRect(),vb=svg.viewBox.baseVal;return{x:(evt.clientX-r.left)*vb.width/r.width,y:(evt.clientY-r.top)*vb.height/r.height}}
+function bcsRoomDown(evt,aid,mode){if(!BCS.edit)return;evt.preventDefault();evt.stopPropagation();
+  const plan=bcsPlan(BCS.sel),r=bcsRooms(BCS.sel,plan?plan.svgH:540).find(x=>x.a.id===aid);if(!r)return;
+  BCS.rd={aid,mode,p:bcsSvgPt(evt),o:{x:r.x,y:r.y,w:r.w,h:r.h}};
+  bcsRooms(BCS.sel,plan?plan.svgH:540).forEach(x=>{if(!D.bldg.rooms[x.a.id])D.bldg.rooms[x.a.id]={x:Math.round(x.x),y:Math.round(x.y),w:Math.round(x.w),h:Math.round(x.h)}});
+  window.addEventListener('pointermove',bcsRoomMove);window.addEventListener('pointerup',bcsRoomUp)}
+function bcsRoomMove(evt){const d=BCS.rd;if(!d)return;const r=D.bldg.rooms[d.aid];if(!r)return;const p=bcsSvgPt(evt),dx=p.x-d.p.x,dy=p.y-d.p.y,o=d.o;
+  if(d.mode==='move'){r.x=Math.round(o.x+dx);r.y=Math.round(o.y+dy)}else{r.w=Math.max(60,Math.round(o.w+dx));r.h=Math.max(50,Math.round(o.h+dy))}
+  if(!BCS.raf)BCS.raf=requestAnimationFrame(()=>{BCS.raf=0;bcsRenderFloor(BCS.sel)})}
+function bcsRoomUp(){window.removeEventListener('pointermove',bcsRoomMove);window.removeEventListener('pointerup',bcsRoomUp);if(!BCS.rd)return;BCS.rd=null;save();bcsRenderFloor(BCS.sel)}
+function bcsResetRooms(){D.areas.filter(a=>bcsAreaFloor(a)===BCS.sel).forEach(a=>{delete D.bldg.rooms[a.id]});save();bcsRenderFloor(BCS.sel)}
+
+/* 3D floor plan */
+const F3={ok:null,renderer:null,scene:null,cam:null,group:null,el:null,pick:[],anim:[],th:0.6,ph:0.95,rad:20,rmin:5,rmax:80,drag:null,rc:null,floor:null,tex:{},info:{}};
+const F3_PAL=['#232B3A','#212F3F','#2A2A3C','#24332F','#30283A','#2B3445','#33302A'];
+function f3Text(txt,w,h,font,color,bg){const cv=document.createElement('canvas');cv.width=w;cv.height=h;const c=cv.getContext('2d');
+  if(bg){c.fillStyle=bg;if(c.roundRect){c.beginPath();c.roundRect(0,0,w,h,14);c.fill()}else c.fillRect(0,0,w,h)}
+  c.fillStyle=color;c.font=font;c.textBaseline='middle';c.textAlign='center';c.fillText(txt,w/2,h/2);
+  const t=new THREE.CanvasTexture(cv);t.encoding=THREE.sRGBEncoding;t.anisotropy=4;return t}
+function f3Pick(e){const cv=F3.renderer.domElement,b=cv.getBoundingClientRect();F3.rc.setFromCamera({x:((e.clientX-b.left)/b.width)*2-1,y:-((e.clientY-b.top)/b.height)*2+1},F3.cam);const h=F3.rc.intersectObjects(F3.pick,false)[0];return h?h.object.userData.aid:null}
+function f3Hover(e,aid){const t=document.getElementById('bcs-ftip'),el=F3.el;if(!t||!el)return;
+  if(aid&&F3.info[aid]){const it=F3.info[aid],b=el.getBoundingClientRect();
+    t.innerHTML=`<div style="font-weight:800;color:#F97316">${esc(it.a.name)}</div>`+BR_KEY.map((k,i)=>`<div style="color:${BR_COL[i]}">● ${BR_NAME[i]}: <b style="color:${it.rs[k].bad?it.rs[k].c:'#22C55E'}">${esc(it.rs[k].n)}</b></div>`).join('');
+    t.style.left=Math.min(e.clientX-b.left+14,b.width-200)+'px';t.style.top=(e.clientY-b.top+12)+'px';t.hidden=false}else t.hidden=true}
+function fp3dInit(){const el=document.getElementById('bcs-f3');if(!el)return false;
+  if(F3.renderer){if(F3.el!==el){el.insertBefore(F3.renderer.domElement,el.firstChild);F3.el=el;F3._w=0}return true}
+  try{const r=new THREE.WebGLRenderer({antialias:true,alpha:true});r.outputEncoding=THREE.sRGBEncoding;r.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
+    F3.renderer=r;F3.el=el;F3.scene=new THREE.Scene();F3.cam=new THREE.PerspectiveCamera(32,1.5,0.1,300);F3.rc=new THREE.Raycaster();
+    F3.scene.add(new THREE.HemisphereLight(0xffffff,0x3a4658,0.8));const d=new THREE.DirectionalLight(0xffffff,0.55);d.position.set(8,16,9);F3.scene.add(d);
+    el.insertBefore(r.domElement,el.firstChild);r.domElement.style.display='block';r.domElement.style.touchAction='none';
+    bcsOrbit(r.domElement,F3,{pick:f3Pick,hover:f3Hover,click:aid=>{const t=document.getElementById('bcs-ftip');if(t)t.hidden=true;bcsArea(aid)},leave:()=>{const t=document.getElementById('bcs-ftip');if(t)t.hidden=true}});
+    F3.ok=true;
+    const loop=t=>{requestAnimationFrame(loop);if(!F3.el||!document.body.contains(F3.el)||F3.el.offsetParent===null)return;
+      const w=F3.el.clientWidth||640,h=Math.max(300,Math.min(640,Math.round(w*(BCS.kind==='mob'?0.85:0.62))));
+      if(F3._w!==w||F3._h!==h){F3._w=w;F3._h=h;F3.renderer.setSize(w,h);F3.cam.aspect=w/h;F3.cam.updateProjectionMatrix()}
+      const s=t/1000;
+      F3.anim.forEach(a=>{if(a.k==='blink'){const v=0.5+0.5*Math.sin(s*7+a.ph);a.m.opacity=0.2+0.8*v;if(a.fill)a.fill.opacity=0.05+0.25*v}
+        else if(a.k==='radar'){const p=(s*0.8+a.ph)%1;a.o.scale.set(1+p*0.9,1+p*0.9,1);a.m.opacity=0.8*(1-p)}
+        else if(a.k==='pillar'){const q=0.5+0.5*Math.sin(s*7+a.ph),c=a.cols[Math.floor(s*1.5)%a.cols.length];a.ms.forEach(m=>{m.color.copy(c);m.emissive.copy(c);m.emissiveIntensity=0.15+0.85*q})}
+        else if(a.k==='room'){const q=0.5+0.5*Math.sin(s*6+a.ph);a.m.opacity=0.08+0.34*q;if(a.w)a.w.emissiveIntensity=0.15+0.6*q}});
+      const rp=F3.rad*Math.sin(F3.ph);F3.cam.position.set(rp*Math.sin(F3.th),F3.rad*Math.cos(F3.ph),rp*Math.cos(F3.th));F3.cam.lookAt(0,0.2,0);F3.renderer.render(F3.scene,F3.cam)};
+    requestAnimationFrame(loop);return true}catch(err){console.warn('3D floor plan unavailable, using 2D',err);F3.ok=false;return false}}
+function fp3dBuild(fid,svgH,plan,rooms){
+  if(!window.THREE||!fp3dInit())return false;
+  if(F3.group){F3.group.traverse(o=>{if(o.geometry)o.geometry.dispose();if(o.material)(Array.isArray(o.material)?o.material:[o.material]).forEach(m=>{const cached=Object.values(F3.tex).some(x=>x.t===m.map);if(m.map&&!cached)m.map.dispose();m.dispose()})});F3.scene.remove(F3.group)}
+  const g=new THREE.Group();F3.group=g;F3.pick=[];F3.anim=[];F3.info={};
+  const U=50,W=900/U,Dp=svgH/U,X=px=>(px-450)/U,Z=py=>(py-svgH/2)/U;
+  const slab=new THREE.Mesh(new THREE.BoxGeometry(W+0.6,0.2,Dp+0.6),new THREE.MeshStandardMaterial({color:F3C(plan?'#0D1117':'#161B22'),roughness:.9}));slab.position.y=-0.1;g.add(slab);
+  if(plan&&plan.dataUrl){const pm=new THREE.MeshBasicMaterial({color:0xffffff});const tc=F3.tex[fid]&&F3.tex[fid].u===plan.dataUrl?F3.tex[fid].t:null;
+    if(tc)pm.map=tc;else new THREE.TextureLoader().load(plan.dataUrl,tx=>{tx.encoding=THREE.sRGBEncoding;F3.tex[fid]={u:plan.dataUrl,t:tx};pm.map=tx;pm.needsUpdate=true});
+    const pl=new THREE.Mesh(new THREE.PlaneGeometry(W,Dp),pm);pl.rotation.x=-Math.PI/2;pl.position.y=0.011;g.add(pl)}
+  const AC={Running:'#22C55E',Standby:'#3B82F6',Warning:'#EAB308',Down:'#EF4444'};
+  rooms.forEach((r,ci)=>{const bad=r.rs.bad,w=r.w/U,h=r.h/U,cx=X(r.x+r.w/2),cz=Z(r.y+r.h/2);
+    const wallM=new THREE.MeshStandardMaterial({color:bad?F3C('#7C3A12'):F3C('#3B4659'),roughness:.7,transparent:!!plan,opacity:plan?.6:1,emissive:new THREE.Color(0xF97316),emissiveIntensity:bad?.3:0});
+    if(bad){const gm=new THREE.MeshBasicMaterial({color:r.rs.crit?0xEF4444:0xF97316,transparent:true,opacity:.3,depthWrite:false,side:THREE.DoubleSide});const gl=new THREE.Mesh(new THREE.PlaneGeometry(w,h),gm);gl.rotation.x=-Math.PI/2;gl.position.set(cx,0.125,cz);g.add(gl);F3.anim.push({k:'room',m:gm,w:wallM,ph:ci})}
+    if(!plan){const tile=new THREE.Mesh(new THREE.BoxGeometry(w,0.1,h),new THREE.MeshStandardMaterial({color:F3C(F3_PAL[ci%F3_PAL.length]),roughness:.85}));tile.position.set(cx,0.05,cz);g.add(tile)}
+    const T=0.08,hb=plan?0.25:0.8,hf=plan?0.25:0.3;
+    [[0,-h/2,w,T,hb],[0,h/2,w,T,hf],[-w/2,0,T,h,hb],[w/2,0,T,h,hf]].forEach(q=>{const m=new THREE.Mesh(new THREE.BoxGeometry(q[2],q[4],q[3]),wallM);m.position.set(cx+q[0],q[4]/2,cz+q[1]);g.add(m)});
+    const tx=f3Text(String(r.a.name).substring(0,24),512,96,'bold 40px Arial',plan||bad?'#FDBA74':'#9AA4B2',plan?'rgba(0,0,0,.55)':null);
+    const lw=Math.min(w-0.3,3.6),lp=new THREE.Mesh(new THREE.PlaneGeometry(lw,lw*96/512),new THREE.MeshBasicMaterial({map:tx,transparent:true,depthWrite:false}));lp.rotation.x=-Math.PI/2;lp.position.set(cx,0.13,cz-h/2+0.4);g.add(lp);
+    r.rs.as.slice(0,8).forEach((a,i)=>{const cm=new THREE.MeshStandardMaterial({color:F3C(AC[a.status]||'#6B7280'),roughness:.5,emissive:F3C(AC[a.status]||'#6B7280'),emissiveIntensity:a.status==='Down'?.6:.15});
+      const cb=new THREE.Mesh(new THREE.BoxGeometry(0.22,0.22,0.22),cm);cb.position.set(cx-w/2+0.35+i*0.32,0.21,cz+h/2-0.3);g.add(cb);if(a.status==='Down')F3.anim.push({k:'pillar',ms:[cm],cols:[F3C('#EF4444')],ph:i})});
+    // area pin: pillar + 4 rings (outer SOFT → inner WR)
+    const x=X(r.px),z=Z(r.py),rs=r.rs,sc=Math.max(.7,Math.min(1.2,Math.min(w,h)/2.2));F3.info[r.a.id]={a:r.a,rs};
+    const abn=BR_KEY.filter(k=>rs[k].bad).map(k=>F3C(rs[k].c));
+    const bm=new THREE.MeshStandardMaterial({color:abn.length?abn[0]:F3C('#22C55E'),roughness:.5,emissive:abn.length?abn[0].clone():new THREE.Color(0x000000),emissiveIntensity:abn.length?.6:0});
+    const body=new THREE.Mesh(new THREE.BoxGeometry(0.5*sc,0.5,0.5*sc),bm);body.position.set(x,0.3,z);body.userData.aid=r.a.id;g.add(body);F3.pick.push(body);
+    const tm2=new THREE.MeshStandardMaterial({color:abn.length?abn[0]:F3C('#CBD5E1'),roughness:.5,emissive:abn.length?abn[0].clone():new THREE.Color(0x000000),emissiveIntensity:abn.length?.6:0});
+    const tp=new THREE.Mesh(new THREE.CylinderGeometry(0.11*sc,0.11*sc,0.25,12),tm2);tp.position.set(x,0.67,z);g.add(tp);
+    if(abn.length)F3.anim.push({k:'pillar',ms:[bm,tm2],cols:abn,ph:x+z});
+    const hit=new THREE.Mesh(new THREE.CylinderGeometry(0.67*sc,0.67*sc,0.8,16),new THREE.MeshBasicMaterial({transparent:true,opacity:0,depthWrite:false}));hit.position.set(x,0.4,z);hit.userData.aid=r.a.id;g.add(hit);F3.pick.push(hit);
+    [{r:0.64,k:'r4',p:0},{r:0.52,k:'r3',p:.8},{r:0.39,k:'r2',p:1.6},{r:0.27,k:'r1',p:2.4}].forEach(d=>{const q=rs[d.k],col=F3C(q.bad?q.c:'#22C55E');
+      const fm=new THREE.MeshBasicMaterial({color:col,transparent:true,opacity:q.bad?.2:.1,depthWrite:false,side:THREE.DoubleSide});
+      const disc=new THREE.Mesh(new THREE.CircleGeometry(d.r*sc,40),fm);disc.rotation.x=-Math.PI/2;disc.position.set(x,0.075,z);g.add(disc);
+      const tm=new THREE.MeshBasicMaterial({color:col,transparent:true,opacity:1});const ring=new THREE.Mesh(new THREE.TorusGeometry(d.r*sc,0.05,8,56),tm);ring.rotation.x=Math.PI/2;ring.position.set(x,0.09,z);g.add(ring);
+      if(q.bad)F3.anim.push({k:'blink',m:tm,fill:fm,ph:d.p})});
+    if(rs.crit){const rm=new THREE.MeshBasicMaterial({color:0xEF4444,transparent:true,opacity:.8});const rr=new THREE.Mesh(new THREE.TorusGeometry(0.64*sc,0.03,8,56),rm);rr.rotation.x=Math.PI/2;rr.position.set(x,0.1,z);g.add(rr);F3.anim.push({k:'radar',m:rm,o:rr,ph:0})}
+    const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:f3Text(String(r.a.name).substring(0,20),320,64,'bold 28px Arial','#fff','rgba(15,23,42,.78)'),transparent:true,depthTest:false}));sp.scale.set(2.0,0.4,1);sp.position.set(x,1.25,z);sp.renderOrder=5;g.add(sp)});
+  if(!rooms.length){const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:f3Text(bT('ยังไม่มีพื้นที่ในชั้นนี้','No areas on this floor'),512,64,'bold 30px Arial','#8B949E',null),transparent:true}));sp.scale.set(6,0.75,1);sp.position.set(0,0.8,0);g.add(sp)}
+  F3.scene.add(g);const fit=Math.max(16,Math.max(W,Dp*1.6)*1.05+3);if(F3.floor!==fid){F3.rad=fit;F3.floor=fid}return true}
+
+/* ---------- area detail ---------- */
+function bcsModalOpen(html){const m=document.getElementById('bcs-modal');if(!m)return;m.innerHTML=`<div class="bcs-mbox" role="dialog" aria-modal="true">${html}</div>`;m.hidden=false;bcsTipHide()}
+function bcsModalClose(){const m=document.getElementById('bcs-modal');if(m){m.hidden=true;m.innerHTML=''}BCS.modalArea=null}
+function bcsArea(aid){const a=D.areas.find(x=>x.id===aid);if(!a)return;BCS.modalArea=aid;const rs=bcsAreaRS(a),fl=bcsFloorById(bcsAreaFloor(a));
+  const AB={Running:'Running',Standby:'Standby',Warning:'Warning',Down:'Down'};
+  const sec=(t,body)=>`<div class="bcs-msec"><div class="bcs-cap">${t}</div>${body}</div>`;
+  const li=(l,r)=>`<div class="bcs-li"><span>${l}</span><span>${r}</span></div>`;
+  const rings=BR_KEY.map((k,i)=>`<div class="bcs-ring ${rs[k].bad?'blink':''}" style="--rc:${BR_COL[i]}"><b><i style="background:${rs[k].bad?rs[k].c:'#22C55E'}"></i>${bT('วง ','Ring ')}${i+1} ${BR_NAME[i]}</b><span style="color:${rs[k].bad?rs[k].c:'#22C55E'}">${esc(rs[k].n)}</span></div>`).join('');
+  const soft=[].concat(rs.hkA!=null?[li(bT('คะแนนความสะอาด 30 วัน','Cleanliness (30 d)'),`<b style="color:${rs.hkA>=P().target.hk?'#22C55E':'#EF4444'}">${rs.hkA}%</b>`)]:[],rs.hkM.map(h=>li('🧹 '+esc(h.task),badge('Missed'))),rs.pst.map(s=>li('🐜 '+esc(s.type)+' · '+esc(s.id),badge(s.activity))),rs.inc.map(s=>li('🛡 '+esc(s.type),badge(s.severity)+' '+badge(s.status))));
+  bcsModalOpen(`<div class="bcs-mh"><div><div class="bcs-muted">${esc(a.id)} · ${fl?esc(fl.code+' — '+fl.name):''} · ${esc(a.type||'')} · ${fmtN(a.sqm)} m²</div><div class="bcs-st" style="font-size:20px">${esc(a.name)}</div></div><button class="bcs-btn" onclick="bcsModalClose()" aria-label="close">✕</button></div>
+  <div class="bcs-rgrid">${rings}</div>
+  ${sec('🎧 Work Request '+bT('ที่เปิดอยู่','open')+' ('+rs.ow.length+')',rs.ow.length?rs.ow.map(bcsWrRow).join(''):`<div class="bcs-okrow">✅ ${bT('ไม่มีงานค้าง','No open work requests')}</div>`)}
+  ${sec('⚙️ '+bT('อุปกรณ์ในพื้นที่','Assets in area')+' ('+rs.as.length+')',rs.as.length?rs.as.map(x=>li(esc(x.name)+` <span class="bcs-muted">${esc(x.system)} · ${bT('PM ถัดไป ','next PM ')}${fmtD(x.nextPM)}</span>`,badge(AB[x.status]||x.status))).join(''):`<div class="bcs-muted">—</div>`)}
+  ${rs.df.length||rs.pmO.length||rs.pm7.length?sec('🏗 Defect / PM',rs.df.map(d=>li('Defect · '+esc(d.desc),badge(d.severity))).join('')+rs.pmO.concat(rs.pm7).map(p=>li('PM · '+esc(p.task)+` <span class="bcs-muted">${fmtD(p.dueDate)}</span>`,badge(p.dueDate<todayS?'Overdue':'Planned'))).join('')):''}
+  ${soft.length?sec('🧹 Soft Service',soft.join('')):''}
+  <div class="bcs-mf"><button class="bcs-btn bcs-pri" onclick="bcsNewWR('${a.id}')">+ ${bT('แจ้งงานพื้นที่นี้','New WR for this area')}</button><button class="bcs-btn" onclick="bcsModalClose()">${bT('ปิด','Close')}</button></div>`)}
+function bcsNewWR(aid){const a=D.areas.find(x=>x.id===aid);bcsModalClose();if(a&&BCS.host.newWR)BCS.host.newWR(a.name)}
+
+/* ---------- floor setup ---------- */
+function bcsSetupOpen(){BCS.rows=bcsFloors().map(f=>({...f}));bcsSetupRender()}
+function bcsSetupRender(){const rows=BCS.rows,b=rows.filter(f=>bIsBase(f.code)).length,t=Math.max(1,...rows.map(f=>/^\d+$/.test(f.code)?+f.code:1)),roof=rows.some(f=>/^roof$/i.test(f.code));
+  bcsModalOpen(`<div class="bcs-mh"><div class="bcs-st" style="font-size:19px">🏗 ${bT('ตั้งค่าอาคาร','Building floors')}</div><button class="bcs-btn" onclick="bcsModalClose()">✕</button></div>
+  <div class="bcs-muted" style="margin-bottom:10px">${bT('พื้นที่จะถูกวางลงชั้นตามช่อง “ชั้น” ใน Area Master (เช่น G, 3, B1, Roof)','Areas are placed on floors by their “floor” field in Area Master (e.g. G, 3, B1, Roof)')}</div>
+  <div class="bcs-gen"><label>${bT('ชั้นใต้ดิน','Basements')}<input class="bcs-in" type="number" id="bs-b" min="0" max="10" value="${b}"></label><label>${bT('ชั้นบนสุด','Top floor')}<input class="bcs-in" type="number" id="bs-t" min="1" max="80" value="${t}"></label><label class="ck"><input type="checkbox" id="bs-r" ${roof?'checked':''}> Roof</label><button class="bcs-btn" onclick="bcsSetupGen()">${bT('สร้างรายการชั้น','Generate')}</button><button class="bcs-btn" onclick="bcsSetupAuto()">${bT('อ่านจาก Area Master','From Area Master')}</button></div>
+  <div class="bcs-stable">${rows.map((f,i)=>`<div class="bcs-srow"><span class="bcs-muted">${i+1}</span><input class="bcs-in" style="width:80px" value="${esc(f.code)}" oninput="BCS.rows[${i}].code=this.value"><input class="bcs-in" style="flex:1;min-width:0" value="${esc(f.name)}" oninput="BCS.rows[${i}].name=this.value"><button class="bcs-btn" onclick="bcsSetupMove(${i},-1)">▲</button><button class="bcs-btn" onclick="bcsSetupMove(${i},1)">▼</button><button class="bcs-btn bcs-danger" onclick="BCS.rows.splice(${i},1);bcsSetupRender()">✕</button></div>`).join('')}</div>
+  <div class="bcs-mf"><button class="bcs-btn" onclick="BCS.rows.unshift({id:'',code:'',name:'${bT('ชั้นใหม่','New floor')}',order:0});bcsSetupRender()">+ ${bT('เพิ่มชั้น','Add floor')}</button><span class="ferr" id="bs-err" style="margin-right:auto"></span><button class="bcs-btn bcs-pri" onclick="bcsSetupSave()">${bT('บันทึก','Save')}</button></div>`)}
+function bcsSetupGen(){BCS.rows=bcsMakeFloors(+document.getElementById('bs-b').value||0,+document.getElementById('bs-t').value||1,document.getElementById('bs-r').checked,BCS.rows);bcsSetupRender()}
+function bcsSetupAuto(){BCS.rows=bcsAutoFloors();bcsSetupRender()}
+function bcsSetupMove(i,d){const j=i+d,r=BCS.rows;if(j<0||j>=r.length)return;[r[i],r[j]]=[r[j],r[i]];bcsSetupRender()}
+function bcsSetupSave(){const rows=BCS.rows,seen=new Set(),err=m=>{const e=document.getElementById('bs-err');if(e)e.textContent=m};
+  if(!rows.length)return err(bT('ต้องมีอย่างน้อย 1 ชั้น','Add at least one floor'));
+  for(const r of rows){r.code=String(r.code||'').trim();if(!r.code)return err(bT('มีชั้นที่ยังไม่ใส่รหัส','A floor has no code'));const id=r.code.toUpperCase();if(seen.has(id))return err(bT('รหัสชั้นซ้ำ: ','Duplicate code: ')+r.code);seen.add(id);r.name=String(r.name||'').trim()||bcsName(r.code)}
+  D.bldg.floors=rows.map((r,i)=>({id:r.code.toUpperCase(),code:r.code,name:r.name,order:rows.length-i}));save();
+  if(BCS.sel&&!seen.has(BCS.sel))BCS.sel=null;bcsModalClose();B3.n=-1;bcsRefresh();BCS.host.toast&&BCS.host.toast(bT('บันทึกอาคาร ','Saved ')+rows.length+bT(' ชั้น',' floors'))}
+
+/* ---------- floor-plan image / PDF per floor ---------- */
+async function bcsPlanUpload(inp){const file=inp.files[0];inp.value='';if(!file)return;const fid=BCS.sel;const tst=m=>BCS.host.toast&&BCS.host.toast(m);
+  if(!fid){tst(bT('เลือกชั้นก่อน','Pick a floor first'));return}
+  try{tst(bT('⏳ กำลังประมวลผล floor plan…','⏳ Processing floor plan…'));const MAXW=1600,cv=document.createElement('canvas'),ctx=cv.getContext('2d');
+    if(/pdf/i.test(file.type)||/\.pdf$/i.test(file.name)){if(!window.pdfjsLib){tst(bT('⚠ PDF.js ยังโหลดไม่เสร็จ','⚠ PDF.js not loaded'));return}
+      pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+      const pdf=await pdfjsLib.getDocument({data:await file.arrayBuffer()}).promise,page=await pdf.getPage(1),v0=page.getViewport({scale:1}),vp=page.getViewport({scale:MAXW/v0.width});
+      cv.width=Math.round(vp.width);cv.height=Math.round(vp.height);ctx.fillStyle='#fff';ctx.fillRect(0,0,cv.width,cv.height);await page.render({canvasContext:ctx,viewport:vp}).promise}
+    else{const url=URL.createObjectURL(file),img=new Image();await new Promise((ok,ng)=>{img.onload=ok;img.onerror=ng;img.src=url});const sc=Math.min(1,MAXW/img.naturalWidth);
+      cv.width=Math.round(img.naturalWidth*sc);cv.height=Math.round(img.naturalHeight*sc);ctx.fillStyle='#fff';ctx.fillRect(0,0,cv.width,cv.height);ctx.drawImage(img,0,0,cv.width,cv.height);URL.revokeObjectURL(url)}
+    const plan={dataUrl:cv.toDataURL('image/jpeg',.78),svgH:Math.round(cv.height*900/cv.width)};
+    try{localStorage.setItem('psd_ifm_plan_'+BIZK+'_'+fid,JSON.stringify(plan))}catch(e){tst(bT('❌ พื้นที่เก็บในเบราว์เซอร์เต็ม — ใช้ไฟล์ขนาดเล็กลง','❌ Browser storage full — use a smaller file'));return}
+    tst(bT('✅ อัปโหลด floor plan ของชั้นนี้แล้ว','✅ Floor plan saved for this floor'));bcsRenderFloor(fid)}
+  catch(err){tst(bT('❌ อ่านไฟล์ไม่ได้: ','❌ Cannot read file: ')+(err.message||err))}}
+function bcsPlanClear(){if(!BCS.sel)return;try{localStorage.removeItem('psd_ifm_plan_'+BIZK+'_'+BCS.sel)}catch(e){}bcsRenderFloor(BCS.sel);BCS.host.toast&&BCS.host.toast(bT('🗑 ลบ floor plan แล้ว','🗑 Floor plan removed'))}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')bcsModalClose()});
+/*@@BCS-END@@*/
+
+BCS.host={toast:m=>toast(m),go:v=>{if(v==='helpdesk'){ST.wrf='open';goTab('tasks')}else openSvc(v)},newWR:area=>openForm2('tickets',null,{service:'eng',area,requester:ST.user?ST.user.name:''}),after:()=>{},user:()=>ST.user?ST.user.name:'',lang:()=>ST.lang};
+function viewBuilding(){return '<div class="stack"><div class="sec-t"><h2>Building Critical Status</h2><small>IFM 4-Ring</small></div>'+BCS.html('mob')+footerLegal()+'</div>'}
+
 /* ---------- render / boot ---------- */
 function render(){const root=document.getElementById('app-root');
-  if(!ST.lang)root.innerHTML=screenSplash();else if(!ST.user)root.innerHTML=screenLogin();else root.innerHTML=screenMain();
+  if(!ST.lang)root.innerHTML=screenSplash();else if(!ST.user)root.innerHTML=screenLogin();else{root.innerHTML=screenMain();if(ST.tab==='bldg')BCS.mount()}
   document.documentElement.lang=ST.lang==='en'?'en':'th'}
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeSheet()});
 window.addEventListener('storage',e=>{if(e.key==='psd_ifm_v1_'+BIZK){load();if(!FM)render()}});
