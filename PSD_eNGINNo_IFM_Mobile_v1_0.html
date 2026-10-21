@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>PSD eNGINNo IFM Mobile</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@500;600;700&family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#f2f2f3">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon.svg">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="IFM Mobile">
+<style>
+/* Layout: phone-first single column (max 900px), bottom tab bar, bottom-sheet forms. Tokens follow the iMATOMs Mobile design system. */
+:root{
+  --color-bg:#f2f2f3; --color-surface:#e9e9ea; --color-card:#f7f7f8; --color-text:#1d1f20;
+  --color-accent:#5980a6; --color-divider:rgba(29,31,32,.16);
+  --color-neutral-100:#f5f5f8; --color-neutral-200:#e7e7ea; --color-neutral-300:#d4d4d7;
+  --color-neutral-500:#98989b; --color-neutral-600:#7a7a7d; --color-neutral-700:#5d5d60; --color-neutral-800:#424244;
+  --color-accent-100:#eef6ff; --color-accent-600:#597ea3; --color-accent-700:#416180; --color-accent-800:#2c455d;
+  --font-heading:"Barlow Condensed","Sarabun",system-ui,sans-serif; --font-body:"Barlow","Sarabun",system-ui,sans-serif;
+  --danger:#c0392b; --orange:#e69a3c; --green:#2f9e5b; --yellow:#c9970c; --sky:#5aa9e6; --red:#d0453a; --purple:#8e5bd6; --teal:#1f9c8e;
+  --hard:#e2782f; --soft:#1f9c8e; --sheet-bg:#f7f7f8; --overlay:rgba(20,24,30,.45); --desk:#dfe1e4;
+  color-scheme:light;
+}
+body.theme-dark{
+  --color-bg:#0d1117; --color-surface:#161b22; --color-card:#11161d; --color-text:#e6edf3;
+  --color-accent:#5b8fc4; --color-divider:rgba(230,237,243,.18);
+  --color-neutral-100:#161b22; --color-neutral-200:#21262d; --color-neutral-300:#30363d;
+  --color-neutral-500:#6e7681; --color-neutral-600:#8b949e; --color-neutral-700:#a0a8b3; --color-neutral-800:#c9d1d9;
+  --color-accent-100:#14263a; --color-accent-600:#7aa6d4; --color-accent-700:#8fb8e3; --color-accent-800:#bcd6f0;
+  --danger:#ff6b5b; --green:#4fd17a; --yellow:#eab308; --red:#ff6b5b; --purple:#b48cf0; --teal:#2fc4b2; --hard:#f08a3e; --soft:#2fc4b2;
+  --sheet-bg:#161b22; --overlay:rgba(0,0,0,.65); --desk:#05080c; color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{background:var(--color-bg)}
+body{margin:0;background:var(--color-bg);color:var(--color-text);font-family:var(--font-body);font-size:16px;line-height:1.5;-webkit-tap-highlight-color:transparent}
+body.font-sarabun{--font-heading:"Sarabun",system-ui,sans-serif;--font-body:"Sarabun",system-ui,sans-serif}
+h1,h2,h3{font-family:var(--font-heading);font-weight:600;line-height:1.12;letter-spacing:-.01em;margin:0;text-wrap:balance}
+button{font:inherit;color:inherit}
+.tap{cursor:pointer}
+:focus-visible{outline:2px solid var(--color-accent);outline-offset:2px}
+@keyframes orbitA{from{transform:rotate(20deg)}to{transform:rotate(380deg)}}
+@keyframes orbitB{from{transform:rotate(-40deg)}to{transform:rotate(320deg)}}
+@keyframes orbitC{from{transform:rotate(100deg)}to{transform:rotate(460deg)}}
+@keyframes sheetUp{from{transform:translateY(30px);opacity:0}to{transform:none;opacity:1}}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+
+#app-root{width:100%;max-width:900px;margin:0 auto;min-height:100vh;background:var(--color-bg);display:flex;flex-direction:column}
+@media(min-width:901px){body{background:var(--desk)}#app-root{box-shadow:0 0 40px rgba(0,0,0,.08)}}
+
+/* cards */
+.blueprint{position:relative;border:1px solid var(--color-divider);border-radius:6px;background:var(--color-card);min-width:0}
+.blueprint.tap{transition:transform .15s,box-shadow .15s,border-color .15s}
+.blueprint.tap::after{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--bc,var(--color-accent));transform:scaleY(0);transform-origin:top;transition:transform .15s;border-radius:6px 0 0 6px}
+.blueprint.tap:hover,.blueprint.tap:active{transform:translateY(-2px);box-shadow:0 10px 20px -8px rgba(0,0,0,.28);border-color:var(--bc,var(--color-accent))}
+.blueprint.tap:hover::after,.blueprint.tap:active::after{transform:scaleY(1)}
+.pad{padding:14px}
+
+/* buttons / forms */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;cursor:pointer;font-family:var(--font-heading);font-weight:600;font-size:16px;background:transparent;border:1px solid var(--color-divider);padding:9px 16px;border-radius:2px;white-space:nowrap}
+.btn:disabled{opacity:.45}
+.btn-primary{background:var(--color-accent);color:#fff;border-color:var(--color-accent)}
+.btn-ok{border-color:var(--green);color:var(--green)}
+.btn-danger{border-color:var(--red);color:var(--red)}
+.btn-sm{padding:5px 11px;font-size:14px}
+.btn-block{width:100%}
+.field{display:flex;flex-direction:column;gap:5px;min-width:0}
+.field>label{font-size:13.5px;color:var(--color-neutral-700)}
+.field .req{color:var(--red)}
+.input{width:100%;min-height:42px;padding:8px 10px;font:inherit;font-size:16px;color:var(--color-text);background:var(--color-surface);border:1px solid var(--color-divider);border-radius:0}
+.input:focus-visible{outline:none;border-color:var(--color-accent)}
+textarea.input{min-height:84px;resize:vertical}
+.seg{display:inline-flex;overflow:hidden;border:1px solid var(--color-divider);max-width:100%}
+.seg-opt{display:inline-flex;align-items:center;gap:6px;padding:7px 12px;font-size:14.5px;cursor:pointer;background:none;border:none;white-space:nowrap}
+.seg-opt+.seg-opt{border-left:1px solid var(--color-divider)}
+.seg-opt.active{background:var(--color-accent);color:#fff}
+
+/* tags & badges */
+.tag{display:inline-flex;align-items:center;font-size:12.5px;letter-spacing:.02em;padding:2px 9px;border-radius:2px;white-space:nowrap}
+.tag-accent{background:var(--color-accent-100);color:var(--color-accent-800)}
+.tag-neutral{background:var(--color-neutral-200);color:var(--color-neutral-800)}
+.tag-id{font-family:ui-monospace,Menlo,monospace;font-size:11.5px;background:var(--color-neutral-200);color:var(--color-neutral-800);padding:1px 7px;border-radius:2px}
+.badge{display:inline-flex;align-items:center;padding:2px 9px;border-radius:20px;font-size:12px;font-weight:600;white-space:nowrap;color:var(--bc);background:color-mix(in srgb,var(--bc) 14%,transparent)}
+.b-green{--bc:var(--green)}.b-yellow{--bc:var(--yellow)}.b-red{--bc:var(--red)}.b-blue{--bc:var(--sky)}.b-orange{--bc:var(--orange)}.b-gray{--bc:var(--color-neutral-600)}.b-teal{--bc:var(--teal)}.b-purple{--bc:var(--purple)}
+.svc-chip{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:600;padding:1px 8px;border-radius:2px;white-space:nowrap;color:var(--sc);background:color-mix(in srgb,var(--sc) 13%,transparent)}
+.pill{font-family:var(--font-heading);font-size:12px;letter-spacing:.12em;text-transform:uppercase;font-weight:700}
+
+/* atom */
+.atom{position:relative}
+.atom .ring{position:absolute;left:50%;top:50%;border-radius:50%}
+.atom .ring.a{border:3px solid var(--sky);animation:orbitA 14s linear infinite}
+.atom .ring.b{border:3px solid #4fd17a;animation:orbitB 11s linear infinite}
+.atom .ring.c{border:3px solid var(--orange);animation:orbitC 17s linear infinite}
+.atom .nucleus{position:absolute;left:50%;top:50%;background:#f0862f;border-radius:50%;transform:translate(-50%,-50%);box-shadow:0 0 16px 4px rgba(240,134,47,.7)}
+
+/* hero */
+.hero{flex-shrink:0;padding:calc(30px + env(safe-area-inset-top)) 16px 22px;position:relative;overflow:hidden;text-align:center;background:radial-gradient(circle at 50% 35%,#1c3a5e 0%,#0d1b30 70%,#0a1526 100%);color:#fff}
+.hero .kicker{font-family:var(--font-heading);font-size:15px;letter-spacing:.2em;color:var(--orange);margin-top:8px}
+.hero .title{font-family:var(--font-heading);font-size:28px;font-weight:600;margin-top:2px;letter-spacing:.02em}
+.hero .title .v{color:#e6672f}
+.hero .sub{font-family:var(--font-heading);font-size:13px;letter-spacing:.12em;color:#4fd17a;margin-top:4px}
+
+/* top bar + tab bar */
+.topbar{display:flex;align-items:center;gap:10px;padding:calc(10px + env(safe-area-inset-top)) max(16px,env(safe-area-inset-right)) 10px max(16px,env(safe-area-inset-left));flex-shrink:0;border-bottom:1px solid var(--color-divider);position:sticky;top:0;background:var(--color-bg);z-index:20}
+.topbar .brand{font-family:var(--font-heading);font-weight:700;font-size:18px;line-height:1.05}
+.topbar .brand small{display:block;font-weight:500;font-size:11.5px;letter-spacing:.1em;color:var(--color-accent-700);text-transform:uppercase}
+.avatar{width:34px;height:34px;border-radius:50%;background:var(--color-accent);color:#fff;display:grid;place-items:center;font-family:var(--font-heading);font-weight:700;flex-shrink:0;border:none;cursor:pointer}
+.biz-chip{margin-left:auto;display:inline-flex;align-items:center;gap:5px;font-size:13px;border:1px solid var(--color-divider);padding:4px 9px;border-radius:2px;background:none;cursor:pointer;max-width:48vw;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.view-body{flex:1;padding:16px max(16px,env(safe-area-inset-right)) 24px max(16px,env(safe-area-inset-left))}
+.stack{display:flex;flex-direction:column;gap:14px}
+.tabbar{position:sticky;bottom:0;display:flex;border-top:1px solid var(--color-divider);flex-shrink:0;padding:8px max(4px,env(safe-area-inset-right)) calc(10px + env(safe-area-inset-bottom)) max(4px,env(safe-area-inset-left));background:var(--color-bg);z-index:20}
+.tabitem{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;color:var(--color-neutral-600);background:none;border:none;padding:6px 2px;border-radius:6px;position:relative}
+.tabitem.active{color:var(--color-accent-700)}
+.tabitem::before{content:'';position:absolute;left:14%;right:14%;top:-9px;height:3px;background:var(--color-accent);transform:scaleX(0);transition:transform .15s}
+.tabitem.active::before{transform:scaleX(1)}
+.tabitem svg{width:23px;height:23px}
+.tabitem span{font-size:13.5px;line-height:1.1;font-family:var(--font-heading);white-space:nowrap}
+.tabitem .fab{width:48px;height:48px;margin-top:-22px;border-radius:50%;background:var(--color-accent);color:#fff;display:grid;place-items:center;box-shadow:0 8px 18px -6px rgba(0,0,0,.4)}
+.tabitem .fab svg{width:26px;height:26px}
+.tabitem .dot{position:absolute;top:2px;left:calc(50% + 8px);background:var(--red);color:#fff;font-size:10px;font-weight:700;border-radius:9px;padding:0 5px;line-height:16px;min-width:16px;text-align:center}
+
+/* content pieces */
+.sec-t{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.sec-t h2{font-size:21px}
+.sec-t small{font-size:13px;color:var(--color-neutral-700)}
+.kick{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--color-accent-700)}
+.stat-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.stat{padding:11px 12px;border-top:3px solid var(--sc,var(--color-accent))}
+.stat .v{font-family:var(--font-heading);font-size:28px;font-weight:600;line-height:1.05;font-variant-numeric:tabular-nums}
+.stat .v small{font-size:15px;margin-left:1px}
+.stat .s{font-size:12.5px;color:var(--color-neutral-700);line-height:1.3}
+.bar{height:5px;background:var(--color-neutral-300);border-radius:3px;overflow:hidden}
+.bar>i{display:block;height:100%;border-radius:3px}
+.row{display:flex;align-items:center;gap:12px}
+.svc-row{display:flex;align-items:center;gap:12px;padding:12px 14px}
+.svc-ic{width:40px;height:40px;border-radius:8px;display:grid;place-items:center;font-size:20px;flex-shrink:0;background:color-mix(in srgb,var(--sc) 15%,transparent)}
+.svc-row .n{font-family:var(--font-heading);font-size:18px;font-weight:600;line-height:1.1}
+.svc-row .th{font-size:12.5px;color:var(--color-neutral-700);line-height:1.25}
+.svc-row .sc{font-family:var(--font-heading);font-size:24px;font-weight:600;text-align:right;line-height:1;font-variant-numeric:tabular-nums}
+.svc-row .sc small{display:block;font-family:var(--font-body);font-size:11.5px;color:var(--color-neutral-700);font-weight:400;margin-top:3px}
+.list{display:flex;flex-direction:column;gap:10px}
+.rec{padding:12px 14px;display:flex;flex-direction:column;gap:6px}
+.rec .top{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.rec .t{font-weight:600;font-size:15.5px;line-height:1.35}
+.rec .m{font-size:13px;color:var(--color-neutral-700);line-height:1.35}
+.rec .acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:2px}
+.alert-row{padding:10px 12px;border-left:4px solid var(--ac);display:flex;flex-direction:column;gap:2px}
+.alert-row .m{font-size:14px;line-height:1.35}
+.alert-row .s{font-size:12.5px;color:var(--color-neutral-700)}
+.note{padding:10px 12px;font-size:13.5px;color:var(--color-neutral-800);background:var(--color-accent-100);border:1px solid var(--color-divider);border-radius:6px}
+.chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex-shrink:0;border:1px solid var(--color-divider);padding:6px 12px;font-size:14px;border-radius:20px;background:none;cursor:pointer;white-space:nowrap}
+.chip.active{background:var(--color-accent);border-color:var(--color-accent);color:#fff}
+.mod-head{display:flex;align-items:center;gap:12px}
+.back{background:none;border:none;color:var(--color-accent-700);font-size:15px;cursor:pointer;padding:4px 0}
+.empty{padding:26px 14px;text-align:center;color:var(--color-neutral-700);font-size:14px}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:14px}
+.kv dt{color:var(--color-neutral-700)}
+.kv dd{margin:0;min-width:0;overflow-wrap:anywhere}
+.timeline{display:flex;flex-direction:column;gap:0;border-left:2px solid var(--color-divider);margin-left:6px;padding-left:14px}
+.timeline div{position:relative;padding:4px 0;font-size:13.5px}
+.timeline div::before{content:'';position:absolute;left:-20px;top:10px;width:10px;height:10px;border-radius:50%;background:var(--tc,var(--color-neutral-300))}
+.search{width:100%;min-height:40px;padding:8px 12px;font:inherit;font-size:15px;color:var(--color-text);background:var(--color-surface);border:1px solid var(--color-divider)}
+.footer-legal{text-align:center;padding-top:10px;border-top:1px solid var(--color-divider);margin-top:8px}
+.footer-legal .l1{font-family:var(--font-heading);font-size:12px;letter-spacing:.1em}
+.footer-legal .l2{font-size:11px;line-height:1.35;color:var(--color-accent-700);margin-top:6px}
+.footer-legal .l3{font-size:11px;color:var(--color-accent-700);margin-top:3px}
+.link{color:var(--color-accent-700);font-size:14px;text-align:center;display:block;cursor:pointer;background:none;border:none;width:100%;padding:8px}
+.pref-opt{cursor:pointer;border:2px solid var(--color-divider);padding:10px 8px;text-align:center;flex:1;min-width:0;background:none;font-size:14px}
+.pref-opt.active{border-color:var(--color-accent);background:var(--color-accent-100)}
+.biz-opt{display:flex;align-items:center;gap:12px;padding:11px 12px;text-align:left;width:100%}
+.biz-opt .i{font-size:24px}
+.biz-opt.on{border-color:var(--color-accent);--bc:var(--color-accent)}
+
+/* bottom sheet */
+.sheet-ov{position:fixed;inset:0;background:var(--overlay);z-index:100;display:flex;align-items:flex-end;justify-content:center}
+.sheet{background:var(--sheet-bg);width:100%;max-width:640px;max-height:92vh;overflow-y:auto;border-radius:14px 14px 0 0;padding:8px max(18px,env(safe-area-inset-right)) calc(22px + env(safe-area-inset-bottom)) max(18px,env(safe-area-inset-left));animation:sheetUp .2s ease}
+.sheet .grip{width:42px;height:4px;border-radius:2px;background:var(--color-neutral-300);margin:4px auto 10px}
+.sheet-h{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}
+.sheet-h h3{font-size:21px}
+.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.form-grid .full{grid-column:1/-1}
+.ferr{color:var(--red);font-size:13.5px;min-height:18px;margin:6px 0}
+@media(max-width:440px){.form-grid{grid-template-columns:1fr}}
+
+.toast{position:fixed;left:50%;bottom:calc(90px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(20px);background:#1d1f20;color:#fff;padding:10px 18px;font-size:14.5px;border-radius:4px;opacity:0;pointer-events:none;transition:.25s;z-index:999;max-width:88%;text-align:center}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+body.theme-dark .toast{background:#e6edf3;color:#0d1117}
+@media(min-width:620px){.stat-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.list.two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}}
+</style>
+</head>
+<body>
+<div id="app-root"></div>
+<div id="sheet-root"></div>
+<div class="toast" id="toast" role="status"></div>
+<script>
+/* ===== shared IFM core (identical to desktop) ===== */
+// ---------- utils ----------
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const pad=(n,l=2)=>String(n).padStart(l,'0');
+function isoD(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())}
+function isoDT(d){return isoD(d)+'T'+pad(d.getHours())+':'+pad(d.getMinutes())}
+const NOW=new Date();const todayS=isoD(NOW);
+function addD(s,n){const d=new Date(s.slice(0,10)+'T00:00');d.setDate(d.getDate()+n);return isoD(d)}
+function dBetween(a,b){return Math.round((new Date(b.slice(0,10)+'T00:00')-new Date(a.slice(0,10)+'T00:00'))/864e5)}
+function fmtD(s){if(!s)return '—';const p=s.slice(0,10).split('-');return p.length<3?esc(s):`${p[2]}/${p[1]}/${p[0]}`}
+function fmtDT(s){if(!s)return '—';return fmtD(s)+' '+s.slice(11,16)}
+function fmtDur(m){m=Math.max(0,Math.round(m));if(m<60)return m+'m';const h=Math.floor(m/60);if(h<48)return h+'h '+(m%60)+'m';return Math.floor(h/24)+'d '+(h%24)+'h'}
+const fmtN=n=>(+n||0).toLocaleString('th-TH');
+const avg=a=>{a=a.filter(x=>x!=null&&!isNaN(x));return a.length?Math.round(a.reduce((s,x)=>s+ +x,0)/a.length):0};
+const sum=(a,f)=>a.reduce((s,x)=>s+(+f(x)||0),0);
+const LS={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const tok=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+
+// ---------- master config ----------
+const SVC={
+  eng:{n:'Engineering',th:'งานวิศวกรรม / ระบบอาคาร',type:'Hard',ic:'⚙️',c:'#F97316'},
+  fac:{n:'Facility',th:'งานอาคารสถานที่',type:'Hard',ic:'🏗',c:'#3B82F6'},
+  hk:{n:'Housekeeping',th:'งานแม่บ้าน / ทำความสะอาด',type:'Soft',ic:'🧹',c:'#14B8A6'},
+  sec:{n:'Security',th:'งานรักษาความปลอดภัย',type:'Soft',ic:'🛡',c:'#A855F7'},
+  pest:{n:'Pest Control',th:'ควบคุมสัตว์และแมลงพาหะ',type:'Soft',ic:'🐜',c:'#84CC16'},
+  gdn:{n:'Garden',th:'งานภูมิทัศน์ / สวน',type:'Soft',ic:'🌳',c:'#22C55E'},
+  lin:{n:'Linen',th:'งานผ้า / ซักรีด',type:'Soft',ic:'🧺',c:'#EC4899'},
+};
+const SLA={P1:{l:'P1 Emergency',r:15,f:240},P2:{l:'P2 Urgent',r:30,f:480},P3:{l:'P3 Normal',r:120,f:1440},P4:{l:'P4 Planned',r:240,f:4320}};
+const FLOW=['New','Assigned','In Progress','Completed','Closed'];
+const CATS={
+  fac:['ฝ้า/เพดาน','พื้น/กระเบื้อง','ประตู/กุญแจ','เฟอร์นิเจอร์','ป้าย/Signage','งานสี/ผนัง','ห้องน้ำ/สุขภัณฑ์'],
+  hk:['ทำความสะอาดเร่งด่วน','ห้องน้ำ','ขยะ/ของเสีย','หกเลอะ/Spill','วัสดุสิ้นเปลือง','กลิ่นไม่พึงประสงค์'],
+  sec:['ตรวจสอบบุคคล','ที่จอดรถ','ของหาย/พบของ','เปิด-ปิดพื้นที่','CCTV/Access','ขอเจ้าหน้าที่คุมพื้นที่'],
+  pest:['แมลงสาบ','หนู','มด','แมลงวัน','ยุง','ปลวก','สัตว์จรจัด (สุนัข/แมว)','นก/ค้างคาว'],
+  gdn:['ตัดหญ้า','ตัดแต่งกิ่ง','ระบบรดน้ำ','เปลี่ยนต้นไม้','ต้นไม้ล้ม/กิ่งหัก','กระถางต้นไม้ในอาคาร'],
+  lin:['ขอเบิกผ้าเพิ่ม','ผ้าไม่สะอาด/มีคราบ','ผ้าขาด/ชำรุด','ส่งซักด่วน','ผ้าขาดสต็อก'],
+};
+const DESCS={
+  eng:['ไม่ทำงาน','มีเสียงดังผิดปกติ','รั่วซึม','ไฟตก/ไฟดับบางส่วน','อุณหภูมิไม่ได้ตามกำหนด','มี Alarm แจ้งเตือน'],
+  fac:['ชำรุด ต้องซ่อม','หลุด/แตก เสี่ยงอันตราย','ขอติดตั้งเพิ่ม','เสื่อมสภาพ'],
+  hk:['ขอทำความสะอาดด่วน','มีกลิ่นไม่พึงประสงค์','ล้น ต้องเก็บ','พื้นเปียก/ลื่น'],
+  sec:['ขอเจ้าหน้าที่ตรวจสอบ','พบบุคคลน่าสงสัย','ขอเปิดพื้นที่นอกเวลา','รถจอดผิดที่'],
+  pest:['พบในพื้นที่','พบร่องรอย/มูล','ขอบริการเพิ่ม'],
+  gdn:['ต้องการตัดแต่ง','ต้นไม้แห้งตาย','ไม่ทำงาน'],
+  lin:['ไม่พอใช้','ต้องการด่วน','ส่งล่าช้า'],
+};
+const POS={eng:['Chief Engineer','Engineering Supervisor','Technician (Electrical)','Technician (HVAC)','Technician (Plumbing)'],fac:['Facility Supervisor','Handyman','Carpenter/Painter'],hk:['HK Supervisor','Cleaner','Floor Technician'],sec:['Security Chief','Security Guard','CCTV Operator'],pest:['Pest Technician'],gdn:['Head Gardener','Gardener'],lin:['Linen Supervisor','Linen Attendant']};
+const FN=['สมชาย','สมหญิง','วิชัย','อรุณี','ประเสริฐ','มาลี','ธนพล','สุนิสา','กิตติพงษ์','จันทร์เพ็ญ','ณัฐวุฒิ','พรทิพย์','อนุชา','รัตนา','สุรเชษฐ์','วันเพ็ญ','ชาญวิทย์','ปิยะนุช','เอกชัย','ศิริพร','บุญมี','นภา','ทวีศักดิ์','กาญจนา'];
+const LN=['ก.','ข.','จ.','ช.','ท.','น.','บ.','พ.','ม.','ร.','ว.','ส.'];
+const VENDORS=[['LiftCare MA Co., Ltd.','eng','PM ลิฟต์ / บันไดเลื่อน รายเดือน',45000],['CoolTech Chiller Service','eng','PM Chiller & Cooling Tower',85000],['FireSafe Engineering','fac','ตรวจระบบดับเพลิง & Fire Alarm',30000],['BuildFix Maintenance','fac','งานซ่อมอาคาร On-call',40000],['CleanPro Services','hk','Housekeeping Outsource (Manpower + Chemical)',450000],['Guardian Security Co.','sec','รปภ. 24 ชม. + CCTV Monitoring',380000],['PestGuard Thailand','pest','Pest Control รายเดือน + Call-back',25000],['Green Scape Co.','gdn','ดูแลภูมิทัศน์ / ตัดแต่งต้นไม้',60000],['WashTech Laundry','lin','ซักรีดผ้า (คิดต่อ kg) + Delivery',120000]];
+
+// ---------- business profiles ----------
+const BIZ={
+hospital:{n:'โรงพยาบาล',en:'Hospital',ic:'🏥',c:'#EC4899',site:'PSD General Hospital',scale:1,
+ desc:'IC / HA / JCI · Terminal cleaning · Medical gas · Patient linen',
+ areas:[['OPD Lobby','G','Public',1800,'Medium'],['Emergency Room (ER)','G','Clinical',650,'High'],['ICU','3','Clinical',900,'High'],['Operating Theatre (OR)','3','Clinical',1200,'High'],['IPD Ward 5A','5','Clinical',1100,'High'],['Laboratory','2','Clinical',500,'High'],['Canteen','G','F&B',400,'Medium'],['Car Park','B1','Outdoor',6000,'Low'],['Plant Room / BOH','B2','Technical',1500,'Low'],['Admin Office','7','Office',800,'Low']],
+ sys:['HVAC','Electrical','Plumbing','Fire Protection','Medical Gas','Lift','Steam/Boiler','Nurse Call/ELV'],
+ assets:[['Chiller #1 450TR','HVAC',8,'A'],['Chiller #2 450TR','HVAC',8,'A'],['AHU-OR-01 (HEPA)','HVAC',3,'A'],['AHU-ICU-01','HVAC',2,'A'],['Generator 1,250 kVA','Electrical',8,'A'],['UPS 200 kVA (OR/ICU)','Electrical',8,'A'],['Medical O₂ VIE Tank','Medical Gas',8,'A'],['Medical Vacuum Plant','Medical Gas',8,'A'],['Steam Boiler 2 t/h','Steam/Boiler',8,'B'],['Bed Lift L1','Lift',0,'A'],['Fire Pump 750 GPM','Fire Protection',8,'A'],['Booster Pump Set','Plumbing',8,'B'],['Nurse Call System W5A','Nurse Call/ELV',4,'B']],
+ compliance:[['ทดสอบระบบแก๊สทางการแพทย์','HTM 02-01 / HA','eng',180],['ตรวจคุณภาพน้ำ / Legionella','HA / IC','eng',90],['Generator Load Test','HA / วสท.','eng',30],['Pressure differential OR / Isolation','ASHRAE 170','eng',30],['ตรวจลิฟต์ประจำปี','กฎกระทรวง','eng',365],['ตรวจระบบ Fire Alarm & Sprinkler','NFPA 72 / 25','fac',180],['ซ้อมดับเพลิงและอพยพ','กฎกระทรวงฯ 2555','fac',365],['ตรวจสอบอาคาร (ร.1)','พ.ร.บ.ควบคุมอาคาร','fac',365]],
+ hkTasks:[['Terminal Cleaning ห้องแยกโรค','Terminal','After discharge'],['Routine Cleaning หอผู้ป่วย','Routine','3x/day'],['OR Turnover Cleaning','Terminal','Every case'],['Spill Management (Blood/Body fluid)','Spill','On call'],['Public Toilet Check','Routine','Hourly'],['เก็บขยะติดเชื้อ','Waste','4x/day'],['Floor Scrub & Polish','Deep','Weekly']],
+ posts:['Main Gate','ER Entrance','OPD Lobby','Car Park B1','Back Gate / Loading'],
+ secInc:['บุคคลภายนอกก่อเหตุใน ER','ทรัพย์สินผู้ป่วยสูญหาย','จอดรถกีดขวางทางรถพยาบาล','Code Pink — ตามหาเด็ก','ผู้ป่วยออกนอกพื้นที่โดยไม่แจ้ง'],
+ garden:[['Healing Garden','Shrub',450],['Front Lawn','Lawn',1200],['Lobby Indoor Plants','Indoor',120],['Perimeter Trees','Tree',800]],
+ linen:[['ผ้าปูเตียงผู้ป่วย (Bed sheet)',1200,180],['ชุดผู้ป่วย (Patient gown)',1500,220],['ผ้าห่ม (Blanket)',600,450],['ผ้าคลุม OR (Surgical drape)',800,350],['ชุดเจ้าหน้าที่ (Scrub suit)',900,380],['ปลอกหมอน (Pillow case)',1000,60]],
+ pestNote:'IC: งดพ่นสารเคมีใน ICU / OR — ใช้ Gel bait, IGR และ ILT เท่านั้น · บันทึกผลให้ IC Committee รายเดือน',
+ hkNote:'IC Standard: Terminal cleaning ด้วย Chlorine 1,000 ppm / UV-C · แยกผ้าและอุปกรณ์ตามรหัสสี',
+ linNote:'แยกผ้าติดเชื้อ (ถุงแดง/ถุงละลายน้ำ) ออกจากผ้าทั่วไปก่อนส่งซัก · ซักที่อุณหภูมิ ≥ 71°C',
+ target:{sla:95,pm:95,hk:95,patrol:98,pest:95,gdn:85,lin:98,uptime:99},elec:520000,water:9800,gas:3200,gasL:'LPG/Steam fuel (kg)',
+ staff:{eng:8,fac:3,hk:14,sec:8,pest:2,gdn:3,lin:5}},
+factory:{n:'โรงงาน',en:'Factory',ic:'🏭',c:'#F97316',site:'PSD Manufacturing Plant',scale:.9,
+ desc:'GMP / HACCP / ISO 14001 · Boiler · Crane · Uniform & Clean-room linen',
+ areas:[['Production Line 1','G','Production',3200,'Medium'],['Production Line 2 (GMP Zone)','G','Production',2800,'High'],['Raw Material Warehouse','G','Warehouse',4000,'Low'],['Finished Goods Warehouse','G','Warehouse',3500,'Low'],['QC Laboratory','2','Clinical',300,'High'],['Canteen','G','F&B',600,'Medium'],['Office Building','1-3','Office',1500,'Low'],['Utility Yard / Boiler House','G','Technical',1200,'Low'],['Wastewater Treatment Plant','G','Technical',900,'Low'],['Main Gate & Truck Yard','G','Outdoor',5000,'Low']],
+ sys:['Electrical','Compressed Air','Boiler/Steam','Chiller/HVAC','Wastewater (WWTP)','Fire Protection','Crane/Hoist','Plumbing'],
+ assets:[['Main Transformer 3,000 kVA','Electrical',7,'A'],['Air Compressor #1 75 kW','Compressed Air',7,'A'],['Air Compressor #2 75 kW','Compressed Air',7,'B'],['Refrigerated Air Dryer','Compressed Air',7,'B'],['Fire-tube Boiler 5 t/h','Boiler/Steam',7,'A'],['Process Chiller 300TR','Chiller/HVAC',7,'A'],['AHU GMP Zone','Chiller/HVAC',1,'A'],['WWTP Aerator','Wastewater (WWTP)',8,'B'],['Overhead Crane 10 t','Crane/Hoist',2,'A'],['Fire Pump 1,000 GPM','Fire Protection',7,'A'],['Generator 1,000 kVA','Electrical',7,'A'],['RO Water System','Plumbing',7,'B']],
+ compliance:[['ตรวจสอบหม้อไอน้ำประจำปี','กรมโรงงานอุตสาหกรรม','eng',365],['ทดสอบปั้นจั่น (ปจ.2)','กฎกระทรวงฯ ปั้นจั่น','eng',180],['รายงานคุณภาพน้ำทิ้ง','กรมโรงงาน / ISO 14001','eng',30],['ตรวจถังแรงดัน / Air receiver','กรมโรงงานอุตสาหกรรม','eng',365],['ตรวจระบบไฟฟ้าประจำปี','กฎกระทรวงฯ ไฟฟ้า 2558','eng',365],['ซ้อมดับเพลิงและอพยพ','กฎกระทรวงฯ 2555','fac',365],['GMP / HACCP Audit — Facility','GMP / HACCP','fac',180],['ตรวจวัดสภาพแวดล้อมการทำงาน','กฎกระทรวงฯ แสง เสียง ความร้อน','fac',365]],
+ hkTasks:[['Production Floor Scrub','Routine','Daily'],['GMP Zone Cleaning (Clean room)','Deep','Every shift'],['Canteen Cleaning','Routine','3x/day'],['Toilet & Locker Room','Routine','2-hourly'],['Warehouse Sweeping','Routine','Daily'],['Industrial Waste Segregation','Waste','Daily'],['Office Cleaning','Routine','Daily']],
+ posts:['Main Gate','Truck Gate / Weighbridge','Warehouse Dock','Perimeter Fence Patrol','Office Lobby'],
+ secInc:['รถบรรทุกไม่มีเอกสารนำเข้า','นำของออกนอกโรงงานไม่มีใบผ่าน','บุคคลภายนอกเข้าพื้นที่ผลิต','อุบัติเหตุจราจรในโรงงาน','สัญญาณกันขโมยรั้วแจ้งเตือน'],
+ garden:[['Perimeter Green Belt','Tree',6000],['Front Office Lawn','Lawn',1500],['Buffer Zone (EIA)','Tree',4000],['Canteen Garden','Shrub',300]],
+ linen:[['ชุดพนักงานฝ่ายผลิต (Uniform)',1800,320],['ชุด Clean room (Coverall)',600,950],['ผ้าเช็ดเครื่องจักร (Shop towel)',3000,25],['ผ้ากันเปื้อน (Apron)',500,120],['หมวกคลุมผม (Washable cap)',800,45]],
+ pestNote:'GMP / HACCP: Zero tolerance ในพื้นที่ผลิต · Bait station ภายนอก / Glue board ภายใน · ทำ Trend analysis รายเดือน',
+ hkNote:'GMP Zone: ทำความสะอาดตาม Cleaning Validation · อุปกรณ์แยกรหัสสีตามโซน',
+ linNote:'ชุด Clean room ซักแยกและบรรจุถุงปิดผนึก · ตรวจรอยขาดก่อนแจกจ่ายทุกชุด',
+ target:{sla:93,pm:95,hk:90,patrol:98,pest:95,gdn:80,lin:95,uptime:98},elec:1850000,water:42000,gas:68000,gasL:'Fuel/Steam (kg)',
+ staff:{eng:12,fac:3,hk:10,sec:10,pest:2,gdn:4,lin:3}},
+hotel:{n:'โรงแรม',en:'Hotel',ic:'🏨',c:'#F59E0B',site:'PSD Grand Hotel & Residence',scale:1,
+ desc:'Guest experience · Room make-up · Pool & Kitchen · Room linen par',
+ areas:[['Main Lobby','G','Public',900,'Medium'],['Guest Floors 5-12','5-12','Guest Room',9600,'Medium'],['Ballroom & Function','2','Event',1400,'Medium'],['All-day Dining','G','F&B',600,'High'],['Main Kitchen','B1','F&B',500,'High'],['Swimming Pool & Deck','6','Recreation',700,'Medium'],['Fitness & Spa','6','Recreation',500,'Medium'],['Back-of-House','B1','Technical',1800,'Low'],['Car Park','B2','Outdoor',5000,'Low'],['Laundry Room','B1','Technical',300,'Medium']],
+ sys:['HVAC','Electrical','Plumbing','Hot Water/Boiler','Lift','Fire Protection','Pool System','Kitchen Equipment'],
+ assets:[['Chiller #1 350TR','HVAC',7,'A'],['Chiller #2 350TR','HVAC',7,'A'],['Heat Pump Hot Water','Hot Water/Boiler',7,'A'],['Passenger Lift P1','Lift',0,'A'],['Service Lift S1','Lift',7,'B'],['Generator 1,000 kVA','Electrical',7,'A'],['Pool Filtration & Chlorinator','Pool System',5,'B'],['Kitchen Exhaust Hood','Kitchen Equipment',4,'B'],['Walk-in Freezer','Kitchen Equipment',4,'A'],['Fire Pump 750 GPM','Fire Protection',7,'A'],['Domestic Water Booster','Plumbing',7,'A'],['Industrial Washer 60 kg','Plumbing',9,'B']],
+ compliance:[['ตรวจคุณภาพน้ำสระว่ายน้ำ','กรมอนามัย','eng',7],['ทำความสะอาด Kitchen Hood & Duct','NFPA 96','eng',90],['ตรวจลิฟต์ประจำปี','กฎกระทรวง','eng',365],['Legionella — Cooling tower / Hot water','กรมอนามัย','eng',90],['ล้างถังเก็บน้ำ','กรมอนามัย','eng',180],['ซ้อมดับเพลิงและอพยพ','กฎกระทรวงฯ 2555','fac',365],['ตรวจสอบอาคาร (ร.1)','พ.ร.บ.ควบคุมอาคาร','fac',365],['Kitchen hygiene audit','GMP / SHA','fac',90]],
+ hkTasks:[['Room Make-up (Occupied)','Routine','Daily'],['Check-out Room Cleaning','Deep','On departure'],['Turn-down Service','Routine','Evening'],['Public Area Cleaning','Routine','Hourly'],['Ballroom Set-up Clean','Event','Per event'],['Carpet Shampoo','Deep','Monthly'],['Pool Deck Cleaning','Routine','2x/day']],
+ posts:['Main Entrance / Porte-cochère','Lobby','Car Park B2','Staff Entrance / Loading','Pool & Fitness'],
+ secInc:['แขกทำทรัพย์สินหาย','บุคคลภายนอกขึ้นชั้นห้องพัก','เหตุทะเลาะวิวาท','Fire alarm แจ้งเตือน (ควันบุหรี่)','รถเฉี่ยวชนในที่จอด'],
+ garden:[['Front Driveway Landscape','Shrub',600],['Pool Deck Planters','Shrub',250],['Lobby Indoor Plants','Indoor',150],['Rooftop Garden','Lawn',400]],
+ linen:[['ผ้าปูเตียง King (Bed sheet)',1600,520],['ปลอกผ้านวม (Duvet cover)',1000,780],['ผ้าเช็ดตัว (Bath towel)',2200,260],['ผ้าเช็ดมือ (Hand towel)',2200,90],['ผ้าเช็ดตัวสระ (Pool towel)',600,240],['ผ้าปูโต๊ะจัดเลี้ยง (Table cloth)',800,350],['เสื้อคลุมอาบน้ำ (Bathrobe)',500,890]],
+ pestNote:'Guest-facing: ใช้ Gel bait / ILT แบบซ่อน · Bed bug inspection ห้องพักทุกไตรมาส',
+ hkNote:'Room status เชื่อมกับ Front Office (VC / VD / OC / OD / OOO) · Inspector ตรวจห้องก่อนปล่อยขาย',
+ linNote:'Par level ห้องพัก 3-4 Par (ใช้งาน / ซัก / สต็อก / สำรอง) · ตรวจคราบก่อนจัดห้องทุกผืน',
+ target:{sla:95,pm:95,hk:92,patrol:98,pest:92,gdn:90,lin:98,uptime:99},elec:780000,water:18500,gas:5200,gasL:'LPG (kg)',
+ staff:{eng:10,fac:3,hk:22,sec:9,pest:2,gdn:3,lin:7}},
+expo:{n:'ศูนย์แสดงสินค้า',en:'Exhibition Center',ic:'🎪',c:'#3B82F6',site:'PSD International Exhibition Center',scale:1.6,
+ desc:'Event-driven · Move-in / Move-out · Crowd control · Rigging',
+ areas:[['Exhibition Hall 1','G','Event',12000,'Medium'],['Exhibition Hall 2','G','Event',12000,'Medium'],['Exhibition Hall 3','G','Event',8000,'Medium'],['Main Foyer / Registration','G','Public',3000,'Medium'],['Meeting Rooms Zone','2','Event',2500,'Low'],['F&B Court','G','F&B',1200,'High'],['Loading Dock','G','Technical',3000,'Low'],['Multi-storey Car Park','P1-P4','Outdoor',30000,'Low'],['Central Plant','B1','Technical',2000,'Low'],['Public Toilets','G-2','Public',600,'High']],
+ sys:['HVAC','Electrical','Lift/Escalator','Fire Protection','Plumbing','Lighting Control','Rigging/AV','BMS'],
+ assets:[['Chiller #1 1,000TR','HVAC',8,'A'],['Chiller #2 1,000TR','HVAC',8,'A'],['AHU Hall 1 (x8)','HVAC',0,'A'],['Escalator Foyer E1','Lift/Escalator',3,'A'],['Goods Lift G1 (5 t)','Lift/Escalator',6,'B'],['Main Substation 22 kV','Electrical',8,'A'],['Generator 2,000 kVA','Electrical',8,'A'],['Hall Lighting Control (DALI)','Lighting Control',0,'B'],['Rigging Points Hall 1','Rigging/AV',0,'A'],['Fire Pump 1,500 GPM','Fire Protection',8,'A'],['BMS Server','BMS',8,'B'],['Floor Box Utilities Hall 2','Electrical',1,'B']],
+ compliance:[['Load test จุดแขวน Rigging','มาตรฐานวิศวกรรม','eng',365],['ตรวจลิฟต์ / บันไดเลื่อน','กฎกระทรวง','eng',365],['Generator Load Test','มาตรฐาน วสท.','eng',30],['ตรวจระบบ Fire Alarm & Smoke Exhaust','NFPA 72 / 92','eng',180],['ตรวจสอบอาคาร (ร.1) อาคารชุมนุมคน','พ.ร.บ.ควบคุมอาคาร','fac',365],['ซ้อมดับเพลิงและอพยพ','กฎกระทรวงฯ 2555','fac',365],['ทดสอบไฟฉุกเฉิน / Exit sign','วสท. / NFPA 101','fac',30],['Event Safety Plan','สำนักงานเขต','fac',90]],
+ hkTasks:[['Hall Move-in Cleaning','Event','Per event'],['Hall Move-out / Changeover','Deep','Per event'],['Carpet Vacuum (Aisle)','Routine','Daily during show'],['Toilet Check','Routine','30 min during show'],['Foyer Glass & Floor','Routine','Daily'],['Waste Collection & Recycling','Waste','Every 2 hr'],['Car Park Sweeping','Routine','Weekly']],
+ posts:['Main Foyer','Hall 1-2 Entrance','Loading Dock Control','Car Park P1','Perimeter / VIP Gate'],
+ secInc:['ผู้เข้าชมไม่มีบัตรผ่าน','สินค้าจัดแสดงสูญหาย','เด็กพลัดหลง','รถบรรทุกขนของเกินเวลา Move-in','ฝูงชนหนาแน่นจุดลงทะเบียน'],
+ garden:[['Entrance Plaza Landscape','Shrub',2500],['Boulevard Trees','Tree',4000],['Foyer Indoor Plants','Indoor',300],['Lake & Water Feature','Irrigation',1500]],
+ linen:[['ผ้าคลุมโต๊ะ (Table skirting)',1500,450],['ผ้าคลุมเก้าอี้ (Chair cover)',4000,120],['ผ้าปูโต๊ะประชุม (Table cloth)',1200,300],['ชุดพนักงาน (Uniform)',400,550],['ผ้าม่านกั้นบูธ (Drape)',300,1200]],
+ pestNote:'ช่วง Food fair เพิ่มรอบ ILT / Bait ทุกวัน · Move-out ตรวจหนูในลังสินค้าก่อนปล่อยฮอลล์',
+ hkNote:'Event-driven: แผนแม่บ้านผูกกับ Event calendar (Move-in / Show days / Move-out)',
+ linNote:'ผ้าจัดเลี้ยงเบิกตาม BEO ของแต่ละงาน · ตรวจนับคืนภายใน 24 ชม. หลังจบงาน',
+ target:{sla:93,pm:95,hk:90,patrol:97,pest:90,gdn:85,lin:95,uptime:99},elec:2600000,water:26000,gas:1200,gasL:'LPG (kg)',
+ staff:{eng:14,fac:5,hk:28,sec:20,pest:2,gdn:5,lin:3}},
+office:{n:'อาคารสำนักงาน',en:'Office Building',ic:'🏢',c:'#14B8A6',site:'PSD Tower (Grade A Office)',scale:1.2,
+ desc:'Tenant service · BMS · Lift · Hourly toilet check · IAQ',
+ areas:[['Main Lobby','G','Public',1200,'Medium'],['Office Floors 5-20','5-20','Office',28000,'Low'],['Meeting & Conference Center','4','Office',1500,'Low'],['Pantry & Toilets','5-20','Public',1600,'High'],['Food Court','G','F&B',900,'High'],['Car Park B1-B4','B1-B4','Outdoor',18000,'Low'],['Roof / Cooling Tower','Roof','Technical',1200,'Low'],['Plant Room','B4','Technical',1500,'Low'],['Data Center','3','Technical',300,'Medium'],['Sky Garden','21','Recreation',600,'Low']],
+ sys:['HVAC','Electrical','Plumbing','Lift','Fire Protection','BMS','Generator/UPS','Access Control'],
+ assets:[['Chiller #1 800TR','HVAC',7,'A'],['Chiller #2 800TR','HVAC',7,'A'],['Cooling Tower CT-1','HVAC',6,'A'],['Passenger Lift Low-zone L1','Lift',0,'A'],['Passenger Lift High-zone H1','Lift',0,'A'],['Generator 1,500 kVA','Generator/UPS',7,'A'],['UPS Data Center 160 kVA','Generator/UPS',8,'A'],['Main Distribution Board','Electrical',7,'A'],['Fire Pump 1,000 GPM','Fire Protection',7,'A'],['BMS Controller','BMS',7,'B'],['Access Turnstiles','Access Control',0,'B'],['Domestic Water Pump','Plumbing',7,'B']],
+ compliance:[['ตรวจลิฟต์ประจำปี','กฎกระทรวง','eng',365],['Generator Load Test','มาตรฐาน วสท.','eng',30],['ล้างถังเก็บน้ำ','กรมอนามัย','eng',180],['Legionella — Cooling tower','กรมอนามัย','eng',90],['ตรวจระบบไฟฟ้าประจำปี','กฎกระทรวงฯ ไฟฟ้า','eng',365],['ตรวจสอบอาคาร (ร.1)','พ.ร.บ.ควบคุมอาคาร','fac',365],['ซ้อมดับเพลิงและอพยพ','กฎกระทรวงฯ 2555','fac',365],['IAQ — CO₂ / PM2.5','TREES / WELL','fac',90]],
+ hkTasks:[['Office Floor Cleaning','Routine','Daily (after hours)'],['Toilet Hourly Check','Routine','Hourly'],['Pantry Cleaning','Routine','3x/day'],['Lobby Floor & Glass','Routine','2x/day'],['Carpet Shampoo','Deep','Quarterly'],['Facade Cleaning (BMU)','Deep','Quarterly'],['Waste & Recycling Collection','Waste','Daily']],
+ posts:['Main Lobby / Turnstile','Car Park Entrance','Loading Dock','Fire Control Room','Roaming Patrol'],
+ secInc:['ผู้มาติดต่อไม่ลงทะเบียน','บัตรผ่านสูญหาย','รถจอดในช่องสงวน','ทรัพย์สินสูญหายในห้องประชุม','ประตูหนีไฟเปิดค้าง'],
+ garden:[['Sky Garden','Lawn',600],['Entrance Landscape','Shrub',800],['Lobby & Floor Indoor Plants','Indoor',400],['Podium Trees','Tree',500]],
+ linen:[['ชุดพนักงานแม่บ้าน (Uniform)',300,450],['ชุด รปภ. (Uniform)',200,650],['ผ้าไมโครไฟเบอร์ (Microfiber)',2000,35],['ผ้าปูโต๊ะห้องประชุม',300,320],['ผ้าม่านห้องประชุม',120,1800]],
+ pestNote:'พื้นที่ผู้เช่า: แจ้งล่วงหน้า 24 ชม. ก่อนเข้าบริการ · Food court เพิ่มรอบรายสัปดาห์',
+ hkNote:'Tenant SLA: ห้องน้ำตรวจทุกชั่วโมง · Checklist ผ่าน QR ต่อจุด',
+ linNote:'ผ้าไมโครไฟเบอร์แยกสี: น้ำเงิน=โต๊ะ / แดง=ห้องน้ำ / เขียว=Pantry',
+ target:{sla:95,pm:95,hk:90,patrol:98,pest:90,gdn:85,lin:95,uptime:99},elec:1250000,water:15000,gas:800,gasL:'Diesel (L)',
+ staff:{eng:10,fac:4,hk:24,sec:14,pest:1,gdn:3,lin:1}},
+restaurant:{n:'ร้านอาหาร',en:'Restaurant',ic:'🍽',c:'#EF4444',site:'PSD Kitchen & Dining (Flagship)',scale:.12,
+ desc:'Food safety / HACCP · Grease trap · LPG · Kitchen hood',
+ areas:[['Dining Hall','G','F&B',450,'Medium'],['Main Kitchen','G','F&B',180,'High'],['Cold Room / Freezer','G','F&B',40,'High'],['Dishwashing Area','G','F&B',50,'High'],['Dry Store','G','Warehouse',60,'Medium'],['Customer Toilets','G','Public',40,'High'],['Outdoor Terrace','G','Outdoor',120,'Medium'],['Parking Lot','G','Outdoor',800,'Low'],['Back Yard / Waste Area','G','Technical',60,'High'],['Staff Room / Office','2','Office',80,'Low']],
+ sys:['Kitchen Equipment','Exhaust Hood','Refrigeration','Electrical','Plumbing','Grease Trap','LPG System','HVAC'],
+ assets:[['Combi Oven','Kitchen Equipment',1,'A'],['Wok Burner Range x4','Kitchen Equipment',1,'A'],['Kitchen Exhaust Hood & Fan','Exhaust Hood',1,'A'],['Walk-in Freezer -18°C','Refrigeration',2,'A'],['Walk-in Chiller 2-4°C','Refrigeration',2,'A'],['Conveyor Dishwasher','Kitchen Equipment',3,'B'],['Grease Trap 1,500 L','Grease Trap',8,'A'],['LPG Manifold & Leak Detector','LPG System',8,'A'],['Split Type AC (Dining x6)','HVAC',0,'B'],['Ice Machine','Refrigeration',1,'B'],['Water Filter / Softener','Plumbing',1,'B'],['Main Breaker Panel','Electrical',9,'A']],
+ compliance:[['สูบไขมัน Grease trap','เทศบาล / กทม.','eng',30],['ตรวจรั่ว LPG','กรมธุรกิจพลังงาน','eng',90],['ทำความสะอาด Exhaust hood & Duct','NFPA 96','eng',90],['Log อุณหภูมิ Cold room','HACCP','eng',1],['ตรวจสุขาภิบาลอาหาร (Clean Food Good Taste)','กรมอนามัย','fac',365],['ตรวจถังดับเพลิง','กฎกระทรวงฯ 2555','fac',30],['ตรวจคุณภาพน้ำแข็ง / น้ำดื่ม','กรมอนามัย','fac',180],['ซ้อมดับเพลิง','กฎกระทรวงฯ 2555','fac',365]],
+ hkTasks:[['Kitchen Deep Clean (After close)','Deep','Daily'],['Dining Table Sanitize','Routine','Every turn'],['Toilet Check','Routine','30 min'],['Hood Filter Wash','Deep','Weekly'],['Kitchen Floor Degrease','Routine','2x/day'],['Food Waste Segregation','Waste','Daily'],['Terrace Cleaning','Routine','Daily']],
+ posts:['Front Entrance','Parking Lot','Back Door / Delivery','Cashier Zone'],
+ secInc:['ลูกค้าลืมทรัพย์สิน','ลูกค้าเมาก่อความวุ่นวาย','รถเฉี่ยวชนในลานจอด','เงินสดไม่ตรงยอด','บุคคลน่าสงสัยหลังร้าน'],
+ garden:[['Front Planters','Shrub',60],['Terrace Garden','Shrub',80],['Indoor Plants (Dining)','Indoor',30],['Herb Garden (ใช้ในครัว)','Shrub',25]],
+ linen:[['ผ้าปูโต๊ะ (Table cloth)',300,280],['ผ้าเช็ดปาก (Napkin)',1200,45],['ชุดเชฟ (Chef jacket)',120,650],['ผ้ากันเปื้อน (Apron)',200,150],['ผ้าเช็ดจาน (Kitchen towel)',600,30]],
+ pestNote:'Food safety: Zero tolerance ในครัว · ตรวจ ILT ทุกวัน · เก็บรายงานไว้แสดงต่อ อย. / HACCP',
+ hkNote:'Food contact surface: Sanitizer 200 ppm · ผ้าแยกสี (ครัว / ห้องน้ำ / โต๊ะ)',
+ linNote:'ผ้าเช็ดจานห้ามใช้ข้ามโซน · เปลี่ยนผ้าเช็ดปากทุกรอบลูกค้า',
+ target:{sla:95,pm:95,hk:95,patrol:95,pest:98,gdn:85,lin:95,uptime:98},elec:42000,water:900,gas:2400,gasL:'LPG (kg)',
+ staff:{eng:2,fac:1,hk:6,sec:2,pest:1,gdn:1,lin:1}},
+};
+
+// ---------- state ----------
+let BIZK=LS.get('psd_ifm_biz','hospital');if(!BIZ[BIZK])BIZK='hospital';
+let D=null;const P=()=>BIZ[BIZK];
+const UI={tab:{},q:{},hd:{svc:'',st:'',pri:''},del:null};
+let CUR='dashboard';let Q=[];const TB={};let charts={};
+function save(){LS.set('psd_ifm_v1_'+BIZK,D)}
+function load(){D=LS.get('psd_ifm_v1_'+BIZK,null);if(!D||D._v!==1){D=seed(BIZK);save()}}
+
+// ---------- seed (demo data, deterministic per business) ----------
+function rng(str){let h=1779033703^str.length;for(let i=0;i<str.length;i++){h=Math.imul(h^str.charCodeAt(i),3432918353);h=h<<13|h>>>19}return()=>{h=Math.imul(h^h>>>16,2246822507);h=Math.imul(h^h>>>13,3266489909);h^=h>>>16;return(h>>>0)/4294967296}}
+function seed(bk){
+  const B=BIZ[bk],r=rng(bk+'-ifm-v1');
+  const ri=(a,b)=>a+Math.floor(r()*(b-a+1)),pick=a=>a[Math.floor(r()*a.length)];
+  const wp=pairs=>{const t=pairs.reduce((s,p)=>s+p[1],0);let x=r()*t;for(const p of pairs){x-=p[1];if(x<=0)return p[0]}return pairs[0][0]};
+  const person=()=>pick(FN)+' '+pick(LN);
+  const id=(p,i,l=3)=>p+'-'+pad(i,l);
+  const d={_v:1,site:B.site,created:todayS};
+  d.areas=B.areas.map((a,i)=>({id:id('AR',i+1),name:a[0],floor:a[1],type:a[2],sqm:a[3],risk:a[4]}));
+  const AN=d.areas.map(a=>a.name);
+  const FQ={Monthly:30,Quarterly:90,'Semi-annual':180,Annual:365};
+  const BR=['Trane','Carrier','Daikin','ABB','Schneider','Grundfos','Cummins','Mitsubishi','Hitachi','Siemens','York','Kone'];
+  d.assets=B.assets.map((a,i)=>{const f=pick(Object.keys(FQ));const last=addD(todayS,-ri(3,FQ[f]+12));
+    return{id:id('AS',i+1),name:a[0],system:a[1],area:AN[a[2]]||AN[0],brand:pick(BR),installYear:ri(2012,2024),crit:a[3],status:wp([['Running',78],['Standby',10],['Warning',8],['Down',4]]),pmFreq:f,lastPM:last,nextPM:addD(last,FQ[f])}});
+  d.pm=[];let pi=1;
+  d.assets.forEach(a=>{d.pm.push({id:id('PM',pi++,4),service:'eng',item:a.name,task:'PM '+a.pmFreq+' — ตามแผนผู้ผลิต',freq:a.pmFreq,dueDate:a.lastPM,assignee:person(),status:'Done'});
+    d.pm.push({id:id('PM',pi++,4),service:'eng',item:a.name,task:'PM '+a.pmFreq+' — ตามแผนผู้ผลิต',freq:a.pmFreq,dueDate:a.nextPM,assignee:person(),status:r()<.15&&a.nextPM<=todayS?'Done':'Planned'})});
+  ['ตรวจสภาพหลังคา / รางน้ำ','ตรวจ Door closer & Panic bar','ตรวจไฟฉุกเฉิน / Exit sign','ตรวจสภาพฝ้า / ผนัง / รอยร้าว','ตรวจป้าย / เส้นจราจร / Signage','ตรวจสุขภัณฑ์และอุปกรณ์ห้องน้ำ'].forEach((t,i)=>{
+    const due=addD(todayS,ri(-20,25));d.pm.push({id:id('PM',pi++,4),service:'fac',item:pick(AN),task:t,freq:pick(['Monthly','Quarterly']),dueDate:due,assignee:person(),status:due<todayS&&r()<.7?'Done':'Planned'})});
+  d.meters=[];for(let i=11;i>=0;i--){const dt=new Date(NOW.getFullYear(),NOW.getMonth()-i,1);const f=1+.12*Math.sin((dt.getMonth()-1)/12*2*Math.PI);
+    d.meters.push({id:id('MT',12-i),month:dt.getFullYear()+'-'+pad(dt.getMonth()+1),elec:Math.round(B.elec*f*(.95+r()*.1)),water:Math.round(B.water*(.94+r()*.12)),gas:Math.round(B.gas*(.93+r()*.14))})}
+  const DEF=[['Ceiling','ฝ้าเพดานมีคราบน้ำรั่วซึม'],['Floor','กระเบื้องแตก / หลุดร่อน'],['Door','Door closer ชำรุด ปิดไม่สนิท'],['Wall','สีลอก / ผนังร้าว'],['Roof','หลังคารั่วซึมช่วงฝนตก'],['Signage','ป้ายทางหนีไฟไม่สว่าง'],['Furniture','เก้าอี้ / โต๊ะชำรุด'],['Sanitary','สุขภัณฑ์ชำรุด / ก๊อกรั่ว']];
+  d.defects=DEF.map((x,i)=>{const rep=addD(todayS,-ri(1,40));const sev=wp([['Low',30],['Medium',40],['High',22],['Critical',8]]);
+    return{id:id('DF',i+1),area:pick(AN),element:x[0],desc:x[1],severity:sev,reported:rep,target:addD(rep,{Low:30,Medium:14,High:7,Critical:2}[sev]),status:wp([['Open',35],['In Progress',30],['Closed',35]])}});
+  d.compliance=B.compliance.map((c,i)=>({id:id('CP',i+1),item:c[0],standard:c[1],service:c[2],freqDays:c[3],lastDone:addD(todayS,-ri(0,Math.round(c[3]*1.08))),owner:person()}));
+  d.hkTasks=[];let hi=1;B.hkTasks.forEach(t=>{for(let k=0;k<2;k++)d.hkTasks.push({id:id('HK',hi++),task:t[0],type:t[1],area:pick(AN),freq:t[2],shift:pick(['Morning','Afternoon','Night']),staff:person(),lastDone:addD(todayS,-ri(0,3)),status:wp([['Done',70],['Scheduled',24],['Missed',6]])})});
+  d.hkInsp=[];for(let i=1;i<=40;i++)d.hkInsp.push({id:id('HI',i),date:addD(todayS,-ri(0,62)),area:pick(AN),score:Math.min(100,ri(78,96)+ri(0,6)),inspector:person(),remark:pick(['ผ่านเกณฑ์','มุมห้องมีฝุ่น','กระจกมีคราบ','ขยะไม่ได้แยกประเภท','ผ่าน — ดีมาก','อุปกรณ์ไม่ครบ'])});
+  d.hkInsp.sort((a,b)=>b.date.localeCompare(a.date));
+  d.patrols=[];let ptn=1;for(let day=6;day>=0;day--)B.posts.forEach(p=>['Day','Night'].forEach(sh=>{const pl=ri(8,12);d.patrols.push({id:id('PT',ptn++,4),date:addD(todayS,-day),post:p,shift:sh,guard:person(),planned:pl,scanned:r()<.82?pl:pl-ri(1,3)})}));
+  d.secInc=[];for(let i=1;i<=7;i++){const dt=new Date(NOW.getTime()-ri(1,30*24)*36e5);d.secInc.push({id:id('SI',i),date:isoDT(dt),type:pick(B.secInc),area:pick(AN),severity:wp([['Low',40],['Medium',40],['High',20]]),action:pick(['แจ้งหัวหน้า รปภ. / ตรวจ CCTV','เชิญออกนอกพื้นที่','ประสานตำรวจท้องที่','บันทึกเหตุการณ์ / ส่งต่อ Admin','ปิดกั้นพื้นที่ชั่วคราว']),status:wp([['Closed',60],['Investigating',25],['Open',15]])})}
+  d.secInc.sort((a,b)=>b.date.localeCompare(a.date));
+  d.visitors=[];for(let i=1;i<=10;i++){const tin=new Date(NOW.getTime()-ri(0,30)*36e5);d.visitors.push({id:id('VS',i),name:person(),company:pick(['ผู้รับเหมา','Supplier','ลูกค้า','หน่วยงานราชการ','ผู้ติดต่อทั่วไป','Vendor MA']),purpose:pick(['ส่งของ','ซ่อมบำรุง','ประชุม','ตรวจสอบ','สมัครงาน']),host:person(),timeIn:isoDT(tin),timeOut:r()<.7?isoDT(new Date(tin.getTime()+ri(1,4)*36e5)):'',badge:'V-'+pad(ri(1,99))})}
+  d.visitors.sort((a,b)=>b.timeIn.localeCompare(a.timeIn));
+  const ST=['Bait Station (หนู)','Glue Board','ILT เครื่องดักแมลงวัน','Termite Station','Gel Bait Point','Cage Trap (สัตว์จรจัด)'];
+  d.pestSt=[];for(let i=1;i<=18;i++)d.pestSt.push({id:id('PS',i),type:pick(ST),area:pick(AN),lastCheck:addD(todayS,-ri(0,20)),activity:wp([['None',55],['Low',25],['Medium',13],['High',7]]),remark:''});
+  d.pestVisit=[];for(let i=5;i>=0;i--){d.pestVisit.push({id:id('PV',6-i),date:addD(todayS,-i*30-ri(0,4)),vendor:'PestGuard Thailand',kind:i===2?'Termite':'Routine',areas:'ทุกพื้นที่ตามแผน',chemical:pick(['Fipronil Gel','Bromadiolone Bait','Cypermethrin 10% EC','IGR Pyriproxyfen']),findings:pick(['พบแมลงสาบระดับต่ำในครัว','ไม่พบความเคลื่อนไหว','พบร่องรอยหนูบริเวณขยะ','พบมดในพื้นที่ Pantry']),status:'Done'})}
+  d.pestVisit.push({id:id('PV',7),date:addD(todayS,ri(3,14)),vendor:'PestGuard Thailand',kind:'Routine',areas:'ทุกพื้นที่ตามแผน',chemical:'',findings:'',status:'Scheduled'});
+  d.gdnZones=B.garden.map((g,i)=>({id:id('GZ',i+1),zone:g[0],type:g[1],sqm:g[2],lastMaint:addD(todayS,-ri(1,16)),freqDays:pick([7,14,30]),health:wp([['Good',60],['Fair',30],['Poor',10]]),irrigation:g[1]==='Indoor'?'Manual':pick(['Auto','Manual'])}));
+  d.gdnTasks=[];for(let i=1;i<=9;i++){const dt=addD(todayS,ri(-10,10));d.gdnTasks.push({id:id('GT',i),date:dt,zone:pick(d.gdnZones).zone,task:pick(['ตัดหญ้า','ตัดแต่งพุ่มไม้','ใส่ปุ๋ย','พ่นยาป้องกันโรคพืช','ตรวจหัวสปริงเกอร์','เปลี่ยนไม้กระถาง','ตัดแต่งกิ่งไม้สูง']),staff:person(),status:dt>todayS?'Scheduled':wp([['Done',78],['Delayed',22]])})}
+  d.linenItems=B.linen.map((l,i)=>{const tot=Math.round(l[1]*(.86+r()*.14));const c=Math.round(tot*.34),u=Math.round(tot*.42);return{id:id('LN',i+1),name:l[0],par:l[1],clean:c,inUse:u,laundry:tot-c-u,reject:ri(2,Math.max(3,Math.round(l[1]*.012))),lost:ri(0,Math.max(2,Math.round(l[1]*.006))),cost:l[2]}});
+  d.linenTx=[];const TT=['Issue to Dept','Soiled to Laundry','Clean Return','Reject','Lost'];
+  for(let i=1;i<=18;i++){const t=wp([[TT[0],35],[TT[1],30],[TT[2],28],[TT[3],5],[TT[4],2]]);d.linenTx.push({id:id('LT',i),date:addD(todayS,-ri(0,14)),type:t,item:pick(B.linen)[0],qty:t==='Reject'||t==='Lost'?ri(1,6):ri(20,180),dept:pick(AN)})}
+  d.linenTx.sort((a,b)=>b.date.localeCompare(a.date));
+  d.staff=[];let sn=1;Object.entries(B.staff).forEach(([sv,n])=>{for(let k=0;k<n;k++){const out=['hk','sec','pest','gdn'].includes(sv)?r()<.8:r()<.2;
+    d.staff.push({id:id('ST',sn++),name:person(),service:sv,position:k===0?POS[sv][0]:pick(POS[sv].slice(1).length?POS[sv].slice(1):POS[sv]),shift:pick(['Morning','Afternoon','Night']),employment:out?'Outsource':'In-house',status:wp([['On Duty',62],['Off',30],['Leave',8]]),phone:'08'+ri(1,9)+'-'+ri(100,999)+'-'+ri(1000,9999)})}});
+  d.vendors=VENDORS.map((v,i)=>{const st=addD(todayS,-ri(200,700));return{id:id('VD',i+1),name:v[0],service:v[1],scope:v[2],value:Math.round(v[3]*B.scale/1000)*1000||1000,start:st,end:addD(st,730+ri(-120,60)),score:ri(78,98)}});
+  // tickets
+  d.tickets=[];const SW=[['eng',30],['fac',14],['hk',20],['sec',10],['pest',7],['gdn',6],['lin',13]];
+  for(let i=1;i<=46;i++){
+    const sv=wp(SW),pr=wp([['P1',6],['P2',20],['P3',54],['P4',20]]),S=SLA[pr];
+    const age=ri(10,30*1440),dt=new Date(NOW.getTime()-age*6e4);
+    let st;if(age>S.f*1.15)st=wp([['Closed',70],['Completed',18],['In Progress',8],['On Hold',4]]);else st=wp([['New',25],['Assigned',25],['In Progress',30],['Completed',20]]);
+    const cat=sv==='eng'?pick(B.sys):pick(CATS[sv]);
+    const t={id:'WR-'+pad(i,4),date:isoDT(dt),service:sv,area:pick(AN),category:cat,desc:cat+' '+pick(DESCS[sv]),priority:pr,requester:person(),assignee:st==='New'?'':person(),status:st,respondedAt:'',completedAt:''};
+    if(st!=='New')t.respondedAt=isoDT(new Date(dt.getTime()+ri(3,Math.round(S.r*1.3))*6e4));
+    if(st==='Completed'||st==='Closed'){const dur=ri(Math.round(S.f*.15),Math.round(S.f*1.12));t.completedAt=isoDT(new Date(Math.min(dt.getTime()+dur*6e4,NOW.getTime())))}
+    d.tickets.push(t)}
+  d.tickets.sort((a,b)=>b.date.localeCompare(a.date));
+  d.hist=[];for(let i=6;i>=1;i--){const dt=new Date(NOW.getFullYear(),NOW.getMonth()-i,1);d.hist.push({m:dt.getFullYear()+'-'+pad(dt.getMonth()+1),wr:ri(35,70),sla:ri(86,98)})}
+  return d;
+}
+
+// ---------- schema (drives tables + forms) ----------
+const AREAS=()=>D.areas.map(a=>a.name);
+const SVCO=()=>Object.keys(SVC).map(k=>[k,SVC[k].n]);
+const BC={Running:'green',Standby:'blue',Warning:'yellow',Down:'red',New:'blue',Assigned:'purple','In Progress':'yellow','On Hold':'gray',Completed:'teal',Closed:'green',Planned:'blue',Done:'green',Overdue:'red',Open:'red',Investigating:'yellow',Compliant:'green','Due Soon':'yellow',Scheduled:'blue',Missed:'red',Delayed:'orange',None:'green',Low:'teal',Medium:'yellow',High:'red',Critical:'red',Good:'green',Fair:'yellow',Poor:'red','On Duty':'green',Off:'gray',Leave:'yellow',Active:'green',Expiring:'yellow',Expired:'red',A:'red',B:'yellow',C:'gray',P1:'red',P2:'orange',P3:'blue',P4:'gray','In-house':'blue',Outsource:'purple',Met:'green',Breached:'red'};
+const badge=v=>v===''||v==null?'—':`<span class="badge b-${BC[v]||'gray'}">${esc(v)}</span>`;
+const chip=k=>SVC[k]?`<span class="svc-chip" style="--sc:${SVC[k].c}">${SVC[k].ic} ${SVC[k].n}</span>`:esc(k);
+const FREQ=['Daily','Weekly','Monthly','Quarterly','Semi-annual','Annual'];
+const SCH={
+ tickets:{label:'Work Request',pfx:'WR',l4:1,fields:[
+   {k:'service',l:'Service',t:'select',o:SVCO,req:1},{k:'priority',l:'Priority',t:'select',o:()=>Object.keys(SLA).map(k=>[k,SLA[k].l]),req:1,def:'P3'},
+   {k:'area',l:'พื้นที่',t:'select',o:AREAS,req:1},{k:'category',l:'หมวดงาน',t:'text',req:1,list:f=>{const s=f.service||'eng';return s==='eng'?P().sys:CATS[s]||[]}},
+   {k:'desc',l:'รายละเอียด',t:'textarea',req:1,full:1},{k:'requester',l:'ผู้แจ้ง',t:'text',req:1},{k:'assignee',l:'ผู้รับผิดชอบ',t:'text'},
+   {k:'date',l:'วันเวลาแจ้ง',t:'datetime',def:()=>isoDT(new Date())},{k:'status',l:'สถานะ',t:'select',o:FLOW.concat(['On Hold']),def:'New',b:1}],
+   cols:['id','date','service','area','category','desc','priority','assignee','status','_sla'],
+   sort:(a,b)=>b.date.localeCompare(a.date),
+   onSave(r){const n=isoDT(new Date());if(r.status!=='New'&&!r.respondedAt)r.respondedAt=n;if((r.status==='Completed'||r.status==='Closed')&&!r.completedAt)r.completedAt=n;if(r.status!=='Completed'&&r.status!=='Closed')r.completedAt=''}},
+ assets:{label:'ทรัพย์สิน / อุปกรณ์',pfx:'AS',fields:[
+   {k:'name',l:'ชื่ออุปกรณ์',t:'text',req:1,full:1},{k:'system',l:'ระบบ',t:'select',o:()=>P().sys,req:1},{k:'area',l:'พื้นที่',t:'select',o:AREAS},
+   {k:'brand',l:'ยี่ห้อ',t:'text'},{k:'installYear',l:'ปีที่ติดตั้ง',t:'number'},{k:'crit',l:'Criticality',t:'select',o:[['A','A — วิกฤต'],['B','B — สำคัญ'],['C','C — ทั่วไป']],def:'B',b:1},
+   {k:'status',l:'สถานะ',t:'select',o:['Running','Standby','Warning','Down'],def:'Running',b:1},{k:'pmFreq',l:'ความถี่ PM',t:'select',o:FREQ.slice(2),def:'Quarterly'},
+   {k:'lastPM',l:'PM ล่าสุด',t:'date'},{k:'nextPM',l:'PM ครั้งถัดไป',t:'date'}],
+   cols:['id','name','system','area','crit','brand','lastPM','nextPM','status']},
+ pm:{label:'แผน PM',pfx:'PM',l4:1,fields:[
+   {k:'service',l:'Service',t:'select',o:()=>[['eng','Engineering'],['fac','Facility']],req:1},{k:'item',l:'อุปกรณ์ / พื้นที่',t:'text',req:1,list:()=>D.assets.map(a=>a.name).concat(AREAS())},
+   {k:'task',l:'งาน',t:'text',req:1,full:1},{k:'freq',l:'ความถี่',t:'select',o:FREQ,def:'Monthly'},{k:'dueDate',l:'กำหนดวันที่',t:'date',req:1,def:()=>todayS},
+   {k:'assignee',l:'ผู้รับผิดชอบ',t:'text'},{k:'status',l:'สถานะ',t:'select',o:['Planned','Done'],def:'Planned',b:1}],
+   cols:['id','item','task','freq','dueDate','assignee','status'],sort:(a,b)=>a.dueDate.localeCompare(b.dueDate),
+   derive:r=>({...r,status:r.status==='Planned'&&r.dueDate<todayS?'Overdue':r.status})},
+ meters:{label:'มิเตอร์สาธารณูปโภค',pfx:'MT',fields:[
+   {k:'month',l:'เดือน (YYYY-MM)',t:'text',req:1,def:()=>todayS.slice(0,7)},{k:'elec',l:'ไฟฟ้า (kWh)',t:'number',req:1},{k:'water',l:'น้ำประปา (m³)',t:'number'},{k:'gas',l:()=>P().gasL,t:'number'}],
+   cols:['month','elec','water','gas'],sort:(a,b)=>b.month.localeCompare(a.month)},
+ defects:{label:'Defect อาคาร',pfx:'DF',fields:[
+   {k:'area',l:'พื้นที่',t:'select',o:AREAS,req:1},{k:'element',l:'องค์ประกอบอาคาร',t:'select',o:['Roof','Ceiling','Wall','Floor','Door','Window','Sanitary','Signage','Furniture','External'],req:1},
+   {k:'desc',l:'รายละเอียด',t:'textarea',req:1,full:1},{k:'severity',l:'ความรุนแรง',t:'select',o:['Low','Medium','High','Critical'],def:'Medium',b:1},
+   {k:'reported',l:'วันที่พบ',t:'date',def:()=>todayS},{k:'target',l:'กำหนดแล้วเสร็จ',t:'date',def:()=>addD(todayS,14)},{k:'status',l:'สถานะ',t:'select',o:['Open','In Progress','Closed'],def:'Open',b:1}],
+   cols:['id','area','element','desc','severity','reported','target','status'],sort:(a,b)=>b.reported.localeCompare(a.reported)},
+ compliance:{label:'รายการ Compliance',pfx:'CP',fields:[
+   {k:'item',l:'รายการตรวจ / ทดสอบ',t:'text',req:1,full:1},{k:'standard',l:'กฎหมาย / มาตรฐาน',t:'text'},{k:'service',l:'Service',t:'select',o:SVCO,def:'eng'},
+   {k:'freqDays',l:'รอบ (วัน)',t:'number',req:1,def:365},{k:'lastDone',l:'ดำเนินการล่าสุด',t:'date',req:1,def:()=>todayS},{k:'owner',l:'ผู้รับผิดชอบ',t:'text'}],
+   cols:['id','item','standard','lastDone','_nextDue','owner','status'],colL:{_nextDue:'ครบกำหนด',status:'สถานะ'},
+   derive:r=>{const nx=addD(r.lastDone,+r.freqDays||0),dl=dBetween(todayS,nx);return{...r,_nextDue:nx,_dl:dl,status:dl<0?'Overdue':dl<=30?'Due Soon':'Compliant'}},
+   sort:(a,b)=>a._dl-b._dl},
+ areas:{label:'พื้นที่',pfx:'AR',fields:[
+   {k:'name',l:'ชื่อพื้นที่',t:'text',req:1},{k:'floor',l:'ชั้น / โซน',t:'text'},{k:'type',l:'ประเภท',t:'select',o:['Public','Office','Clinical','Production','Warehouse','F&B','Guest Room','Event','Recreation','Technical','Outdoor']},
+   {k:'sqm',l:'พื้นที่ (ตร.ม.)',t:'number'},{k:'risk',l:'ระดับความเสี่ยงสุขอนามัย',t:'select',o:['High','Medium','Low'],def:'Medium',b:1}],
+   cols:['id','name','floor','type','sqm','risk']},
+ hkTasks:{label:'ตารางทำความสะอาด',pfx:'HK',fields:[
+   {k:'task',l:'งาน',t:'text',req:1,full:1,list:()=>P().hkTasks.map(t=>t[0])},{k:'type',l:'ประเภท',t:'select',o:['Routine','Deep','Terminal','Spill','Event','Waste']},
+   {k:'area',l:'พื้นที่',t:'select',o:AREAS,req:1},{k:'freq',l:'ความถี่',t:'text',def:'Daily'},{k:'shift',l:'กะ',t:'select',o:['Morning','Afternoon','Night']},
+   {k:'staff',l:'พนักงาน',t:'text'},{k:'lastDone',l:'ทำล่าสุด',t:'date',def:()=>todayS},{k:'status',l:'สถานะวันนี้',t:'select',o:['Scheduled','Done','Missed'],def:'Scheduled',b:1}],
+   cols:['id','task','type','area','freq','shift','staff','lastDone','status']},
+ hkInsp:{label:'ผลตรวจความสะอาด',pfx:'HI',fields:[
+   {k:'date',l:'วันที่ตรวจ',t:'date',req:1,def:()=>todayS},{k:'area',l:'พื้นที่',t:'select',o:AREAS,req:1},{k:'score',l:'คะแนน (%)',t:'number',req:1,min:0,max:100},
+   {k:'inspector',l:'ผู้ตรวจ',t:'text'},{k:'remark',l:'หมายเหตุ',t:'textarea',full:1}],
+   cols:['id','date','area','score','inspector','remark'],sort:(a,b)=>b.date.localeCompare(a.date)},
+ patrols:{label:'รอบตรวจการณ์',pfx:'PT',l4:1,fields:[
+   {k:'date',l:'วันที่',t:'date',req:1,def:()=>todayS},{k:'post',l:'จุด / ป้อม',t:'select',o:()=>P().posts,req:1},{k:'shift',l:'กะ',t:'select',o:['Day','Night']},
+   {k:'guard',l:'เจ้าหน้าที่',t:'text'},{k:'planned',l:'Checkpoint ตามแผน',t:'number',req:1,def:10},{k:'scanned',l:'Checkpoint ที่สแกน',t:'number',req:1}],
+   cols:['date','post','shift','guard','planned','scanned','_pct'],colL:{_pct:'% Compliance'},sort:(a,b)=>b.date.localeCompare(a.date)||a.post.localeCompare(b.post)},
+ secInc:{label:'เหตุการณ์ความปลอดภัย',pfx:'SI',fields:[
+   {k:'date',l:'วันเวลา',t:'datetime',req:1,def:()=>isoDT(new Date())},{k:'type',l:'ประเภทเหตุ',t:'text',req:1,list:()=>P().secInc},{k:'area',l:'พื้นที่',t:'select',o:AREAS},
+   {k:'severity',l:'ความรุนแรง',t:'select',o:['Low','Medium','High'],def:'Low',b:1},{k:'action',l:'การดำเนินการ',t:'textarea',full:1},{k:'status',l:'สถานะ',t:'select',o:['Open','Investigating','Closed'],def:'Open',b:1}],
+   cols:['id','date','type','area','severity','action','status'],sort:(a,b)=>b.date.localeCompare(a.date)},
+ visitors:{label:'ผู้มาติดต่อ',pfx:'VS',fields:[
+   {k:'name',l:'ชื่อ-สกุล',t:'text',req:1},{k:'company',l:'บริษัท / หน่วยงาน',t:'text'},{k:'purpose',l:'วัตถุประสงค์',t:'text'},{k:'host',l:'ผู้รับการติดต่อ',t:'text'},
+   {k:'timeIn',l:'เวลาเข้า',t:'datetime',req:1,def:()=>isoDT(new Date())},{k:'timeOut',l:'เวลาออก',t:'datetime'},{k:'badge',l:'บัตรผู้มาติดต่อ',t:'text'}],
+   cols:['id','name','company','purpose','host','timeIn','timeOut','badge'],sort:(a,b)=>b.timeIn.localeCompare(a.timeIn)},
+ pestSt:{label:'จุดติดตั้งอุปกรณ์',pfx:'PS',fields:[
+   {k:'type',l:'ประเภท',t:'select',o:['Bait Station (หนู)','Glue Board','ILT เครื่องดักแมลงวัน','Termite Station','Gel Bait Point','Cage Trap (สัตว์จรจัด)'],req:1},
+   {k:'area',l:'พื้นที่',t:'select',o:AREAS,req:1},{k:'lastCheck',l:'ตรวจล่าสุด',t:'date',def:()=>todayS},
+   {k:'activity',l:'ระดับการพบ',t:'select',o:['None','Low','Medium','High'],def:'None',b:1},{k:'remark',l:'หมายเหตุ',t:'text',full:1}],
+   cols:['id','type','area','lastCheck','activity','remark']},
+ pestVisit:{label:'การเข้าบริการ',pfx:'PV',fields:[
+   {k:'date',l:'วันที่',t:'date',req:1,def:()=>todayS},{k:'vendor',l:'ผู้ให้บริการ',t:'text',def:'PestGuard Thailand'},{k:'kind',l:'ประเภทบริการ',t:'select',o:['Routine','Call-back','Termite','Fumigation','Stray animal']},
+   {k:'areas',l:'พื้นที่',t:'text'},{k:'chemical',l:'สารเคมี / วิธีการ',t:'text'},{k:'findings',l:'ผลการตรวจพบ',t:'textarea',full:1},{k:'status',l:'สถานะ',t:'select',o:['Scheduled','Done'],def:'Scheduled',b:1}],
+   cols:['id','date','kind','areas','chemical','findings','status'],sort:(a,b)=>b.date.localeCompare(a.date)},
+ gdnZones:{label:'โซนภูมิทัศน์',pfx:'GZ',fields:[
+   {k:'zone',l:'ชื่อโซน',t:'text',req:1},{k:'type',l:'ประเภท',t:'select',o:['Lawn','Shrub','Tree','Indoor','Irrigation']},{k:'sqm',l:'พื้นที่ (ตร.ม.)',t:'number'},
+   {k:'lastMaint',l:'ดูแลล่าสุด',t:'date',def:()=>todayS},{k:'freqDays',l:'รอบดูแล (วัน)',t:'number',def:14},{k:'health',l:'สภาพ',t:'select',o:['Good','Fair','Poor'],def:'Good',b:1},
+   {k:'irrigation',l:'ระบบรดน้ำ',t:'select',o:['Auto','Manual','N/A']}],
+   cols:['id','zone','type','sqm','lastMaint','_next','irrigation','health'],colL:{_next:'ครบรอบถัดไป'},
+   derive:r=>({...r,_next:addD(r.lastMaint,+r.freqDays||14)})},
+ gdnTasks:{label:'งานสวน',pfx:'GT',fields:[
+   {k:'date',l:'วันที่',t:'date',req:1,def:()=>todayS},{k:'zone',l:'โซน',t:'select',o:()=>D.gdnZones.map(z=>z.zone),req:1},{k:'task',l:'งาน',t:'text',req:1},
+   {k:'staff',l:'ผู้รับผิดชอบ',t:'text'},{k:'status',l:'สถานะ',t:'select',o:['Scheduled','Done','Delayed'],def:'Scheduled',b:1}],
+   cols:['id','date','zone','task','staff','status'],sort:(a,b)=>b.date.localeCompare(a.date)},
+ linenItems:{label:'รายการผ้า',pfx:'LN',fields:[
+   {k:'name',l:'ชื่อรายการผ้า',t:'text',req:1,full:1},{k:'par',l:'Par level (ผืน)',t:'number',req:1},{k:'cost',l:'ราคา/ผืน (฿)',t:'number'},
+   {k:'clean',l:'ผ้าสะอาดในคลัง',t:'number',def:0},{k:'inUse',l:'ใช้งานอยู่',t:'number',def:0},{k:'laundry',l:'อยู่ระหว่างซัก',t:'number',def:0},
+   {k:'reject',l:'Reject (เดือนนี้)',t:'number',def:0},{k:'lost',l:'สูญหาย (เดือนนี้)',t:'number',def:0}],
+   cols:['id','name','par','clean','inUse','laundry','_total','_avail','reject','lost'],colL:{_total:'รวม',_avail:'Availability'},
+   derive:r=>{const t=(+r.clean||0)+(+r.inUse||0)+(+r.laundry||0);return{...r,_total:t,_avail:r.par?Math.min(100,Math.round(t/r.par*100)):0}}},
+ linenTx:{label:'รายการเคลื่อนไหวผ้า',pfx:'LT',fields:[
+   {k:'date',l:'วันที่',t:'date',req:1,def:()=>todayS},{k:'type',l:'ประเภท',t:'select',o:['Issue to Dept','Soiled to Laundry','Clean Return','Reject','Lost'],req:1},
+   {k:'item',l:'รายการผ้า',t:'select',o:()=>D.linenItems.map(x=>x.name),req:1},{k:'qty',l:'จำนวน (ผืน)',t:'number',req:1},{k:'dept',l:'หน่วยงาน / พื้นที่',t:'select',o:AREAS}],
+   cols:['id','date','type','item','qty','dept'],sort:(a,b)=>b.date.localeCompare(a.date),
+   onCreate(r){const it=D.linenItems.find(x=>x.name===r.item);if(!it)return;const q=+r.qty||0;const mv={'Issue to Dept':['clean','inUse'],'Soiled to Laundry':['inUse','laundry'],'Clean Return':['laundry','clean'],'Reject':['laundry','reject'],'Lost':['inUse','lost']}[r.type];if(mv){it[mv[0]]=Math.max(0,(+it[mv[0]]||0)-q);it[mv[1]]=(+it[mv[1]]||0)+q}}},
+ staff:{label:'พนักงาน',pfx:'ST',fields:[
+   {k:'name',l:'ชื่อ-สกุล',t:'text',req:1},{k:'service',l:'Service',t:'select',o:SVCO,req:1},{k:'position',l:'ตำแหน่ง',t:'text',list:f=>POS[f.service||'eng']},
+   {k:'shift',l:'กะ',t:'select',o:['Morning','Afternoon','Night']},{k:'employment',l:'การจ้าง',t:'select',o:['In-house','Outsource'],b:1},{k:'status',l:'สถานะวันนี้',t:'select',o:['On Duty','Off','Leave'],def:'On Duty',b:1},{k:'phone',l:'โทรศัพท์',t:'text'}],
+   cols:['id','name','service','position','shift','employment','phone','status']},
+ vendors:{label:'สัญญาผู้รับจ้าง',pfx:'VD',fields:[
+   {k:'name',l:'ชื่อบริษัท',t:'text',req:1},{k:'service',l:'Service',t:'select',o:SVCO,req:1},{k:'scope',l:'ขอบเขตงาน',t:'text',full:1},
+   {k:'value',l:'มูลค่า/เดือน (฿)',t:'number'},{k:'score',l:'คะแนนประเมิน (%)',t:'number'},{k:'start',l:'เริ่มสัญญา',t:'date'},{k:'end',l:'สิ้นสุดสัญญา',t:'date'}],
+   cols:['id','name','service','scope','value','start','end','score','status'],colL:{status:'สถานะ'},
+   derive:r=>{const dl=r.end?dBetween(todayS,r.end):999;return{...r,status:dl<0?'Expired':dl<=60?'Expiring':'Active'}}},
+};
+
+// ---------- KPI calculations ----------
+function slaOf(t){const S=SLA[t.priority]||SLA.P3,f=S.f*6e4,st=new Date(t.date).getTime();
+  if(t.completedAt){return{s:(new Date(t.completedAt).getTime()-st)<=f?'met':'breach'}}
+  if(t.status==='On Hold')return{s:'hold'};
+  const left=st+f-Date.now();return left<0?{s:'breach',open:1}:{s:'open',left:left/6e4}}
+function slaPct(svc){let m=0,b=0;D.tickets.forEach(t=>{if(svc&&t.service!==svc)return;const s=slaOf(t).s;if(s==='met')m++;else if(s==='breach')b++});return m+b?Math.round(m/(m+b)*100):100}
+function pmPct(svc){const t=D.pm.filter(p=>p.service===svc&&p.dueDate<=todayS);return t.length?Math.round(t.filter(p=>p.status==='Done').length/t.length*100):100}
+function compRows(svc){return D.compliance.filter(x=>!svc||x.service===svc).map(SCH.compliance.derive)}
+function compPct(svc){const c=compRows(svc);return c.length?Math.round(c.filter(x=>x.status!=='Overdue').length/c.length*100):100}
+function uptime(){const a=D.assets;return a.length?Math.round(a.filter(x=>x.status==='Running'||x.status==='Standby').length/a.length*100):100}
+function defClose(){const d=D.defects;return d.length?Math.round(d.filter(x=>x.status==='Closed').length/d.length*100):100}
+function hkScore(days=30){const s=D.hkInsp.filter(x=>x.date>=addD(todayS,-days));return s.length?avg(s.map(x=>x.score)):0}
+function hkDone(){const t=D.hkTasks;return t.length?Math.round(t.filter(x=>x.status==='Done').length/t.length*100):100}
+function patrolPct(post){const p=D.patrols.filter(x=>x.date>=addD(todayS,-7)&&(!post||x.post===post));const pl=sum(p,x=>x.planned);return pl?Math.round(sum(p,x=>x.scanned)/pl*100):100}
+function incClose(){const s=D.secInc;return s.length?Math.round(s.filter(x=>x.status==='Closed').length/s.length*100):100}
+function pestPct(){const s=D.pestSt;return s.length?Math.round(s.filter(x=>x.activity==='None'||x.activity==='Low').length/s.length*100):100}
+function gdnPct(){const z=D.gdnZones;return z.length?Math.round(sum(z,x=>x.health==='Good'?1:x.health==='Fair'?.6:0)/z.length*100):100}
+function gdnOnTime(){const t=D.gdnTasks.filter(x=>x.status!=='Scheduled');return t.length?Math.round(t.filter(x=>x.status==='Done').length/t.length*100):100}
+function linPct(){return D.linenItems.length?avg(D.linenItems.map(x=>SCH.linenItems.derive(x)._avail)):100}
+function linLoss(){const par=sum(D.linenItems,x=>x.par);return par?Math.round(sum(D.linenItems,x=>(+x.reject||0)+(+x.lost||0))/par*1000)/10:0}
+const SCORE={
+  eng:()=>avg([slaPct('eng'),pmPct('eng'),uptime(),compPct('eng')]),
+  fac:()=>avg([slaPct('fac'),pmPct('fac'),compPct('fac'),defClose()]),
+  hk:()=>avg([slaPct('hk'),hkScore(),hkDone()]),
+  sec:()=>avg([slaPct('sec'),patrolPct(),incClose()]),
+  pest:()=>avg([slaPct('pest'),pestPct()]),
+  gdn:()=>avg([slaPct('gdn'),gdnPct(),gdnOnTime()]),
+  lin:()=>avg([slaPct('lin'),linPct()]),
+};
+function KPIS(){const T=P().target;return[
+  ['eng','SLA งานแจ้งซ่อม',()=>slaPct('eng'),T.sla,'%'],['eng','PM Compliance',()=>pmPct('eng'),T.pm,'%'],['eng','Asset Uptime',uptime,T.uptime,'%'],['eng','Statutory Compliance',()=>compPct('eng'),100,'%'],
+  ['fac','SLA งานแจ้งซ่อม',()=>slaPct('fac'),T.sla,'%'],['fac','PM Compliance (อาคาร)',()=>pmPct('fac'),T.pm,'%'],['fac','Life-safety Compliance',()=>compPct('fac'),100,'%'],['fac','Defect Closure',defClose,85,'%'],
+  ['hk','SLA งานแจ้ง',()=>slaPct('hk'),T.sla,'%'],['hk','Cleanliness Score (30 วัน)',()=>hkScore(),T.hk,'%'],['hk','Task Completion',hkDone,95,'%'],
+  ['sec','SLA งานแจ้ง',()=>slaPct('sec'),T.sla,'%'],['sec','Patrol Compliance (7 วัน)',()=>patrolPct(),T.patrol,'%'],['sec','Incident Closure',incClose,90,'%'],
+  ['pest','SLA งานแจ้ง',()=>slaPct('pest'),T.sla,'%'],['pest','Station Clean Rate',pestPct,T.pest,'%'],
+  ['gdn','SLA งานแจ้ง',()=>slaPct('gdn'),T.sla,'%'],['gdn','Zone Health',gdnPct,T.gdn,'%'],['gdn','Task On-time',gdnOnTime,90,'%'],
+  ['lin','SLA งานแจ้ง',()=>slaPct('lin'),T.sla,'%'],['lin','Linen Availability',linPct,T.lin,'%'],['lin','Reject + Lost Rate',linLoss,2,'%',1],
+]}
+const scoreColor=v=>v>=90?'var(--green)':v>=75?'var(--yellow)':'var(--red)';
+const openWR=svc=>D.tickets.filter(t=>(!svc||t.service===svc)&&t.status!=='Closed'&&t.status!=='Completed').length;
+
+function alerts(){const A=[];
+  D.tickets.forEach(t=>{const s=slaOf(t);if(s.s==='breach'&&s.open)A.push({lv:'red',svc:t.service,m:`${t.id} เกิน SLA — ${t.desc}`,s:`${t.area} · ${t.priority}`,v:'helpdesk'})});
+  D.assets.filter(a=>a.status==='Down').forEach(a=>A.push({lv:'red',svc:'eng',m:`${a.name} หยุดทำงาน`,s:`${a.area} · Criticality ${a.crit}`,v:'eng'}));
+  compRows().filter(c=>c.status==='Overdue').forEach(c=>A.push({lv:'red',svc:c.service,m:`Compliance เลยกำหนด: ${c.item}`,s:`${c.standard} · ครบ ${fmtD(c._nextDue)}`,v:c.service}));
+  D.defects.filter(d=>d.status!=='Closed'&&(d.severity==='Critical'||d.target<todayS)).forEach(d=>A.push({lv:d.severity==='Critical'?'red':'yellow',svc:'fac',m:`Defect ${d.element}: ${d.desc}`,s:`${d.area} · กำหนด ${fmtD(d.target)}`,v:'fac'}));
+  D.pestSt.filter(s=>s.activity==='High').forEach(s=>A.push({lv:'yellow',svc:'pest',m:`พบความเคลื่อนไหวสูง — ${s.type}`,s:`${s.id} · ${s.area}`,v:'pest'}));
+  D.linenItems.map(SCH.linenItems.derive).filter(x=>x._avail<90).forEach(x=>A.push({lv:'yellow',svc:'lin',m:`ผ้าต่ำกว่า Par: ${x.name}`,s:`Availability ${x._avail}%`,v:'lin'}));
+  compRows().filter(c=>c.status==='Due Soon').forEach(c=>A.push({lv:'blue',svc:c.service,m:`ใกล้ครบกำหนด: ${c.item}`,s:`อีก ${c._dl} วัน`,v:c.service}));
+  const o={red:0,yellow:1,blue:2};return A.sort((a,b)=>o[a.lv]-o[b.lv]);
+}
+
+
+function nextId(ent){const S=SCH[ent];const mx=D[ent].reduce((m,r)=>{const n=parseInt(String(r.id||'').split('-').pop(),10);return isNaN(n)?m:Math.max(m,n)},0);return S.pfx+'-'+pad(mx+1,S.l4?4:3)}
+
+
+/* =====================================================================
+   PSD · eNGINNo IFM MANAGEMENT V1.0 — Mobile
+   Same data store as the desktop file (localStorage 'psd_ifm_v1_<biz>'),
+   so a WR raised on the phone shows up on the desktop Command Center
+   when both pages are served from the same site (GitHub Pages).
+   ===================================================================== */
+const DESKTOP_URL='PSD_eNGINNo_IFM_Management_v1_0.html';
+const MK={user:'psd_ifm_m_user',lang:'psd_ifm_m_lang',theme:'psd_ifm_m_theme',font:'psd_ifm_m_font'};
+const ST={lang:LS.get(MK.lang,null),user:LS.get(MK.user,null),tab:'home',svc:null,sub:{},wrf:'open',wrsvc:'',q:'',sheet:null,delArm:null,resetArm:false};
+const tx=(th,en)=>ST.lang==='en'?en:th;
+const ROLES=[['requester','ผู้แจ้งงาน','Requester'],['tech','ช่าง / พนักงานบริการ','Technician / Service staff'],['sup','หัวหน้างาน','Supervisor'],['fm','ผู้จัดการอาคาร (FM)','Facility Manager']];
+const roleName=k=>{const r=ROLES.find(x=>x[0]===k)||ROLES[0];return tx(r[1],r[2])};
+const svcName=k=>SVC[k]?(ST.lang==='en'?SVC[k].n:SVC[k].th):k;
+
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(toast._h);toast._h=setTimeout(()=>t.classList.remove('show'),2400)}
+function applyPrefs(){
+  const th=LS.get(MK.theme,'system'),ft=LS.get(MK.font,'default');
+  let dark=th==='dark';
+  if(th==='system'){const dt=document.documentElement.getAttribute('data-theme');dark=dt?dt==='dark':(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches)}
+  document.body.classList.toggle('theme-dark',dark);
+  document.body.classList.toggle('font-sarabun',ft==='sarabun');
+  const m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute('content',dark?'#0d1117':'#f2f2f3');
+}
+try{matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>{applyPrefs()})}catch(e){}
+
+/* ---------- branding blocks ---------- */
+function atomHtml(size,rw,rh,dot){return '<div class="atom" style="width:'+size+'px;height:'+size+'px;margin:0 auto" aria-hidden="true">'
+  +['a','b','c'].map(k=>'<div class="ring '+k+'" style="width:'+rw+'px;height:'+rh+'px;margin:'+(-rh/2)+'px 0 0 '+(-rw/2)+'px"></div>').join('')
+  +'<div class="nucleus" style="width:'+dot+'px;height:'+dot+'px"></div></div>'}
+function footerLegal(){return '<div class="footer-legal"><div class="l1"><span style="color:var(--color-neutral-700)">PSD · </span><span style="color:var(--orange)">eNGINNo</span><span style="color:var(--color-neutral-700)"> · </span><span style="color:var(--hard)">HARD</span><span style="color:var(--color-neutral-700)"> + </span><span style="color:var(--soft)">SOFT SERVICE</span></div>'
+  +'<div class="l2">IFM – Integrated Facility Management · Engineering · Facility · Housekeeping · Security · Pest Control · Garden · Linen</div>'
+  +'<div class="l3">MR.KITTANAN ONSEE | Copyright - Edition V1.0-2026</div></div>'}
+function segLang(){const th=ST.lang!=='en';return '<div class="seg"><button class="seg-opt '+(th?'active':'')+'" onclick="setLang(\'th\')">TH</button><button class="seg-opt '+(!th?'active':'')+'" onclick="setLang(\'en\')">EN</button></div>'}
+function setLang(l){ST.lang=l;LS.set(MK.lang,l);render()}
+
+/* ---------- screens: splash / login ---------- */
+function screenSplash(){
+  return '<div style="display:flex;flex-direction:column;align-items:center;justify-content:space-between;min-height:100vh;padding:calc(36px + env(safe-area-inset-top)) 24px calc(28px + env(safe-area-inset-bottom))">'
+  +'<div></div><div style="display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center">'
+  +'<div style="width:128px;height:128px;display:grid;place-items:center">'+atomHtml(88,76,30,18)+'</div>'
+  +'<div class="pill" style="color:var(--orange);margin-top:10px;text-transform:none">PSD · eNGINNo</div>'
+  +'<h1 style="font-size:36px">IFM MANAGEMENT</h1>'
+  +'<div style="font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--color-accent-700)">Hard Service · Soft Service · 6 Business Types</div>'
+  +'<p style="max-width:300px;font-size:15px;color:var(--color-neutral-700);margin-top:10px">Integrated Facility Management — Engineering, Facility, Housekeeping, Security, Pest Control, Garden &amp; Linen</p></div>'
+  +'<div style="width:100%;max-width:420px;display:flex;flex-direction:column;gap:14px">'
+  +'<div style="font-size:15px;text-align:center;color:var(--color-neutral-700)">เลือกภาษา · Select your language</div>'
+  +'<div style="display:flex;gap:10px"><button class="blueprint tap" style="flex:1;padding:16px 10px;font-family:var(--font-heading);font-size:18px" onclick="setLang(\'th\')">ภาษาไทย</button><button class="blueprint tap" style="flex:1;padding:16px 10px;font-family:var(--font-heading);font-size:18px" onclick="setLang(\'en\')">English</button></div>'
+  +'<div style="font-size:12px;text-align:center;color:var(--color-neutral-500);letter-spacing:.04em">IFM MANAGEMENT V1.0 · PSD eNGINNo · 2026</div></div></div>'}
+
+function screenLogin(){
+  return '<div style="display:flex;flex-direction:column;min-height:100vh"><div class="hero">'+atomHtml(96,84,32,18)
+  +'<div class="kicker">PSD · eNGINNo</div><div class="title">IFM MANAGEMENT <span class="v">V1.0</span></div><div class="sub">INTEGRATED FACILITY MANAGEMENT · 2026</div></div>'
+  +'<div style="flex:1;padding:22px max(22px,env(safe-area-inset-right)) calc(24px + env(safe-area-inset-bottom)) max(22px,env(safe-area-inset-left));display:flex;flex-direction:column;gap:16px;max-width:560px;width:100%;margin:0 auto">'
+  +'<div><h2 style="font-size:23px;margin-bottom:2px">'+tx('เข้าสู่ระบบ','Sign In')+'</h2><div style="font-size:14px;color:var(--color-neutral-700)">'+tx('ระบุชื่อ บทบาท และไซต์ที่ปฏิบัติงาน','Enter your name, role and the site you work at')+'</div></div>'
+  +'<form id="login-form" onsubmit="event.preventDefault();doLogin()" style="display:flex;flex-direction:column;gap:12px">'
+  +'<div class="field"><label for="li-name">'+tx('ชื่อ-นามสกุล','Full name')+'</label><input class="input" id="li-name" autocomplete="name" required></div>'
+  +'<div class="field"><label for="li-role">'+tx('บทบาท','Role')+'</label><select class="input" id="li-role">'+ROLES.map(r=>'<option value="'+r[0]+'"'+(r[0]==='tech'?' selected':'')+'>'+tx(r[1],r[2])+'</option>').join('')+'</select></div>'
+  +'<div class="field"><label for="li-biz">'+tx('ประเภทธุรกิจ / ไซต์','Business type / site')+'</label><select class="input" id="li-biz">'+Object.entries(BIZ).map(([k,b])=>'<option value="'+k+'"'+(k===BIZK?' selected':'')+'>'+b.ic+' '+tx(b.n,b.en)+'</option>').join('')+'</select></div>'
+  +'<button type="submit" class="btn btn-primary btn-block">'+tx('เข้าสู่ระบบ','Sign In')+'</button>'
+  +'<div class="ferr" id="li-err"></div></form>'
+  +'<div class="note">'+tx('เวอร์ชันนี้บันทึกข้อมูลไว้ในเครื่อง และใช้ข้อมูลชุดเดียวกับ IFM เวอร์ชันเดสก์ท็อปบนเว็บไซต์เดียวกัน · ระบบยืนยันตัวตนจริงจะเปิดใช้เมื่อเชื่อม Google Sheets / Apps Script','This version stores data on the device and shares it with the IFM desktop app on the same site. Real authentication comes with the Google Sheets / Apps Script backend.')+'</div>'
+  +'<div style="display:flex;justify-content:center;margin-top:auto">'+segLang()+'</div>'
+  +'<a class="link" href="'+DESKTOP_URL+'">'+tx('← เปิด IFM เวอร์ชันเดสก์ท็อป','← Open IFM desktop version')+'</a>'+footerLegal()+'</div></div>'}
+function doLogin(){const n=document.getElementById('li-name').value.trim();if(!n){document.getElementById('li-err').textContent=tx('กรุณาระบุชื่อ','Please enter your name');return}
+  const role=document.getElementById('li-role').value,bz=document.getElementById('li-biz').value;
+  ST.user={name:n,role};LS.set(MK.user,ST.user);if(bz!==BIZK){BIZK=bz;LS.set('psd_ifm_biz',bz);load()}ST.tab='home';render();toast(tx('ยินดีต้อนรับ ','Welcome ')+n)}
+
+/* ---------- small renderers ---------- */
+const stat=(l,v,s,c,act)=>'<div class="blueprint stat '+(act?'tap':'')+'" style="--sc:'+(c||'var(--color-accent)')+'"'+(act?' onclick="'+act+'" role="button" tabindex="0"':'')+'><div class="kick">'+l+(act?' ›':'')+'</div><div class="v" style="color:'+(c||'inherit')+'">'+v+'</div><div class="s">'+(s||'')+'</div></div>';
+const pc=v=>v+'<small>%</small>';
+const scol=v=>v>=90?'var(--green)':v>=75?'var(--yellow)':'var(--red)';
+const bar=(v,c)=>'<div class="bar"><i style="width:'+Math.max(0,Math.min(100,v))+'%;background:'+c+'"></i></div>';
+const mchip=k=>SVC[k]?'<span class="svc-chip" style="--sc:'+SVC[k].c+'">'+SVC[k].ic+' '+SVC[k].n+'</span>':'';
+function slaBadge(t){const s=slaOf(t);return s.s==='met'?badge('Met'):s.s==='breach'?badge('Breached'):s.s==='hold'?badge('On Hold'):'<span class="badge b-'+(s.left<60?'orange':'blue')+'">'+tx('เหลือ ','')+fmtDur(s.left)+tx('',' left')+'</span>'}
+const ICON={
+ home:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 11l9-7 9 7v9a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1z"/></svg>',
+ svc:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="7.5" height="7.5" rx="1"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="1"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="1"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="1"/></svg>',
+ plus:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 5v14M5 12h14"/></svg>',
+ task:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 5h11M9 12h11M9 19h11"/><path d="M3.5 5l1.2 1.2L7 4M3.5 12l1.2 1.2L7 11M3.5 19l1.2 1.2L7 18"/></svg>',
+ set:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.3 1.8l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.7 1.7 0 00-1.8-.3 1.7 1.7 0 00-1 1.5V21a2 2 0 11-4 0v-.1a1.7 1.7 0 00-1.1-1.5 1.7 1.7 0 00-1.8.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.7 1.7 0 00.3-1.8 1.7 1.7 0 00-1.5-1H3a2 2 0 110-4h.1a1.7 1.7 0 001.5-1.1 1.7 1.7 0 00-.3-1.8l-.1-.1a2 2 0 112.8-2.8l.1.1a1.7 1.7 0 001.8.3H9a1.7 1.7 0 001-1.5V3a2 2 0 114 0v.1a1.7 1.7 0 001 1.5 1.7 1.7 0 001.8-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.7 1.7 0 00-.3 1.8V9a1.7 1.7 0 001.5 1H21a2 2 0 110 4h-.1a1.7 1.7 0 00-1.5 1z"/></svg>'};
+
+/* ---------- main shell ---------- */
+function screenMain(){
+  const B=P(),u=ST.user,ini=(u.name||'?').trim().charAt(0).toUpperCase();
+  const myOpen=D.tickets.filter(t=>t.assignee===u.name&&t.status!=='Closed'&&t.status!=='Completed').length;
+  const tabs=[['home',ICON.home,tx('หน้าหลัก','Home')],['svc',ICON.svc,tx('บริการ','Services')],['new',ICON.plus,tx('แจ้งงาน','New WR')],['tasks',ICON.task,tx('งาน','Tasks')],['set',ICON.set,tx('ตั้งค่า','Settings')]];
+  let body;
+  if(ST.tab==='home')body=viewHome();else if(ST.tab==='svc')body=ST.svc?viewModule(ST.svc):viewServices();else if(ST.tab==='tasks')body=viewTasks();else body=viewSettings();
+  return '<header class="topbar"><button class="avatar" onclick="goTab(\'set\')" aria-label="'+tx('โปรไฟล์','Profile')+'">'+esc(ini)+'</button>'
+   +'<div class="brand">IFM MANAGEMENT<small style="text-transform:none">PSD · eNGINNo · V1.0</small></div>'
+   +'<button class="biz-chip" onclick="goTab(\'set\')">'+B.ic+' '+esc(tx(B.n,B.en))+'</button></header>'
+   +'<main class="view-body">'+body+'</main>'
+   +'<nav class="tabbar" aria-label="'+tx('เมนูหลัก','Main menu')+'">'+tabs.map(t=>t[0]==='new'
+      ?'<button class="tabitem" onclick="newWR()"><span class="fab">'+t[1]+'</span><span>'+t[2]+'</span></button>'
+      :'<button class="tabitem '+(ST.tab===t[0]?'active':'')+'" onclick="goTab(\''+t[0]+'\')">'+t[1]+'<span>'+t[2]+'</span>'+(t[0]==='tasks'&&myOpen?'<b class="dot">'+myOpen+'</b>':'')+'</button>').join('')+'</nav>'}
+function goTab(t){if(t==='svc'&&ST.tab==='svc')ST.svc=null;ST.tab=t;ST.q='';render();window.scrollTo(0,0)}
+function openSvc(k){ST.tab='svc';ST.svc=k;ST.q='';render();window.scrollTo(0,0)}
+
+/* ---------- HOME ---------- */
+function viewHome(){
+  const B=P(),sc={};Object.keys(SVC).forEach(k=>sc[k]=SCORE[k]());
+  const hard=avg([sc.eng,sc.fac]),soft=avg([sc.hk,sc.sec,sc.pest,sc.gdn,sc.lin]),idx=Math.round((hard+soft)/2);
+  const AL=alerts().slice(0,5),pmA=avg([pmPct('eng'),pmPct('fac')]);
+  const mine=D.tickets.filter(t=>t.assignee===ST.user.name&&t.status!=='Closed'&&t.status!=='Completed');
+  return '<div class="stack">'
+  +'<div><h2 style="font-size:24px">'+tx('สวัสดี, ','Hello, ')+esc(ST.user.name)+'</h2><div style="font-size:14px;color:var(--color-neutral-700)">'+roleName(ST.user.role)+' · '+esc(D.site)+'</div></div>'
+  +'<div class="blueprint pad" style="display:flex;flex-direction:column;gap:10px"><div class="row"><div class="svc-ic" style="--sc:'+B.c+';font-size:24px">'+B.ic+'</div><div style="flex:1;min-width:0"><div class="kick">'+B.en+' · '+B.n+'</div><div style="font-family:var(--font-heading);font-size:19px;font-weight:600;line-height:1.15">'+esc(D.site)+'</div></div>'
+  +'<div style="text-align:right"><div class="kick">IFM Index</div><div style="font-family:var(--font-heading);font-size:38px;font-weight:700;line-height:1;color:'+scol(idx)+'">'+idx+'</div></div></div>'
+  +'<div><div class="row" style="justify-content:space-between;font-size:13.5px"><span><b class="pill" style="color:var(--hard)">Hard</b> Engineering · Facility</span><b>'+hard+'%</b></div>'+bar(hard,'var(--hard)')+'</div>'
+  +'<div><div class="row" style="justify-content:space-between;font-size:13.5px"><span><b class="pill" style="color:var(--soft)">Soft</b> HK · Security · Pest · Garden · Linen</span><b>'+soft+'%</b></div>'+bar(soft,'var(--soft)')+'</div></div>'
+  +'<div class="stat-grid">'+stat(tx('งานเปิดอยู่','Open WR'),openWR(),tx('ของฉัน ','Mine ')+mine.length,'var(--sky)',"ST.wrf='open';goTab('tasks')")
+   +stat('SLA',pc(slaPct()),tx('เป้า ','Target ')+B.target.sla+'%',scol(slaPct()),"ST.wrf='breach';goTab('tasks')")
+   +stat('PM',pc(pmA),tx('ตามแผน Hard Service','Hard service plan'),scol(pmA),"openSvc('eng')")
+   +stat('Compliance',pc(compPct()),compRows().filter(c=>c.status==='Overdue').length+tx(' รายการเลยกำหนด',' overdue'),scol(compPct()),"openSvc('fac')")+'</div>'
+  +(mine.length?'<div class="sec-t"><h2>'+tx('งานของฉัน','My jobs')+'</h2><button class="link" style="width:auto;padding:0" onclick="ST.wrf=\'mine\';goTab(\'tasks\')">'+tx('ดูทั้งหมด ›','See all ›')+'</button></div><div class="list">'+mine.slice(0,3).map(wrCard).join('')+'</div>':'')
+  +'<div class="sec-t"><h2>'+tx('สถานะแต่ละบริการ','Service health')+'</h2><small>'+tx('แตะเพื่อเปิด','Tap to open')+'</small></div>'
+  +svcGroup('Hard',['eng','fac'],sc)+svcGroup('Soft',['hk','sec','pest','gdn','lin'],sc)
+  +'<div class="sec-t"><h2>'+tx('ต้องดำเนินการ','Needs attention')+'</h2><small>'+alerts().length+tx(' รายการ',' items')+'</small></div>'
+  +'<div class="list">'+(AL.length?AL.map(a=>'<button class="blueprint tap alert-row" style="--ac:'+({red:'var(--red)',yellow:'var(--yellow)',blue:'var(--sky)'}[a.lv])+';text-align:left" onclick="'+(SVC[a.v]?"openSvc('"+a.v+"')":"ST.wrf='breach';goTab('tasks')")+'"><span class="m">'+esc(a.m)+'</span><span class="s">'+(SVC[a.svc]?SVC[a.svc].ic+' '+SVC[a.svc].n+' · ':'')+esc(a.s)+'</span></button>').join(''):'<div class="note">'+tx('ไม่มีรายการค้าง','Nothing pending')+'</div>')+'</div>'
+  +footerLegal()+'</div>'}
+function svcGroup(type,keys,sc){return '<div class="kick" style="margin-bottom:-6px;color:var(--'+(type==='Hard'?'hard':'soft')+')">'+type+' Service</div><div class="list two">'+keys.map(k=>{const S=SVC[k];return '<button class="blueprint tap svc-row" style="--bc:'+S.c+';--sc:'+S.c+';text-align:left" onclick="openSvc(\''+k+'\')"><span class="svc-ic">'+S.ic+'</span><span style="flex:1;min-width:0"><span class="n" style="display:block">'+S.n+'</span><span class="th" style="display:block">'+S.th+'</span><span style="display:block;margin-top:6px">'+bar(sc[k],S.c)+'</span></span><span class="sc" style="color:'+scol(sc[k])+'">'+sc[k]+'%<small>WR '+openWR(k)+'</small></span></button>'}).join('')+'</div>'}
+
+/* ---------- SERVICES ---------- */
+function viewServices(){const sc={};Object.keys(SVC).forEach(k=>sc[k]=SCORE[k]());
+  return '<div class="stack"><div class="sec-t"><h2>'+tx('งานบริการ IFM','IFM services')+'</h2><small>'+esc(tx(P().n,P().en))+'</small></div>'+svcGroup('Hard',['eng','fac'],sc)+svcGroup('Soft',['hk','sec','pest','gdn','lin'],sc)
+  +'<div class="sec-t"><h2>'+tx('สัญญาผู้รับจ้าง','Vendor contracts')+'</h2></div><div class="list">'+listOf('vendors',null,6)+'</div>'+footerLegal()+'</div>'}
+
+/* per-entity card renderers */
+const CARD={
+ tickets:r=>wrCard(r),
+ assets:r=>({t:r.name,m:r.system+' · '+r.area+' · Crit '+r.crit,b:badge(r.status),x:'PM '+fmtD(r.nextPM)}),
+ pm:r=>({t:r.task,m:r.item+' · '+(r.assignee||'—'),b:badge(r.status),x:tx('กำหนด ','Due ')+fmtD(r.dueDate),a:r.status!=='Done'?'<button class="btn btn-ok btn-sm" onclick="event.stopPropagation();markDone(\'pm\',\''+r.id+'\')">✓ Done</button>':''}),
+ compliance:r=>({t:r.item,m:r.standard+' · '+tx('รอบ ','every ')+r.freqDays+tx(' วัน',' d'),b:badge(r.status),x:tx('ครบกำหนด ','Due ')+fmtD(r._nextDue),a:'<button class="btn btn-ok btn-sm" onclick="event.stopPropagation();markDone(\'compliance\',\''+r.id+'\')">✓ '+tx('ดำเนินการวันนี้','Done today')+'</button>'}),
+ defects:r=>({t:r.desc,m:r.element+' · '+r.area,b:badge(r.severity)+' '+badge(r.status),x:tx('กำหนดเสร็จ ','Target ')+fmtD(r.target),a:r.status!=='Closed'?'<button class="btn btn-ok btn-sm" onclick="event.stopPropagation();setField(\'defects\',\''+r.id+'\',\'status\',\''+(r.status==='Open'?'In Progress':'Closed')+'\')">▶ '+(r.status==='Open'?'In Progress':'Closed')+'</button>':''}),
+ meters:r=>({t:r.month,m:tx('ไฟฟ้า ','Electricity ')+fmtN(r.elec)+' kWh · '+tx('น้ำ ','Water ')+fmtN(r.water)+' m³ · '+fmtN(r.gas)+' '+P().gasL}),
+ areas:r=>({t:r.name,m:tx('ชั้น ','Floor ')+r.floor+' · '+r.type+' · '+fmtN(r.sqm)+' m²',b:badge(r.risk)}),
+ hkTasks:r=>({t:r.task,m:r.area+' · '+r.freq+' · '+r.shift+' · '+(r.staff||'—'),b:badge(r.status),x:tx('ล่าสุด ','Last ')+fmtD(r.lastDone),a:r.status!=='Done'?'<button class="btn btn-ok btn-sm" onclick="event.stopPropagation();markDone(\'hkTasks\',\''+r.id+'\')">✓ Done</button>':''}),
+ hkInsp:r=>({t:r.area,m:fmtD(r.date)+' · '+(r.inspector||'')+(r.remark?' · '+r.remark:''),b:'<b style="font-family:var(--font-heading);font-size:20px;color:'+scol(+r.score)+'">'+r.score+'%</b>'}),
+ patrols:r=>{const p=r.planned?Math.round(r.scanned/r.planned*100):0;return{t:r.post+' · '+r.shift,m:fmtD(r.date)+' · '+(r.guard||'—')+' · '+r.scanned+'/'+r.planned+' checkpoints',b:'<b style="font-family:var(--font-heading);font-size:20px;color:'+scol(p)+'">'+p+'%</b>'}},
+ secInc:r=>({t:r.type,m:fmtDT(r.date)+' · '+r.area+(r.action?' · '+r.action:''),b:badge(r.severity)+' '+badge(r.status),a:r.status!=='Closed'?'<button class="btn btn-ok btn-sm" onclick="event.stopPropagation();setField(\'secInc\',\''+r.id+'\',\'status\',\'Closed\')">✓ '+tx('ปิดเหตุ','Close')+'</button>':''}),
+ visitors:r=>({t:r.name,m:(r.company||'')+' · '+(r.purpose||'')+' · '+tx('พบ ','Host ')+(r.host||'—'),b:r.timeOut?badge('Closed'):'<span class="badge b-blue">'+tx('อยู่ในพื้นที่','On site')+'</span>',x:tx('เข้า ','In ')+fmtDT(r.timeIn)+(r.timeOut?' · '+tx('ออก ','Out ')+fmtDT(r.timeOut).slice(11):''),a:!r.timeOut?'<button class="btn btn-ok btn-sm" onclick="event.stopPropagation();checkout(\''+r.id+'\')">'+tx('บันทึกออก','Check out')+'</button>':''}),
+ pestSt:r=>({t:r.type,m:r.id+' · '+r.area+' · '+tx('ตรวจ ','Checked ')+fmtD(r.lastCheck),b:badge(r.activity),a:'<span class="seg" onclick="event.stopPropagation()">'+['None','Low','Medium','High'].map(l=>'<button class="seg-opt '+(r.activity===l?'active':'')+'" style="padding:4px 9px;font-size:13px" onclick="pestCheck(\''+r.id+'\',\''+l+'\')">'+l+'</button>').join('')+'</span>'}),
+ pestVisit:r=>({t:r.kind+' · '+r.vendor,m:fmtD(r.date)+(r.chemical?' · '+r.chemical:'')+(r.findings?' · '+r.findings:''),b:badge(r.status)}),
+ gdnZones:r=>({t:r.zone,m:r.type+' · '+fmtN(r.sqm)+' m² · '+tx('รดน้ำ ','Irrigation ')+r.irrigation,b:badge(r.health),x:tx('ดูแลครั้งถัดไป ','Next care ')+fmtD(r._next),a:'<button class="btn btn-ok btn-sm" onclick="event.stopPropagation();setField(\'gdnZones\',\''+r.id+'\',\'lastMaint\',todayS)">✓ '+tx('ดูแลวันนี้','Cared today')+'</button>'}),
+ gdnTasks:r=>({t:r.task,m:r.zone+' · '+fmtD(r.date)+' · '+(r.staff||'—'),b:badge(r.status),a:r.status!=='Done'?'<button class="btn btn-ok btn-sm" onclick="event.stopPropagation();setField(\'gdnTasks\',\''+r.id+'\',\'status\',\'Done\')">✓ Done</button>':''}),
+ linenItems:r=>({t:r.name,m:tx('สะอาด ','Clean ')+fmtN(r.clean)+' · '+tx('ใช้งาน ','In use ')+fmtN(r.inUse)+' · '+tx('ซัก ','Laundry ')+fmtN(r.laundry)+' · Par '+fmtN(r.par),b:'<b style="font-family:var(--font-heading);font-size:20px;color:'+scol(r._avail)+'">'+r._avail+'%</b>',bar:[r._avail,scol(r._avail)]}),
+ linenTx:r=>({t:r.type+' · '+fmtN(r.qty)+tx(' ผืน',' pcs'),m:r.item+' · '+(r.dept||'')+' · '+fmtD(r.date)}),
+ staff:r=>({t:r.name,m:r.position+' · '+r.shift+' · '+r.employment+(r.phone?' · '+r.phone:''),b:mchip(r.service)+' '+badge(r.status)}),
+ vendors:r=>({t:r.name,m:r.scope+' · ฿'+fmtN(r.value)+tx('/เดือน','/mo')+' · '+tx('สิ้นสุด ','Ends ')+fmtD(r.end),b:mchip(r.service)+' '+badge(r.status)}),
+};
+function recCard(ent,r){const c=CARD[ent](r);if(typeof c==='string')return c;
+  return '<div class="blueprint tap rec" role="button" tabindex="0" onclick="openForm2(\''+ent+'\',\''+r.id+'\')"><div class="top"><span class="tag-id">'+esc(r.id)+'</span>'+(c.b||'')+'</div><div class="t">'+esc(c.t)+'</div><div class="m">'+esc(c.m)+'</div>'+(c.bar?bar(c.bar[0],c.bar[1]):'')+(c.x?'<div class="m" style="color:var(--color-accent-700)">'+esc(c.x)+'</div>':'')+(c.a?'<div class="acts">'+c.a+'</div>':'')+'</div>'}
+function listOf(ent,filter,limit){const S=SCH[ent];let rows=D[ent].map(r=>S.derive?S.derive(r):r);if(filter)rows=rows.filter(filter);
+  if(ST.q){const q=ST.q.toLowerCase();rows=rows.filter(r=>Object.values(r).join(' ').toLowerCase().includes(q))}
+  if(S.sort)rows.sort(S.sort);const n=rows.length;if(limit)rows=rows.slice(0,limit);
+  return rows.length?rows.map(r=>recCard(ent,r)).join('')+(limit&&n>limit?'<div class="m" style="text-align:center;font-size:13px;color:var(--color-neutral-700)">'+tx('แสดง ','Showing ')+limit+tx(' จาก ',' of ')+n+'</div>':''):'<div class="blueprint empty">'+tx('ยังไม่มีข้อมูล — แตะ “+ เพิ่ม” เพื่อบันทึกรายการแรก','No records yet — tap “+ Add” to create the first one')+'</div>'}
+
+/* ---------- MODULE (one service) ---------- */
+function MOD(k){const B=P();const T=B.target;const wr={k:'wr',l:'Work Request',ent:'tickets',f:t=>t.service===k,def:{service:k}};
+  return{
+  eng:{kpi:()=>[['Uptime',pc(uptime()),D.assets.filter(a=>a.status==='Down').length+' Down',scol(uptime())],['PM',pc(pmPct('eng')),tx('เป้า ','Target ')+T.pm+'%',scol(pmPct('eng'))],['Compliance',pc(compPct('eng')),compRows('eng').filter(c=>c.status!=='Compliant').length+tx(' ต้องติดตาม',' to follow'),scol(compPct('eng'))],['Open WR',openWR('eng'),'SLA '+slaPct('eng')+'%','var(--sky)']],
+    subs:[{k:'pm',l:tx('PM ครบกำหนด','PM due'),ent:'pm',f:r=>r.service==='eng'&&r.dueDate<=addD(todayS,30),def:{service:'eng'}},{k:'asset',l:'Assets',ent:'assets'},{k:'comp',l:'Compliance',ent:'compliance',f:r=>r.service==='eng',def:{service:'eng'}},{k:'mt',l:tx('มิเตอร์','Meters'),ent:'meters',custom:meterList},wr]},
+  fac:{kpi:()=>[['Defects',D.defects.filter(d=>d.status!=='Closed').length,tx('เปิดอยู่','open'),'var(--red)'],[tx('ปิดงาน','Closure'),pc(defClose()),tx('เป้า 85%','Target 85%'),scol(defClose())],['Life safety',pc(compPct('fac')),compRows('fac').filter(c=>c.status==='Overdue').length+tx(' เลยกำหนด',' overdue'),scol(compPct('fac'))],['Open WR',openWR('fac'),'SLA '+slaPct('fac')+'%','var(--sky)']],
+    subs:[{k:'def',l:'Defects',ent:'defects'},{k:'pm',l:tx('PM อาคาร','Building PM'),ent:'pm',f:r=>r.service==='fac',def:{service:'fac'}},{k:'comp',l:'Life Safety',ent:'compliance',f:r=>r.service==='fac',def:{service:'fac'}},{k:'area',l:tx('พื้นที่','Areas'),ent:'areas'},wr]},
+  hk:{note:B.hkNote,kpi:()=>[[tx('คะแนนความสะอาด','Cleanliness'),pc(hkScore()),tx('30 วัน · เป้า ','30 d · target ')+T.hk+'%',scol(hkScore())],[tx('งานเสร็จ','Done'),pc(hkDone()),D.hkTasks.filter(t=>t.status==='Missed').length+' Missed',scol(hkDone())],[tx('ปฏิบัติงาน','On duty'),D.staff.filter(s=>s.service==='hk'&&s.status==='On Duty').length,tx('คน','staff'),'var(--teal)'],['Open WR',openWR('hk'),'SLA '+slaPct('hk')+'%','var(--sky)']],
+    subs:[{k:'task',l:tx('งานวันนี้','Today'),ent:'hkTasks'},{k:'ins',l:tx('ตรวจความสะอาด','Inspections'),ent:'hkInsp',def:{inspector:ST.user.name}},wr]},
+  sec:{kpi:()=>[['Patrol',pc(patrolPct()),tx('7 วัน · เป้า ','7 d · target ')+T.patrol+'%',scol(patrolPct())],['Incidents',D.secInc.filter(x=>x.status!=='Closed').length,tx('เปิดอยู่','open'),'var(--red)'],[tx('ผู้มาติดต่อ','Visitors'),D.visitors.filter(v=>!v.timeOut).length,tx('อยู่ในพื้นที่','on site'),'var(--sky)'],['Open WR',openWR('sec'),'SLA '+slaPct('sec')+'%','var(--purple)']],
+    subs:[{k:'pt',l:'Patrol',ent:'patrols',def:{guard:ST.user.name},limit:20},{k:'inc',l:'Incidents',ent:'secInc'},{k:'vis',l:'Visitors',ent:'visitors'},wr]},
+  pest:{note:B.pestNote,kpi:()=>[[tx('จุดสะอาด','Clean rate'),pc(pestPct()),tx('เป้า ','Target ')+T.pest+'%',scol(pestPct())],['High',D.pestSt.filter(s=>s.activity==='High').length,'Medium '+D.pestSt.filter(s=>s.activity==='Medium').length,'var(--red)'],['Stations',D.pestSt.length,tx('จุดติดตั้ง','installed'),'var(--teal)'],['Sightings',openWR('pest'),'SLA '+slaPct('pest')+'%','var(--sky)']],
+    subs:[{k:'st',l:tx('ตรวจจุด','Stations'),ent:'pestSt'},{k:'vs',l:tx('เข้าบริการ','Visits'),ent:'pestVisit'},{...wr,l:tx('แจ้งพบ','Sightings')}]},
+  gdn:{kpi:()=>[['Zone health',pc(gdnPct()),tx('เป้า ','Target ')+T.gdn+'%',scol(gdnPct())],[tx('ตรงเวลา','On-time'),pc(gdnOnTime()),D.gdnTasks.filter(t=>t.status==='Delayed').length+' Delayed',scol(gdnOnTime())],[tx('โซน','Zones'),D.gdnZones.length,fmtN(sum(D.gdnZones,z=>z.sqm))+' m²','var(--green)'],['Open WR',openWR('gdn'),'SLA '+slaPct('gdn')+'%','var(--sky)']],
+    subs:[{k:'t',l:tx('งานสวน','Tasks'),ent:'gdnTasks'},{k:'z',l:tx('โซน','Zones'),ent:'gdnZones'},wr]},
+  lin:{note:B.linNote,kpi:()=>{const it=D.linenItems.map(SCH.linenItems.derive);return[['Availability',pc(linPct()),tx('เป้า ','Target ')+T.lin+'%',scol(linPct())],[tx('ผ้าสะอาด','Clean'),fmtN(sum(it,x=>x.clean)),tx('ผืนพร้อมจ่าย','pcs ready'),'var(--teal)'],['Reject+Lost',pc(linLoss()),tx('ของ Par','of par'),linLoss()<=2?'var(--green)':'var(--red)'],['Open WR',openWR('lin'),'SLA '+slaPct('lin')+'%','var(--sky)']]},
+    subs:[{k:'inv',l:tx('คลังผ้า','Inventory'),ent:'linenItems'},{k:'tx',l:tx('เบิก / ส่งซัก','Transactions'),ent:'linenTx',limit:30},wr]},
+  }[k]}
+function meterList(){const m=[...D.meters].sort((a,b)=>b.month.localeCompare(a.month));const mx=Math.max(...m.map(x=>+x.elec||0),1);
+  return '<div class="blueprint pad"><div class="kick" style="margin-bottom:8px">'+tx('ไฟฟ้า kWh รายเดือน','Electricity kWh / month')+'</div>'+m.slice(0,12).map(x=>'<div style="display:grid;grid-template-columns:64px 1fr auto;gap:10px;align-items:center;font-size:13px;margin:5px 0"><span>'+esc(x.month)+'</span>'+bar(x.elec/mx*100,'var(--yellow)')+'<b style="font-variant-numeric:tabular-nums">'+fmtN(x.elec)+'</b></div>').join('')+'</div>'}
+function viewModule(k){const S=SVC[k],M=MOD(k);const sub=M.subs.find(s=>s.k===ST.sub[k])||M.subs[0];
+  const filt=sub.f||null;
+  return '<div class="stack"><button class="back" onclick="ST.svc=null;render()">'+tx('← บริการทั้งหมด','← All services')+'</button>'
+  +'<div class="mod-head"><div class="svc-ic" style="--sc:'+S.c+';width:48px;height:48px;font-size:24px">'+S.ic+'</div><div style="min-width:0"><div class="pill" style="color:var(--'+(S.type==='Hard'?'hard':'soft')+')">'+S.type+' Service</div><h2 style="font-size:26px">'+S.n+'</h2><div style="font-size:13.5px;color:var(--color-neutral-700)">'+S.th+'</div></div></div>'
+  +(M.note?'<div class="note">'+esc(M.note)+'</div>':'')
+  +'<div class="stat-grid">'+M.kpi().map(x=>stat(x[0],x[1],x[2],x[3])).join('')+'</div>'
+  +'<div class="chips" role="tablist">'+M.subs.map(s=>'<button class="chip '+(s===sub?'active':'')+'" onclick="ST.sub[\''+k+'\']=\''+s.k+'\';ST.q=\'\';render()">'+s.l+(s.ent==='tickets'?' ('+openWR(k)+')':'')+'</button>').join('')+'</div>'
+  +'<div class="row"><input class="search" id="mq" placeholder="'+tx('ค้นหา','Search')+' '+esc(SCH[sub.ent].label)+'…" value="'+esc(ST.q)+'" oninput="ST.q=this.value;render();refocusM()"><button class="btn btn-primary" onclick="openForm2(\''+sub.ent+'\',null,'+esc(JSON.stringify(sub.def||{})).replace(/"/g,'&quot;')+')">+ '+tx('เพิ่ม','Add')+'</button></div>'
+  +(sub.custom?sub.custom():'')
+  +'<div class="list">'+(sub.ent==='tickets'?wrList(filt):listOf(sub.ent,filt,sub.limit))+'</div></div>'}
+function refocusM(){const i=document.getElementById('mq');if(i){i.focus();const n=i.value.length;i.setSelectionRange(n,n)}}
+
+/* ---------- TASKS (Work Requests) ---------- */
+function wrCard(t){const S=SVC[t.service]||{};const i=FLOW.indexOf(t.status);const nx=i>=0&&i<FLOW.length-1?FLOW[i+1]:null;
+  return '<div class="blueprint tap rec" style="--bc:'+S.c+'" role="button" tabindex="0" onclick="wrDetail(\''+t.id+'\')"><div class="top"><span class="tag-id">'+t.id+'</span>'+badge(t.priority)+mchip(t.service)+'<span style="margin-left:auto">'+badge(t.status)+'</span></div>'
+  +'<div class="t">'+esc(t.desc)+'</div><div class="m">'+esc(t.area)+' · '+esc(t.category)+' · '+fmtDT(t.date)+'</div>'
+  +'<div class="top" style="justify-content:space-between">'+slaBadge(t)+'<span class="m">'+(t.assignee?'👤 '+esc(t.assignee):tx('ยังไม่มีผู้รับงาน','Unassigned'))+'</span></div>'
+  +(nx?'<div class="acts"><button class="btn btn-ok btn-sm" onclick="event.stopPropagation();advanceM(\''+t.id+'\')">▶ '+(t.status==='New'?tx('รับงาน','Accept'):nx)+'</button></div>':'')+'</div>'}
+function wrList(filter){let r=D.tickets.filter(filter||(()=>true));if(ST.q){const q=ST.q.toLowerCase();r=r.filter(t=>Object.values(t).join(' ').toLowerCase().includes(q))}
+  r.sort((a,b)=>b.date.localeCompare(a.date));return r.length?r.slice(0,60).map(wrCard).join(''):'<div class="blueprint empty">'+tx('ไม่มีงานในรายการนี้','No work requests here')+'</div>'}
+function viewTasks(){const me=ST.user.name;
+  const F={open:[tx('เปิดอยู่','Open'),t=>t.status!=='Closed'&&t.status!=='Completed'],mine:[tx('งานของฉัน','Mine'),t=>(t.assignee===me||t.requester===me)&&t.status!=='Closed'],new:[tx('รอรับงาน','New'),t=>t.status==='New'],breach:[tx('เกิน SLA','Breached'),t=>{const s=slaOf(t);return s.s==='breach'&&s.open}],done:[tx('ปิดแล้ว','Closed'),t=>t.status==='Closed'||t.status==='Completed'],all:[tx('ทั้งหมด','All'),()=>true]};
+  const cur=F[ST.wrf]?ST.wrf:'open';const svf=ST.wrsvc;
+  const base=t=>!svf||t.service===svf;
+  return '<div class="stack"><div class="sec-t"><h2>Work Request</h2><small>SLA '+slaPct()+'%</small></div>'
+  +'<div class="chips">'+Object.entries(F).map(([k,f])=>'<button class="chip '+(k===cur?'active':'')+'" onclick="ST.wrf=\''+k+'\';render()">'+f[0]+' ('+D.tickets.filter(t=>base(t)&&f[1](t)).length+')</button>').join('')+'</div>'
+  +'<div class="chips"><button class="chip '+(!svf?'active':'')+'" onclick="ST.wrsvc=\'\';render()">'+tx('ทุกบริการ','All services')+'</button>'+Object.keys(SVC).map(k=>'<button class="chip '+(svf===k?'active':'')+'" onclick="ST.wrsvc=\''+k+'\';render()">'+SVC[k].ic+' '+SVC[k].n+'</button>').join('')+'</div>'
+  +'<input class="search" id="mq" placeholder="'+tx('ค้นหาเลขงาน พื้นที่ รายละเอียด…','Search ID, area, description…')+'" value="'+esc(ST.q)+'" oninput="ST.q=this.value;render();refocusM()">'
+  +'<div class="list two">'+wrList(t=>base(t)&&F[cur][1](t))+'</div></div>'}
+function advanceM(id){const t=D.tickets.find(x=>x.id===id);if(!t)return;const i=FLOW.indexOf(t.status);if(i<0||i>=FLOW.length-1)return;
+  const n=isoDT(new Date());if(t.status==='New'){t.respondedAt=n;t.assignee=ST.user.name}
+  t.status=FLOW[i+1];if(t.status==='Completed'&&!t.completedAt)t.completedAt=n;save();closeSheet();render();toast(t.id+' → '+t.status)}
+function wrDetail(id){const t=D.tickets.find(x=>x.id===id);if(!t)return;const S=SVC[t.service];const i=FLOW.indexOf(t.status);const nx=i>=0&&i<FLOW.length-1?FLOW[i+1]:null;const sla=SLA[t.priority]||SLA.P3;
+  const step=(l,v,c)=>'<div style="--tc:'+(v?c:'var(--color-neutral-300)')+'"><b>'+l+'</b> <span style="color:var(--color-neutral-700)">'+(v?fmtDT(v):'—')+'</span></div>';
+  openSheet('<div class="sheet-h"><div><div class="top" style="display:flex;gap:6px;flex-wrap:wrap"><span class="tag-id">'+t.id+'</span>'+badge(t.priority)+badge(t.status)+'</div><h3 style="margin-top:6px">'+esc(t.desc)+'</h3></div><button class="btn btn-sm" onclick="closeSheet()" aria-label="close">✕</button></div>'
+   +'<div class="stack"><dl class="kv"><dt>Service</dt><dd>'+mchip(t.service)+' '+svcName(t.service)+'</dd><dt>'+tx('พื้นที่','Area')+'</dt><dd>'+esc(t.area)+'</dd><dt>'+tx('หมวด','Category')+'</dt><dd>'+esc(t.category)+'</dd><dt>'+tx('ผู้แจ้ง','Requester')+'</dt><dd>'+esc(t.requester||'—')+'</dd><dt>'+tx('ผู้รับงาน','Assignee')+'</dt><dd>'+esc(t.assignee||'—')+'</dd><dt>SLA</dt><dd>'+slaBadge(t)+' <span style="font-size:12.5px;color:var(--color-neutral-700)">'+tx('ตอบรับ ','Respond ')+fmtDur(sla.r)+' · '+tx('แก้ไข ','Resolve ')+fmtDur(sla.f)+'</span></dd></dl>'
+   +'<div class="timeline">'+step(tx('แจ้งงาน','Reported'),t.date,'var(--sky)')+step(tx('รับงาน','Responded'),t.respondedAt,'var(--purple)')+step(tx('แล้วเสร็จ','Completed'),t.completedAt,'var(--green)')+'</div>'
+   +'<div style="display:flex;gap:8px;flex-wrap:wrap">'+(nx?'<button class="btn btn-primary" style="flex:1" onclick="advanceM(\''+t.id+'\')">▶ '+(t.status==='New'?tx('รับงาน','Accept job'):nx)+'</button>':'')+(t.status!=='On Hold'&&t.status!=='Closed'&&t.status!=='Completed'?'<button class="btn" onclick="setField(\'tickets\',\''+t.id+'\',\'status\',\'On Hold\')">'+tx('พักงาน','Hold')+'</button>':'')+'<button class="btn" onclick="openForm2(\'tickets\',\''+t.id+'\')">✎ '+tx('แก้ไข','Edit')+'</button></div></div>')}
+
+/* ---------- SETTINGS ---------- */
+function viewSettings(){const u=ST.user,th=LS.get(MK.theme,'system'),ft=LS.get(MK.font,'default');
+  return '<div class="stack"><div class="blueprint pad row"><div class="avatar" style="width:52px;height:52px;font-size:22px">'+esc(u.name.charAt(0).toUpperCase())+'</div><div style="flex:1;min-width:0"><div style="font-family:var(--font-heading);font-size:21px;font-weight:600">'+esc(u.name)+'</div><div style="font-size:14px;color:var(--color-neutral-700)">'+roleName(u.role)+'</div></div><button class="btn btn-sm" onclick="signOut()">'+tx('ออกจากระบบ','Sign out')+'</button></div>'
+  +'<div class="sec-t"><h2>'+tx('ประเภทธุรกิจ','Business type')+'</h2><small>'+tx('ข้อมูลแยกตามธุรกิจ','Data kept per business')+'</small></div>'
+  +'<div class="list two">'+Object.entries(BIZ).map(([k,b])=>'<button class="blueprint tap biz-opt '+(k===BIZK?'on':'')+'" onclick="switchBiz(\''+k+'\')"><span class="i">'+b.ic+'</span><span style="flex:1;min-width:0"><b style="font-family:var(--font-heading);font-size:17px;display:block">'+tx(b.n,b.en)+'</b><span style="font-size:12.5px;color:var(--color-neutral-700);display:block;line-height:1.3">'+esc(b.desc)+'</span></span>'+(k===BIZK?'<span class="badge b-green">✓</span>':'')+'</button>').join('')+'</div>'
+  +'<div class="field"><label for="site-in">'+tx('ชื่อไซต์ / โครงการ','Site / project name')+'</label><input class="input" id="site-in" value="'+esc(D.site)+'" onchange="D.site=this.value.trim()||P().site;save();toast(\''+tx('บันทึกแล้ว','Saved')+'\')"></div>'
+  +'<div class="sec-t"><h2>'+tx('การแสดงผล','Display')+'</h2></div>'
+  +'<div><div class="kick" style="margin-bottom:6px">'+tx('ภาษา','Language')+'</div>'+segLang()+'</div>'
+  +'<div><div class="kick" style="margin-bottom:6px">'+tx('ธีม','Theme')+'</div><div style="display:flex;gap:8px">'+[['system',tx('ตามระบบ','System')],['light','Light'],['dark','Dark']].map(o=>'<button class="pref-opt '+(th===o[0]?'active':'')+'" onclick="LS.set(MK.theme,\''+o[0]+'\');applyPrefs();render()">'+o[1]+'</button>').join('')+'</div></div>'
+  +'<div><div class="kick" style="margin-bottom:6px">'+tx('ฟอนต์','Font')+'</div><div style="display:flex;gap:8px">'+[['default','Barlow'],['sarabun','Sarabun']].map(o=>'<button class="pref-opt '+(ft===o[0]?'active':'')+'" style="font-family:'+(o[0]==='sarabun'?'Sarabun':'Barlow')+'" onclick="LS.set(MK.font,\''+o[0]+'\');applyPrefs();render()">'+o[1]+'</button>').join('')+'</div></div>'
+  +'<div class="sec-t"><h2>'+tx('ข้อมูล','Data')+'</h2></div>'
+  +'<div class="note">'+tx('ข้อมูลเก็บในเครื่องนี้และใช้ร่วมกับ IFM เดสก์ท็อปเมื่อเปิดจากเว็บไซต์เดียวกัน','Data lives on this device and is shared with IFM desktop when opened from the same site')+'</div>'
+  +'<button class="btn" id="reset-btn" onclick="resetM(this)">'+tx('รีเซ็ตเป็นข้อมูลตัวอย่าง','Reset to sample data')+'</button>'
+  +'<a class="link" href="'+DESKTOP_URL+'">'+tx('เปิด IFM เวอร์ชันเดสก์ท็อป ›','Open IFM desktop version ›')+'</a>'+footerLegal()+'</div>'}
+function switchBiz(k){if(!BIZ[k])return;BIZK=k;LS.set('psd_ifm_biz',k);load();ST.svc=null;ST.q='';render();toast(BIZ[k].ic+' '+tx(BIZ[k].n,BIZ[k].en))}
+function signOut(){ST.user=null;try{localStorage.removeItem(MK.user)}catch(e){}render()}
+function resetM(btn){if(!ST.resetArm){ST.resetArm=true;btn.textContent=tx('แตะอีกครั้งเพื่อยืนยัน','Tap again to confirm');btn.className='btn btn-danger';setTimeout(()=>{ST.resetArm=false;if(btn.isConnected){btn.textContent=tx('รีเซ็ตเป็นข้อมูลตัวอย่าง','Reset to sample data');btn.className='btn'}},4000);return}
+  ST.resetArm=false;D=seed(BIZK);save();render();toast(tx('รีเซ็ตข้อมูลแล้ว','Data reset'))}
+
+/* ---------- actions ---------- */
+function markDone(ent,id){const r=D[ent].find(x=>x.id===id);if(!r)return;if(ent==='compliance')r.lastDone=todayS;else{r.status='Done';if(ent==='hkTasks')r.lastDone=todayS}save();render();toast(id+' ✓')}
+function setField(ent,id,k,v){const r=D[ent].find(x=>x.id===id);if(!r)return;r[k]=v;if(ent==='tickets')SCH.tickets.onSave(r);save();closeSheet();render();toast(id+' → '+v)}
+function checkout(id){const v=D.visitors.find(x=>x.id===id);if(v){v.timeOut=isoDT(new Date());save();render();toast(v.name+tx(' ออกจากพื้นที่',' checked out'))}}
+function pestCheck(id,l){const s=D.pestSt.find(x=>x.id===id);if(!s)return;s.activity=l;s.lastCheck=todayS;save();render();toast(id+' · '+l)}
+function newWR(){openForm2('tickets',null,{service:ST.tab==='svc'&&ST.svc?ST.svc:(ST.wrsvc||'eng'),requester:ST.user.name})}
+
+/* ---------- bottom sheet + generic form (driven by shared SCH) ---------- */
+let FM=null;
+function openSheet(html){document.getElementById('sheet-root').innerHTML='<div class="sheet-ov" onclick="if(event.target===this)closeSheet()"><div class="sheet" role="dialog" aria-modal="true"><div class="grip"></div>'+html+'</div></div>';document.body.style.overflow='hidden'}
+function closeSheet(){document.getElementById('sheet-root').innerHTML='';document.body.style.overflow='';FM=null}
+function openForm2(ent,id,defs){
+  const S=SCH[ent],rec=id?D[ent].find(r=>r.id===id):null;defs=defs||{};FM={ent,id};ST.delArm=null;
+  const vals={};S.fields.forEach(f=>{vals[f.k]=rec?rec[f.k]:(defs[f.k]!=null?defs[f.k]:(typeof f.def==='function'?f.def():f.def??''))});
+  const fields=S.fields.map(f=>{const lab=typeof f.l==='function'?f.l():f.l,v=vals[f.k]??'',fid='m_'+f.k;let inp;
+    if(f.t==='select'){let o=typeof f.o==='function'?f.o():f.o;o=o.map(x=>Array.isArray(x)?x:[x,x]);if(v!==''&&!o.some(x=>String(x[0])===String(v)))o.push([v,v]);
+      inp='<select class="input" id="'+fid+'"'+(f.k==='service'?' onchange="refreshLists2()"':'')+'>'+(f.req?'':'<option value="">—</option>')+o.map(x=>'<option value="'+esc(x[0])+'"'+(String(x[0])===String(v)?' selected':'')+'>'+esc(f.k==='service'&&SVC[x[0]]?SVC[x[0]].ic+' '+x[1]:x[1])+'</option>').join('')+'</select>'}
+    else if(f.t==='textarea')inp='<textarea class="input" id="'+fid+'" rows="3">'+esc(v)+'</textarea>';
+    else{const ty=f.t==='datetime'?'datetime-local':f.t==='number'?'number':f.t==='date'?'date':'text';inp='<input class="input" id="'+fid+'" type="'+ty+'" value="'+esc(v)+'"'+(f.t==='number'?' inputmode="decimal" step="any"':'')+(f.list?' list="mdl_'+f.k+'"':'')+'>'+(f.list?'<datalist id="mdl_'+f.k+'"></datalist>':'')}
+    return '<div class="field'+(f.full||f.t==='textarea'?' full':'')+'"><label for="'+fid+'">'+esc(lab)+(f.req?' <span class="req">*</span>':'')+'</label>'+inp+'</div>'}).join('');
+  openSheet('<div class="sheet-h"><h3>'+(rec?tx('แก้ไข','Edit')+' · '+esc(rec.id):(ent==='tickets'?tx('แจ้งงานใหม่','New work request'):tx('เพิ่ม','Add ')+esc(S.label)))+'</h3><button class="btn btn-sm" onclick="closeSheet()" aria-label="close">✕</button></div>'
+   +'<form onsubmit="event.preventDefault();submit2()"><div class="form-grid">'+fields+'</div><div class="ferr" id="m-err"></div>'
+   +'<div style="display:flex;gap:8px"><button type="submit" class="btn btn-primary" style="flex:1">'+tx('บันทึก','Save')+'</button>'+(rec?'<button type="button" class="btn btn-danger" onclick="del2(this)">'+tx('ลบ','Delete')+'</button>':'')+'</div></form>');
+  refreshLists2();
+}
+function refreshLists2(){if(!FM)return;const S=SCH[FM.ent];const cur={};S.fields.forEach(f=>{const e=document.getElementById('m_'+f.k);if(e)cur[f.k]=e.value});
+  S.fields.filter(f=>f.list).forEach(f=>{const dl=document.getElementById('mdl_'+f.k);if(dl)dl.innerHTML=(f.list(cur)||[]).map(x=>'<option value="'+esc(x)+'">').join('')})}
+function submit2(){if(!FM)return;const{ent,id}=FM,S=SCH[ent];const r=id?{...D[ent].find(x=>x.id===id)}:{};
+  for(const f of S.fields){const e=document.getElementById('m_'+f.k);let v=e?e.value.trim():'';
+    if(f.req&&v===''){document.getElementById('m-err').textContent=tx('กรุณากรอก “','Please fill in “')+(typeof f.l==='function'?f.l():f.l)+'”';e&&e.focus();return}
+    if(f.t==='number'&&v!==''){v=+v;if(f.max!=null&&v>f.max)v=f.max;if(f.min!=null&&v<f.min)v=f.min}r[f.k]=v}
+  S.onSave&&S.onSave(r);
+  if(id){const i=D[ent].findIndex(x=>x.id===id);D[ent][i]=r;toast(tx('บันทึก ','Saved ')+r.id)}
+  else{r.id=nextId(ent);S.onCreate&&S.onCreate(r);D[ent].unshift(r);toast(tx('เพิ่ม ','Added ')+r.id)}
+  save();closeSheet();render()}
+function del2(btn){if(!FM)return;if(ST.delArm!==FM.id){ST.delArm=FM.id;btn.textContent=tx('แตะอีกครั้งเพื่อลบ','Tap again to delete');return}
+  const{ent,id}=FM;D[ent]=D[ent].filter(r=>r.id!==id);save();closeSheet();render();toast(tx('ลบ ','Deleted ')+id)}
+
+/* ---------- render / boot ---------- */
+function render(){const root=document.getElementById('app-root');
+  if(!ST.lang)root.innerHTML=screenSplash();else if(!ST.user)root.innerHTML=screenLogin();else root.innerHTML=screenMain();
+  document.documentElement.lang=ST.lang==='en'?'en':'th'}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeSheet()});
+window.addEventListener('storage',e=>{if(e.key==='psd_ifm_v1_'+BIZK){load();if(!FM)render()}});
+applyPrefs();load();render();
+</script>
+</body>
+</html>

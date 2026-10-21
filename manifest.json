@@ -1,0 +1,10 @@
+{
+  "name": "PSD eNGINNo IFM Management",
+  "short_name": "IFM Mobile",
+  "description": "PSD eNGINNo IFM Management V1.0 — Integrated Facility Management (Hard + Soft Services)",
+  "start_url": "PSD_eNGINNo_IFM_Mobile_v1_0.html",
+  "display": "standalone",
+  "background_color": "#0d1b30",
+  "theme_color": "#0d1117",
+  "icons": [{ "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }]
+}
