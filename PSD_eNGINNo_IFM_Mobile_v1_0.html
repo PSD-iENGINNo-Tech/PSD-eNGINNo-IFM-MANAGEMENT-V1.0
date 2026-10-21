@@ -717,7 +717,7 @@ const DESKTOP_URL='PSD_eNGINNo_IFM_Management_v1_0.html';
 const MK={user:'psd_ifm_m_user',lang:'psd_ifm_m_lang',theme:'psd_ifm_m_theme',font:'psd_ifm_m_font'};
 const ST={lang:LS.get(MK.lang,null),user:LS.get(MK.user,null),tab:'home',svc:null,sub:{},wrf:'open',wrsvc:'',q:'',sheet:null,delArm:null,resetArm:false};
 const tx=(th,en)=>ST.lang==='en'?en:th;
-const ROLES=[['requester','ผู้แจ้งงาน','Requester'],['tech','ช่าง / พนักงานบริการ','Technician / Service staff'],['sup','หัวหน้างาน','Supervisor'],['fm','ผู้จัดการอาคาร (FM)','Facility Manager']];
+const ROLES=[['requester','ผู้แจ้งงาน','Requester'],['tech','ช่าง / พนักงานบริการ','Technician / Service staff'],['sup','หัวหน้างาน','Supervisor'],['fm','ผู้จัดการอาคาร (FM)','Facility Manager'],['admin','ผู้ดูแลระบบ (Admin)','Administrator']];
 const roleName=k=>{const r=ROLES.find(x=>x[0]===k)||ROLES[0];return tx(r[1],r[2])};
 const svcName=k=>SVC[k]?(ST.lang==='en'?SVC[k].n:SVC[k].th):k;
 

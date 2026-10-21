@@ -14,7 +14,7 @@
   --bg:#0D1117;--bg2:#161B22;--bg3:#1C2333;--bg4:#21262D;
   --border:#30363D;--border2:#3D444D;
   --text:#E6EDF3;--text2:#8B949E;--text3:#6E7681;--grid:rgba(255,255,255,.05);
-  --topbar:rgba(13,17,23,.92);--overlay:rgba(0,0,0,.72);
+  --topbar:rgba(13,17,23,.92);--overlay:rgba(0,0,0,.72);--side:#161B22;
   --orange:#F97316;--green:#22C55E;--yellow:#EAB308;--red:#EF4444;--blue:#3B82F6;--purple:#A855F7;--teal:#14B8A6;--pink:#EC4899;--lime:#84CC16;
   --accent:#F97316;--hard:#F97316;--soft:#14B8A6;
   --font:'Sarabun',system-ui,sans-serif;--font-display:'Rajdhani','Sarabun',sans-serif;--font-mono:'JetBrains Mono',ui-monospace,monospace;
@@ -22,16 +22,16 @@
   color-scheme:dark;
 }
 @media (prefers-color-scheme: light){:root:not([data-theme="dark"]){
-  --bg:#F2F4F7;--bg2:#FFFFFF;--bg3:#EEF1F5;--bg4:#E2E7EE;--border:#D5DCE5;--border2:#BFC8D4;
-  --text:#0F172A;--text2:#475569;--text3:#64748B;--grid:rgba(15,23,42,.07);--topbar:rgba(255,255,255,.92);--overlay:rgba(15,23,42,.45);
+  --bg:#E9ECF0;--bg2:#FFFFFF;--bg3:#F1F3F6;--bg4:#E1E5EB;--border:#D3D9E1;--border2:#BCC5D1;--side:#F3F4F7;
+  --text:#0F172A;--text2:#475569;--text3:#64748B;--grid:rgba(15,23,42,.07);--topbar:rgba(233,236,240,.94);--overlay:rgba(15,23,42,.45);
   --accent:#EA580C;color-scheme:light}}
 :root[data-theme="light"]{
-  --bg:#F2F4F7;--bg2:#FFFFFF;--bg3:#EEF1F5;--bg4:#E2E7EE;--border:#D5DCE5;--border2:#BFC8D4;
-  --text:#0F172A;--text2:#475569;--text3:#64748B;--grid:rgba(15,23,42,.07);--topbar:rgba(255,255,255,.92);--overlay:rgba(15,23,42,.45);
+  --bg:#E9ECF0;--bg2:#FFFFFF;--bg3:#F1F3F6;--bg4:#E1E5EB;--border:#D3D9E1;--border2:#BCC5D1;--side:#F3F4F7;
+  --text:#0F172A;--text2:#475569;--text3:#64748B;--grid:rgba(15,23,42,.07);--topbar:rgba(233,236,240,.94);--overlay:rgba(15,23,42,.45);
   --accent:#EA580C;color-scheme:light}
 :root[data-theme="dark"]{
   --bg:#0D1117;--bg2:#161B22;--bg3:#1C2333;--bg4:#21262D;--border:#30363D;--border2:#3D444D;
-  --text:#E6EDF3;--text2:#8B949E;--text3:#6E7681;--grid:rgba(255,255,255,.05);--topbar:rgba(13,17,23,.92);--overlay:rgba(0,0,0,.72);
+  --text:#E6EDF3;--text2:#8B949E;--text3:#6E7681;--grid:rgba(255,255,255,.05);--topbar:rgba(13,17,23,.92);--overlay:rgba(0,0,0,.72);--side:#161B22;
   --accent:#F97316;color-scheme:dark}
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{background:var(--bg)}
@@ -41,7 +41,7 @@ button{font-family:inherit}
 @media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
 
 /* SIDEBAR */
-#sidebar{position:fixed;top:0;left:0;width:var(--sidebar-w);height:100vh;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;z-index:100;overflow-y:auto;padding-left:env(safe-area-inset-left,0px);transition:transform .2s}
+#sidebar{position:fixed;top:0;left:0;width:var(--sidebar-w);height:100vh;background:var(--side);border-right:1px solid var(--border);display:flex;flex-direction:column;z-index:100;overflow:hidden;padding-left:env(safe-area-inset-left,0px);transition:transform .2s}
 .sb-hd{padding:16px 16px 14px;border-bottom:1px solid var(--border)}
 .sb-brand{display:flex;gap:10px;align-items:center}
 .sb-mark{width:38px;height:38px;border-radius:9px;background:var(--accent);color:#fff;display:grid;place-items:center;font-family:var(--font-display);font-weight:700;font-size:15px;letter-spacing:.5px;flex-shrink:0}
@@ -62,6 +62,25 @@ button{font-family:inherit}
 .nav-item .th{font-size:10px;color:var(--text3);display:block;line-height:1.1}
 .nav-badge{margin-left:auto;background:var(--red);color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:9px;min-width:18px;text-align:center}
 .sb-ft{margin-top:auto;padding:12px 16px;border-top:1px solid var(--border);font-size:11px;color:var(--text3)}
+#nav{flex:1;min-height:0;overflow-y:auto;padding-bottom:8px}
+.sb-hd,.sb-user,.sb-ft{flex-shrink:0}
+.sb-ft .sb-more{display:none}
+.sb-user{padding:12px 14px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:8px}
+.sb-user .u{display:flex;align-items:center;gap:10px}
+.sb-user .av{width:34px;height:34px;border-radius:50%;background:var(--accent);color:#fff;display:grid;place-items:center;font-weight:700;font-family:var(--font-display);flex-shrink:0}
+.sb-user .n{font-size:13px;font-weight:700;line-height:1.2;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sb-user .r{font-size:11px;color:var(--text3)}
+.sb-user .btn{width:100%;justify-content:center}
+#login{position:fixed;inset:0;z-index:500;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:16px;overflow-y:auto}
+#login[hidden]{display:none}
+.lg-card{width:420px;max-width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:0 20px 50px -20px rgba(0,0,0,.35)}
+.lg-hero{background:radial-gradient(circle at 50% 35%,#1c3a5e 0%,#0d1b30 70%,#0a1526 100%);color:#fff;text-align:center;padding:26px 16px 20px}
+.lg-hero .k{font-family:var(--font-display);font-size:13px;letter-spacing:.2em;color:#e69a3c}
+.lg-hero .t{font-family:var(--font-display);font-size:26px;font-weight:700;margin-top:2px}
+.lg-hero .t span{color:#e6672f}
+.lg-hero .s{font-size:11px;letter-spacing:.12em;color:#4fd17a;margin-top:4px}
+.lg-body{padding:20px 22px 22px;display:flex;flex-direction:column;gap:12px}
+
 #sb-overlay{display:none;position:fixed;inset:0;background:var(--overlay);z-index:90}
 
 /* MAIN */
@@ -349,13 +368,28 @@ body{--bcs-card:var(--bg2);--bcs-card2:var(--bg3);--bcs-line:var(--border);--bcs
     <button class="sb-biz" id="sb-biz" onclick="showView('settings')" style="width:100%;color:inherit;text-align:left"></button>
   </div>
   <div id="nav"></div>
-  <div class="sb-ft">
+  <div class="sb-user" id="sb-user"></div>
+  <div class="sb-ft" style="margin-top:0;padding:8px 16px">
     <div style="color:var(--accent);font-family:var(--font-display);font-weight:700;font-size:12px">PSD eNGINNo · IFM</div>
     <div style="margin-top:2px">Hard + Soft Services · 6 Business Types · 2026</div>
-    <a href="PSD_eNGINNo_IFM_Mobile_v1_0.html" style="display:inline-block;margin-top:8px;color:var(--accent);font-weight:600;text-decoration:none">📱 เปิด IFM Mobile App ›</a>
+    <a href="PSD_eNGINNo_IFM_Mobile_v1_0.html" style="display:inline-block;margin-top:4px;color:var(--accent);font-weight:600;text-decoration:none">📱 เปิด IFM Mobile App ›</a>
   </div>
 </nav>
 <div id="sb-overlay" onclick="document.body.classList.remove('sb-open')"></div>
+<div id="login" hidden>
+  <form class="lg-card" onsubmit="event.preventDefault();doLogin()">
+    <div class="lg-hero"><div class="k">PSD · eNGINNo</div><div class="t">IFM MANAGEMENT <span>V1.0</span></div><div class="s">INTEGRATED FACILITY MANAGEMENT · 2026</div></div>
+    <div class="lg-body">
+      <div><div style="font-family:var(--font-display);font-size:20px;font-weight:700">เข้าสู่ระบบ</div><div style="font-size:12px;color:var(--text3)">ระบุชื่อ บทบาท และไซต์ที่ปฏิบัติงาน</div></div>
+      <div class="fg"><label class="fl" for="lg-name">ชื่อ-นามสกุล</label><input class="fc" id="lg-name" autocomplete="name"></div>
+      <div class="fg"><label class="fl" for="lg-role">บทบาท</label><select class="fc" id="lg-role"></select></div>
+      <div class="fg"><label class="fl" for="lg-biz">ประเภทธุรกิจ / ไซต์</label><select class="fc" id="lg-biz"></select></div>
+      <button type="submit" class="btn btn-primary" style="justify-content:center;padding:10px">เข้าสู่ระบบ</button>
+      <div class="ferr" id="lg-err" style="min-height:16px"></div>
+      <div style="font-size:11px;color:var(--text3);line-height:1.5">ใช้บัญชีเดียวกับ IFM Mobile บนเว็บไซต์เดียวกัน · ระบบรหัสผ่านจริงจะเปิดใช้เมื่อเชื่อม Google Sheets / Apps Script</div>
+    </div>
+  </form>
+</div>
 
 <main id="main">
   <header id="topbar">
@@ -887,7 +921,7 @@ function markDone(ent,id){const r=D[ent].find(x=>x.id===id);if(!r)return;
   else{r.status='Done';if(ent==='hkTasks')r.lastDone=todayS;toast(id+' → Done')}
   save();render()}
 function checkout(id){const v=D.visitors.find(x=>x.id===id);if(v){v.timeOut=isoDT(new Date());save();render();toast(v.name+' ออกจากพื้นที่แล้ว')}}
-function quickWR(svc){const s=svc||(SVC[CUR]?CUR:'eng');openForm('tickets',null,{service:s})}
+function quickWR(svc){const s=svc||(SVC[CUR]?CUR:'eng');const u=LS.get('psd_ifm_m_user',null);openForm('tickets',null,{service:s,requester:u?u.name:''})}
 
 // ---------- export / backup ----------
 function download(name,text,type){try{const b=new Blob([text],{type});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500)}catch(e){toast('เบราว์เซอร์นี้ไม่อนุญาตให้ดาวน์โหลดไฟล์')}}
@@ -1531,7 +1565,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')bcsModalClose()});
 
 VIEWS.bcs=()=>{Q.push(()=>BCS.mount());return `<div class="sec-head"><div><div class="sec-title">🏢 Building Critical Status</div><div class="sec-sub">สถานะอาคาร Real-time · IFM 4-Ring System (WR · HARD · PPM · SOFT) · ทุก Service ในภาพเดียว สำหรับผู้ใช้งานและเจ้าของอาคาร</div></div><div style="display:flex;gap:8px"><button class="btn btn-ghost btn-sm" onclick="quickWR()">+ แจ้งงาน</button></div></div>`+BCS.html('desk')};
 TITLES.bcs='Building Critical Status';
-BCS.host={toast:m=>toast(m),go:v=>showView(v),newWR:area=>openForm('tickets',null,{area,service:'eng'}),after:()=>buildNav(),user:()=>''};
+BCS.host={toast:m=>toast(m),go:v=>showView(v),newWR:area=>{const u=LS.get('psd_ifm_m_user',null);openForm('tickets',null,{area,service:'eng',requester:u?u.name:''})},after:()=>buildNav(),user:()=>''};
 
 // ---------- navigation / chrome ----------
 const NAV=[['Overview',null,[['dashboard','📊','Command Center','ภาพรวม IFM'],['bcs','🏢','Building Critical Status','สถานะอาคาร 4-Ring'],['helpdesk','🎧','Helpdesk','ศูนย์รับแจ้งงาน']]],
@@ -1570,8 +1604,26 @@ function toast(m){const t=document.getElementById('toast');t.textContent=m;t.sty
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
 setInterval(()=>{const c=document.getElementById('clock');if(c)c.textContent=new Date().toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit',second:'2-digit'})},1000);
 
+// user / login (shared key with IFM Mobile)
+const UKEY='psd_ifm_m_user';
+const ROLES=[['requester','ผู้แจ้งงาน'],['tech','ช่าง / พนักงานบริการ'],['sup','หัวหน้างาน'],['fm','ผู้จัดการอาคาร (FM)'],['admin','ผู้ดูแลระบบ (Admin)']];
+const curUser=()=>LS.get(UKEY,null);
+function renderUser(){const u=curUser(),el=document.getElementById('sb-user');if(!el)return;if(!u){el.innerHTML='';return}
+  const r=(ROLES.find(x=>x[0]===u.role)||ROLES[0])[1];
+  el.innerHTML=`<div class="u"><div class="av">${esc((u.name||'?').trim().charAt(0).toUpperCase())}</div><div style="min-width:0"><div class="n">${esc(u.name)}</div><div class="r">${esc(r)}</div></div></div><button class="btn btn-ghost btn-sm" onclick="doLogout()">⎋ ออกจากระบบ</button>`}
+function showLogin(){const L=document.getElementById('login');
+  document.getElementById('lg-role').innerHTML=ROLES.map(r=>`<option value="${r[0]}" ${r[0]==='fm'?'selected':''}>${r[1]}</option>`).join('');
+  document.getElementById('lg-biz').innerHTML=Object.entries(BIZ).map(([k,b])=>`<option value="${k}" ${k===BIZK?'selected':''}>${b.ic} ${b.n} · ${b.en}</option>`).join('');
+  document.getElementById('lg-err').textContent='';L.hidden=false;setTimeout(()=>document.getElementById('lg-name').focus(),50)}
+function doLogin(){const n=document.getElementById('lg-name').value.trim();if(!n){document.getElementById('lg-err').textContent='กรุณาระบุชื่อ';return}
+  LS.set(UKEY,{name:n,role:document.getElementById('lg-role').value});const bz=document.getElementById('lg-biz').value;
+  document.getElementById('login').hidden=true;renderUser();if(bz!==BIZK)setBiz(bz);else render();toast('ยินดีต้อนรับ '+n)}
+function doLogout(){try{localStorage.removeItem(UKEY)}catch(e){}renderUser();closeModal();document.body.classList.remove('sb-open');showLogin()}
+BCS.host.user=()=>{const u=curUser();return u?u.name:''};
+window.addEventListener('storage',e=>{if(e.key===UKEY){renderUser();if(!curUser())showLogin()}});
+
 // boot
-applyTheme();load();buildChrome();
+applyTheme();load();buildChrome();renderUser();if(!curUser())showLogin();
 (function(){const h=(location.hash||'').slice(1);CUR=VIEWS[h]?h:'dashboard';render()})();
 </script>
 </body>
